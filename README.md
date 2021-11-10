@@ -1,7 +1,5 @@
 # Predicting Patient Issues
 
----
-
 For dependency installation, use the pipreqs module to generate a requirements.txt
 
 Use this command to install pipreqs:
@@ -23,6 +21,7 @@ This will install all necessary Python modules to run the backend service. Make 
 - npm (NodeJS package manager)
 
 NodeJS/npm documentation & installation: [https://nodejs.org/en/](https://nodejs.org/en/)
+
 ReactJS documentation: [https://reactjs.org/](https://reactjs.org/)
 
 ##### Running ReactJS frontend

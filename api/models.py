@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from datetime import datetime
+import typing
+from pydantic import BaseModel
 from typing import List, Optional
 
 class AdmissionDrug(BaseModel):
@@ -164,3 +165,20 @@ class VitalPeriodic(BaseModel):
     st2: Optional[float]
     st3: Optional[float]
     icp: Optional[int]
+
+class Users(BaseModel):
+    uid: int
+    firstname: str
+    lastname: str
+    username: str
+    rank: Optional[str] = ""
+    role: Optional[str] = "basic"
+    lastlogin: datetime
+
+class UsersIn(BaseModel):
+    firstname: str
+    lastname: str
+    username: str
+    rank: Optional[str] = ""
+    role: Optional[str] = "basic"
+    lastlogin: Optional[datetime] = datetime.utcnow()

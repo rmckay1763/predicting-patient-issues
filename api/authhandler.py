@@ -5,14 +5,12 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
-
+    
 class AuthHandler:
-    security = None
-    secret = None
+    security = HTTPBearer()
         
     def __init__(self, config):
-        self.security = HTTPBearer()
-        self.secret = config['AuthSetting']['Secret']
+        self.secret = config['AuthSettings']['Secret']
 
     def verify_password(self, form_password, database_password):
         return form_password == database_password

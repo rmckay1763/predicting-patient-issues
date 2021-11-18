@@ -180,3 +180,11 @@ class UsersIn(BaseModel):
     username: str
     rank: Optional[str] = ""
     role: Optional[int] = 0
+
+class Password(BaseModel):
+    uid: int
+    password: str
+
+class Login(BaseModel):
+    username: str
+    password: str

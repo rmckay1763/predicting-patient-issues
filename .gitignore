@@ -25,3 +25,5 @@ yarn-error.log*
 # configuration & environment vars
 settings.ini
 .env
+requirements.txt
+__pycache__

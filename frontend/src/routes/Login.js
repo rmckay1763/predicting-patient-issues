@@ -1,7 +1,10 @@
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Avatar, Container, TextField, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
+import bcrypt from "bcryptjs";
+
+const salt = bcrypt.genSaltSync(process.env.SALT_ROUNDS);
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -9,7 +12,8 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ username, password });
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    console.log({ username, password, hashedPassword });
   };
 
   return (
@@ -44,6 +48,9 @@ export default function Login() {
           </Button>
         </Box>
       </Box>
+      <Typography variant="body2" color="text.secondary" align="center">
+        Dont have an account? <Link to="/signup">Sign up!</Link>
+      </Typography>
     </Container>
   );
 }

@@ -20,7 +20,7 @@ def startup():
     conn = PostgresConnector(config)
 
 # route to get all users as json array
-@app.get("/users")
+@app.get("/users/")
 async def getAllUsers():
     conn.curr.execute('SELECT * FROM public.users;')
     resultDict = conn.curr.fetchall()
@@ -43,3 +43,10 @@ async def deleteUser(uid: int):
     rowcount = conn.curr.rowcount
     return {"rowcount": rowcount}
 
+# route to add a new user. info sent in as json object
+@app.post("/users/")
+async def insertUser(userinfo: m.UsersIn):
+    conn.curr.execute(f'INSERT INTO public.users (firstname, lastname, username, rank, role) VALUES (\'{userinfo.firstname}\', \'{userinfo.lastname}\', \'{userinfo.username}\', \'{userinfo.rank}\', {userinfo.role})')
+    conn.conn.commit()
+    rowcount = conn.curr.rowcount
+    return {"rowcount": rowcount}

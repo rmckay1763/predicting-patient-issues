@@ -1,6 +1,8 @@
 import configparser
 from fastapi import status, HTTPException, Depends
 from fastapi.applications import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import models as m
 from authhandler import AuthHandler
 from postgresconnector import PostgresConnector
@@ -14,6 +16,15 @@ config.sections()
 
 app = FastAPI()
 auth = AuthHandler(config)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = ['*'],
+    allow_credentials = True,
+    allow_methods = ['*'],
+    allow_headers = ['*']
+)
+
 # defines global variables for config file and database connection
 @app.on_event("startup")
 def startup():
@@ -70,8 +81,10 @@ async def login(login: m.Login):
 
     pass_parsed = parse_obj_as(m.Password, password)
 
-    if (not auth.verify_password(pass_parsed.password, login.password)):
+    if (not auth.verify_password(login.password, pass_parsed.password)):
         raise HTTPException(status_code=401, detail='Username or password is incorrect!')    
     
     token = auth.encode_token(user_parsed.uid)
-    return {"token" : token}
+
+    res = {"token" : token}
+    return JSONResponse(content=res)

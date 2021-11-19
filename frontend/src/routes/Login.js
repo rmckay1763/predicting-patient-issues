@@ -1,26 +1,39 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Avatar, Container, TextField, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import bcrypt from "bcryptjs";
-
-const salt = bcrypt.genSaltSync(process.env.SALT_ROUNDS);
+import axios from "axios";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const hashedPassword = bcrypt.hashSync(password, salt);
-    console.log({ username, password, hashedPassword });
+    const loginData = { username: username, password: password };
+    try {
+      const res = await axios.request({
+        url: `${process.env.REACT_APP_API_BASE_URL}/login/`,
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: loginData,
+      });
+      const json_res = await res.data;
+      console.log(json_res);
+      setError(false);
+    } catch (error) {
+      console.error(error);
+      setError(true);
+    }
   };
 
   return (
     <Container>
       <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Avatar />
-        <Typography>Log In</Typography>
+        <Typography variant="h5">Associate Login</Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate method="post">
           <TextField
             margin="normal"
@@ -30,6 +43,8 @@ export default function Login() {
             autoFocus
             name="username"
             value={username}
+            error={error}
+            helperText={error ? "Incorrect username and/or password." : ""}
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
@@ -41,16 +56,14 @@ export default function Login() {
             autoFocus
             name="password"
             value={password}
+            error={error}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Log In
+            Login
           </Button>
         </Box>
       </Box>
-      <Typography variant="body2" color="text.secondary" align="center">
-        Dont have an account? <Link to="/signup">Sign up!</Link>
-      </Typography>
     </Container>
   );
 }

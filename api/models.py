@@ -188,3 +188,10 @@ class Password(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
+
+class Roles(BaseModel):
+    id: int
+    name: str
+
+class RolesIn(BaseModel):
+    name: str

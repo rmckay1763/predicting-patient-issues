@@ -36,7 +36,8 @@ async def getUser(uid: int):
     model = parse_obj_as(m.Users, resultDict)
     return model
 
-# route to delete a user by id. returns 1 if successful, 0 otherwise
+# route to delete a user by id. uid passed in as url parameter
+# returns 1 if successful, 0 otherwise
 @app.delete("/users/{uid}", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteUser(uid: int):
     conn.curr.execute(f'DELETE FROM public.users WHERE uid={uid};')
@@ -44,10 +45,38 @@ async def deleteUser(uid: int):
     rowcount = conn.curr.rowcount
     return {"rowcount": rowcount}
 
-# route to add a new user. info sent in as json object
+# route to add a new user. info passed in as json object
+# returns 1 if successful, 0 otherwise
 @app.post("/users/")
 async def insertUser(userinfo: m.UsersIn):
     conn.curr.execute(f'INSERT INTO public.users (firstname, lastname, username, rank, role) VALUES (\'{userinfo.firstname}\', \'{userinfo.lastname}\', \'{userinfo.username}\', \'{userinfo.rank}\', {userinfo.role})')
+    conn.conn.commit()
+    rowcount = conn.curr.rowcount
+    return {"rowcount": rowcount}
+
+# route to get all rows in the roles table
+@app.get("/roles/")
+async def getAllRoles():
+    conn.curr.execute(f'SELECT * FROM public.roles')
+    resultDict = conn.curr.fetchall()
+    models = parse_obj_as(List[m.Roles], resultDict)
+    return models 
+
+
+# route to add a new role. role sent in as json object
+# returns 1 if successful, 0 otherwise
+@app.post("/roles/")
+async def insertRole(role: m.RolesIn):
+    conn.curr.execute(f'INSERT INTO public.roles (name) VALUES (\'{role.name}\');')
+    conn.conn.commit()
+    rowcount = conn.curr.rowcount
+    return {"rowcount": rowcount}
+
+# route to delete a role. role passed in as json object
+# returns 1 if successful, 0 otherwise
+@app.delete("/roles/")
+async def deleteRole(role: m.Roles):
+    conn.curr.execute(f'DELETE FROM public.roles WHERE id={role.id}')
     conn.conn.commit()
     rowcount = conn.curr.rowcount
     return {"rowcount": rowcount}

@@ -1,32 +1,35 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Container, TextField, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
-import axios from "axios";
+import APIController from "../controllers/APIController";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loginData = { username: username, password: password };
+
     try {
-      const res = await axios.request({
-        url: `${process.env.REACT_APP_API_BASE_URL}/login/`,
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: loginData,
-      });
-      const json_res = await res.data;
-      console.log(json_res);
+      const response = await APIController.Login(username, password);
       setError(false);
+      return setProfile(response);
     } catch (error) {
       console.error(error);
-      setError(true);
+      return setError(true);
     }
+  };
+
+  const setProfile = async (response) => {
+    let token = { ...response.data.token };
+    setToken(token);
+    localStorage.setItem("uid", token);
+    return navigate("/");
   };
 
   return (

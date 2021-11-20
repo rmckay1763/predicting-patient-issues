@@ -17,8 +17,14 @@ AuthProvider.propTypes = {
 
 export const useAuth = () => useContext(AuthContext);
 
-export const ProtectedRoute = ({ children }) => {
+export const AuthRoute = ({ children }) => {
   let auth = useAuth();
 
   return auth.token ? children : <Navigate to="/login" />;
+};
+
+export const GenericRoute = ({ children }) => {
+  let auth = useAuth();
+
+  return auth.token ? <Navigate to="/" /> : children;
 };

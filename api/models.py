@@ -172,13 +172,19 @@ class Users(BaseModel):
     lastname: str
     username: str
     rank: Optional[str] = ""
-    role: Optional[str] = "basic"
-    lastlogin: datetime
+    role: Optional[int] = 0
 
 class UsersIn(BaseModel):
     firstname: str
     lastname: str
     username: str
     rank: Optional[str] = ""
-    role: Optional[str] = "basic"
-    lastlogin: Optional[datetime] = datetime.utcnow()
+    role: Optional[int] = 0
+
+class Password(BaseModel):
+    uid: int
+    password: str
+
+class Login(BaseModel):
+    username: str
+    password: str

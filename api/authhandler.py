@@ -5,17 +5,19 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
-
+    
 class AuthHandler:
-    security = None
-    secret = None
+    security = HTTPBearer()
+    context = CryptContext(schemes=['bcrypt'])
         
     def __init__(self, config):
-        self.security = HTTPBearer()
-        self.secret = config['AuthSetting']['Secret']
+        self.secret = config['AuthSettings']['Secret']
 
     def verify_password(self, form_password, database_password):
-        return form_password == database_password
+        return self.context.verify(form_password, database_password)
+
+    def get_hashed_password(self, plain_password):
+        return self.context.hash(plain_password)
 
     def encode_token(self, user_id):
         payload = {

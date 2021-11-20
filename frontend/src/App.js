@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./routes/Home";
+import Login from "./routes/Login";
+import { AuthProvider, AuthRoute, GenericRoute } from "./contexts/AuthContext";
 
-function App() {
+let token = localStorage.getItem("uid");
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <AuthProvider userToken={token}>
+        <Routes>
+          <Route
+            exact
+            path="/login"
+            element={
+              <GenericRoute>
+                <Login />
+              </GenericRoute>
+            }
+          />
+          <Route
+            exact
+            path="/"
+            element={
+              <AuthRoute>
+                <Home />
+              </AuthRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
-
-export default App;

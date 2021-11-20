@@ -1,6 +1,7 @@
 import abc
 from pydantic import BaseModel
 from postgresconnector import PostgresConnector
+from psycopg2 import sql
 
 class TableUtils(abc.ABC):
     """
@@ -18,6 +19,11 @@ class TableUtils(abc.ABC):
             conn (PostgresConnector): An open psycopg2 connection to the database.
         """
         self.conn = conn
+
+        self.fetchKeyQuery = "SELECT {key} FROM {table} WHERE {column} = %s;"
+        self.fetchAllQuery = "SELECT * FROM {table};"
+        self.fetchOneQuery = "SELECT * FROM {table} WHERE {key} = %s;"
+        self.deleteQuery = "DELETE FROM {table} WHERE {key} = %s;"
 
     @abc.abstractmethod
     async def fetchKey(self, value):

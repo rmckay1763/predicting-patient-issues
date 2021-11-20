@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from fastapi import status, Depends
+from fastapi import status, HTTPException, Depends
 from fastapi.applications import FastAPI
 from authhandler import AuthHandler
 import models as m
@@ -28,6 +28,7 @@ def startup():
     roles = RolesUtils(conn)
     users = UsersUtils(conn)
     logins = LoginUtils(conn)
+    conn.curr.execute("SET search_path TO public;")
 
 @app.on_event("shutdown")
 def shutdown():
@@ -39,7 +40,7 @@ def shutdown():
 #################### routes to interact with the users table ##################
 
 @app.get("/users/fetchKey/{username}")
-async def fetchUserKey(username: str, uid=Depends(auth.auth_wrapper)):
+async def fetchUserKey(username: str):
     """
     Route to fetch the primary key of a user.
 
@@ -49,7 +50,10 @@ async def fetchUserKey(username: str, uid=Depends(auth.auth_wrapper)):
     Returns:
         RealDictRow: The primay key of the user.
     """
-    return await users.fetchKey(username)
+    try:
+        return await users.fetchKey(username)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.get("/users/fetchAll")
 async def fetchAllUsers(uid=Depends(auth.auth_wrapper)):
@@ -59,7 +63,10 @@ async def fetchAllUsers(uid=Depends(auth.auth_wrapper)):
     Returns:
         list: A list of Users objects.
     """
-    return await users.fetchAll()
+    try:
+        return await users.fetchAll()
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.get("/users/fetchOne/{key}")
 async def fetchOneUser(key: int, uid=Depends(auth.auth_wrapper)):
@@ -72,7 +79,10 @@ async def fetchOneUser(key: int, uid=Depends(auth.auth_wrapper)):
     Returns:
         Users: The user as a users model.
     """
-    return await users.fetchOne(key)
+    try:
+        return await users.fetchOne(key)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.post("/users/insert")
 async def insertUser(userinfo: m.UsersIn, uid=Depends(auth.auth_wrapper)):
@@ -85,7 +95,10 @@ async def insertUser(userinfo: m.UsersIn, uid=Depends(auth.auth_wrapper)):
     Returns:
         RealDictRow: The primay key of the new user.
     """
-    return await users.insert(userinfo)
+    try:
+        return await users.insert(userinfo)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.put("/users/update")
 async def updateUser(updated: m.Users, uid=Depends(auth.auth_wrapper)):
@@ -98,7 +111,10 @@ async def updateUser(updated: m.Users, uid=Depends(auth.auth_wrapper)):
     Returns:
         Users: The result of the update.
     """
-    return await users.update(updated)
+    try:
+        return await users.update(updated)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.delete("/users/delete/{key}", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteUser(key: int, uid=Depends(auth.auth_wrapper)):
@@ -111,7 +127,10 @@ async def deleteUser(key: int, uid=Depends(auth.auth_wrapper)):
     Returns:
         bool: True if successful, false otherwise.
     """
-    return await users.delete(key)
+    try:
+        return await users.delete(key)
+    except:
+        raise HTTPException(status_code=500, detail='Database query failed')
 
 #################### routes to interact with the roles table ##################
 
@@ -126,7 +145,10 @@ async def fetchRoleKey(name: str, uid=Depends(auth.auth_wrapper)):
     Returns:
         RealDictRow: The primay key of the role.
     """
-    return await roles.fetchKey(name)
+    try:
+        return await roles.fetchKey(name)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.get("/roles/fetchAll/")
 async def fetchAllRoles(uid=Depends(auth.auth_wrapper)):
@@ -136,7 +158,10 @@ async def fetchAllRoles(uid=Depends(auth.auth_wrapper)):
     Returns:
         list: A list of Roles objects.
     """
-    return await roles.fetchAll()
+    try:
+        return await roles.fetchAll()
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.get("/roles/fetchOne/{key}")
 async def fetchOneRole(key: int, uid=Depends(auth.auth_wrapper)):
@@ -149,7 +174,10 @@ async def fetchOneRole(key: int, uid=Depends(auth.auth_wrapper)):
     Returns:
         Roles: The role as a roles model.
     """
-    return await roles.fetchOne(key)
+    try:
+        return await roles.fetchOne(key)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.post("/roles/insert/")
 async def insertRole(role: m.RolesIn, uid=Depends(auth.auth_wrapper)):
@@ -162,7 +190,10 @@ async def insertRole(role: m.RolesIn, uid=Depends(auth.auth_wrapper)):
     Returns:
         RealDictRow: The primay key of the new role.
     """
-    return await roles.insert(role)
+    try:
+        return await roles.insert(role)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.put("/roles/update")
 async def updateRole(updated: m.Roles, uid=Depends(auth.auth_wrapper)):
@@ -175,10 +206,13 @@ async def updateRole(updated: m.Roles, uid=Depends(auth.auth_wrapper)):
     Returns:
         Roles: The result of the update.
     """
-    return await roles.update(updated)
+    try:
+        return await roles.update(updated)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.delete("/roles/delete/{key}")
-async def deleteRole(key: int):
+async def deleteRole(key: int, uid=Depends(auth.auth_wrapper)):
     """
     Route to delete a role from the roles table.
 
@@ -188,7 +222,10 @@ async def deleteRole(key: int):
     Returns:
         bool: True if successful, false otherwise.
     """
-    return await roles.delete(key)
+    try:
+        return await roles.delete(key)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 #################### routes to interact with the login table ##################
 
@@ -203,7 +240,10 @@ async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
     Returns:
         Login: The login as a login model.
     """
-    return await logins.fetchOne(key)
+    try:
+        return await logins.fetchOne(key)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.post("/login/insert/")
 async def insertLogin(login: m.Login, uid=Depends(auth.auth_wrapper)):
@@ -216,7 +256,10 @@ async def insertLogin(login: m.Login, uid=Depends(auth.auth_wrapper)):
     Returns:
         RealDictRow: The primay key of the new login.
     """
-    return await logins.insert(login)
+    try:
+        return await logins.insert(login)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.put("/login/update")
 async def updateLogin(updated: m.Login, uid=Depends(auth.auth_wrapper)):
@@ -229,7 +272,10 @@ async def updateLogin(updated: m.Login, uid=Depends(auth.auth_wrapper)):
     Returns:
         Login: The result of the update.
     """
-    return await logins.update(updated)
+    try:
+        return await logins.update(updated)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.delete("/login/delete/{key}")
 async def deleteLogin(key: int, uid=Depends(auth.auth_wrapper)):
@@ -242,7 +288,10 @@ async def deleteLogin(key: int, uid=Depends(auth.auth_wrapper)):
     Returns:
         bool: True if successful, false otherwise.
     """
-    return await logins.delete(key)
+    try:
+        return await logins.delete(key)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')
 
 @app.post("/login/login")
 async def login(attempt: m.Login):
@@ -258,4 +307,7 @@ async def login(attempt: m.Login):
     Returns:
         token (str): Session token.
     """
-    return await logins.login(attempt)
+    try:
+        return await logins.login(attempt)
+    except:
+            raise HTTPException(status_code=500, detail='Database query failed')

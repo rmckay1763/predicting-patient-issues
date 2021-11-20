@@ -4,6 +4,7 @@ from tableUtils import TableUtils
 from models import Login
 from postgresconnector import PostgresConnector
 from fastapi import HTTPException
+from psycopg2 import sql
 
 class LoginUtils(TableUtils):
     """
@@ -17,12 +18,31 @@ class LoginUtils(TableUtils):
         super().__init__(conn)
         self.auth = AuthHandler(self.conn.config)
 
-        # formatted strings to execute sql queries
-        self.sqlFetchOne = "SELECT * FROM public.login WHERE uid={key};"
-        self.sqlInsert = ("INSERT INTO public.login (uid, password) "
-                          "VALUES ({uid}, '{password}') RETURNING uid;")
-        self.sqlUpdate = "UPDATE public.login SET password='{password}' WHERE uid={uid} RETURNING *;"
-        self.sqlDelete = "DELETE FROM public.login WHERE uid={key};"
+        self.insertQuery = ("INSERT INTO {table} ({columns}) "
+            "VALUES (%s, %s) RETURNING {key};")
+
+        self.updateQuery = ("UPDATE {table} "
+            "SET {password}=%s WHERE {key} = %s RETURNING *;")
+        
+        self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
+            table = sql.Identifier('login'),
+            key = sql.Identifier('uid'))
+
+        self.insertSQL = sql.SQL(self.insertQuery).format(
+            table = sql.Identifier('login'),
+            key = sql.Identifier('uid'),
+            columns = sql.SQL(',').join([
+                sql.Identifier('uid'),
+                sql.Identifier('password')]))
+
+        self.updateSQL = sql.SQL(self.updateQuery).format(
+            table = sql.Identifier('login'),
+            key = sql.Identifier('uid'),
+            password = sql.Identifier('password'))
+            
+        self.deleteSQL = sql.SQL(self.deleteQuery).format(
+            table = sql.Identifier('login'),
+            key = sql.Identifier('uid'))
 
 
     # not necessary to implement (already know the primary key)
@@ -34,36 +54,33 @@ class LoginUtils(TableUtils):
         None
 
     async def fetchOne(self, key: int):
-        args = {"key": key}
-        self.conn.curr.execute(self.sqlFetchOne.format(**args))
+        self.conn.curr.execute(self.fetchOneSQL, (key,))
         login = self.conn.curr.fetchone()
         model = parse_obj_as(Login, login)
         return model
 
     async def insert(self, login: Login):
-        args = login.dict()
-        self.conn.curr.execute(self.sqlInsert.format(**args))
+        self.conn.curr.execute(self.insertSQL, (
+            login.uid, 
+            login.password))
         self.conn.conn.commit()
         key = self.conn.curr.fetchone()
         return key
-
+    
     async def update(self, updated: Login):
-        args = updated.dict()
-        self.conn.curr.execute(self.sqlUpdate.format(**args))
+        self.conn.curr.execute(self.updateSQL, (updated.password, updated.uid,))
         self.conn.conn.commit()
         result = self.conn.curr.fetchone()
         model = parse_obj_as(Login, result)
         return model
 
     async def delete(self, key: int):
-        args = {"key": key}
-        self.conn.curr.execute(self.sqlDelete.format(**args))
+        self.conn.curr.execute(self.deleteSQL, (key,))
         self.conn.conn.commit()
         if (self.conn.curr.rowcount == 1):
             return True
         else:
             return False
-
     async def login(self, attempt: Login):
         """
         Authenticates an attempted login.

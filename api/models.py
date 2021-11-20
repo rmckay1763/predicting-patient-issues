@@ -181,12 +181,8 @@ class UsersIn(BaseModel):
     rank: Optional[str] = ""
     role: Optional[int] = 0
 
-class Password(BaseModel):
-    uid: int
-    password: str
-
 class Login(BaseModel):
-    username: str
+    uid: int
     password: str
 
 class Roles(BaseModel):

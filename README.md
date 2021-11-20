@@ -33,3 +33,16 @@ If it is the first time running this project (after initially pulling code), you
 Start the development server: `npm start`
 
 The development server should be accessible at [http://localhost:3000](http://localhost:3000).
+
+##### FastAPI for userinfo database
+
+Update dependencies if necessary (see above).
+
+The api provides routes to interact with each table in the userinfo database. Refer to documentation in main.py for available operations.
+
+A utility class for each table provides a layer of abstraction for the FastAPI to interact with the database.
+
+All required operations are accessable through the routes in main.py. The general construction for an endpoint follows the pattern '[host_ip]:[port_number]/[table_name]/[operation]/[optional args...]'. Each route uses the expected HTTP request method per FastAPI convention.
+
+To start the service locally, change working directory to /api and run:
+    'uvicorn --port 8000 --host 127.0.0.1 main:app --reload'

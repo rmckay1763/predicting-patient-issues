@@ -285,7 +285,7 @@ async def deleteLogin(key: int, uid=Depends(auth.auth_wrapper)):
     except BaseException as err:
         raise err
 
-@app.post("/login/login")
+@app.post("/login/")
 async def login(attempt: m.LoginAttempt):
     """
     Route to authenticate an attempted login.

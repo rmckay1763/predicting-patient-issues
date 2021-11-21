@@ -1,29 +1,28 @@
 from pydantic.tools import parse_obj_as
+from usersUtils import UsersUtils
 from authhandler import AuthHandler
 from tableUtils import TableUtils
-from models import Login
+from models import Login, LoginAttempt
 from postgresconnector import PostgresConnector
 from fastapi import HTTPException
-from psycopg2 import sql
+from psycopg2 import sql, DatabaseError
 
 class LoginUtils(TableUtils):
     """
-    Abstracts interacting with the login table from the userinfo database.
-
-    Attributes:
-        auth (AuthHandler): Authentication handler.
+    Abstracts interacting with the login table from the userinfo database (descended from TableUtils).
     """
 
     def __init__(self, conn: PostgresConnector):
         super().__init__(conn)
-        self.auth = AuthHandler(self.conn.config)
 
-        self.insertQuery = ("INSERT INTO {table} ({columns}) "
+        # table dependent sql query strings
+        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
             "VALUES (%s, %s) RETURNING {key};")
 
-        self.updateQuery = ("UPDATE {table} "
+        self.updateQuery = ("UPDATE public.{table} "
             "SET {password}=%s WHERE {key} = %s RETURNING *;")
         
+        # sql statement objects
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('login'),
             key = sql.Identifier('uid'))
@@ -54,39 +53,72 @@ class LoginUtils(TableUtils):
         None
 
     async def fetchOne(self, key: int):
-        self.conn.curr.execute(self.fetchOneSQL, (key,))
-        login = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchOneSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        login = cursor.fetchone()
+        if (login == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find login')
         model = parse_obj_as(Login, login)
+        cursor.close()
         return model
 
     async def insert(self, login: Login):
-        self.conn.curr.execute(self.insertSQL, (
-            login.uid, 
-            login.password))
-        self.conn.conn.commit()
-        key = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.insertSQL, (
+                login.uid, 
+                login.password))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to insert password')
+        cursor.close()
         return key
     
     async def update(self, updated: Login):
-        self.conn.curr.execute(self.updateSQL, (updated.password, updated.uid,))
-        self.conn.conn.commit()
-        result = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.updateSQL, (updated.password, updated.uid,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        result = cursor.fetchone()
+        if (result == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to update password')
         model = parse_obj_as(Login, result)
+        cursor.close()
         return model
 
     async def delete(self, key: int):
-        self.conn.curr.execute(self.deleteSQL, (key,))
-        self.conn.conn.commit()
-        if (self.conn.curr.rowcount == 1):
-            return True
-        else:
-            return False
-    async def login(self, attempt: Login):
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.deleteSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        if (cursor.rowcount == 0):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to delete password')
+        cursor.close()
+        return True
+
+    async def login(self, attempt: LoginAttempt, users: UsersUtils, auth: AuthHandler):
         """
         Authenticates an attempted login.
 
         Parameters:
-            attempt (Login): The attempted login.
+            attempt (LoginAttempt): The attempted login.
+            users (UsersUtils): To query users table.
+            auth (AuthHandler): Authentication handler.
 
         Raises:
             HTTPException: If authentication fails.
@@ -94,12 +126,14 @@ class LoginUtils(TableUtils):
         Returns:
             token (str): Session token.
         """
-        actual = await self.fetchOne(attempt.uid)
-        if (actual == None):
+        uid = await users.fetchKey(attempt.username)
+        if (uid == None):
             raise HTTPException(status_code=401, detail='Username is incorrect!')
 
-        if (not self.auth.verify_password(attempt.password, actual.password)):
+        actual = await self.fetchOne(uid["uid"])
+
+        if (not auth.verify_password(attempt.password, actual.password)):
             raise HTTPException(status_code=401, detail='Password is incorrect!')
 
-        token = self.auth.encode_token(actual.uid)
+        token = auth.encode_token(actual.uid)
         return {"token" : token}

@@ -5,9 +5,9 @@ from sshtunnel import SSHTunnelForwarder
 
 class PostgresConnector:
     tunnel = None
-    conn = None
     curr = None
     config = None
+    port = None
 
     def __init__(self, config):
         self.config = config
@@ -17,27 +17,25 @@ class PostgresConnector:
         if(self.config.getboolean('SSHTunnelSettings', 'UseTunnel')):
             self.OpenSSHTunnel()
             self.tunnel.start()
-            self.GetDatabaseConnection(self.tunnel.local_bind_port)
+            self.port = self.tunnel.local_bind_port
         
         # Else (if the service is being run on the server), ignore SSH Tunneling
         else:
-            self.GetDatabaseConnection(int(config['DatabaseSettings']['port']))
+             self.port = int(config['DatabaseSettings']['port'])
 
     # Opens database connection globally on given port
     # (must use OpenSSHTunnel if connecting remotely)
-    def GetDatabaseConnection(self, port):
+    def GetDatabaseConnection(self):
         try:
             params = {
                 'database': self.config['DatabaseSettings']['Database'],
                 'user': self.config['DatabaseSettings']['User'],
                 'password': self.config['DatabaseSettings']['Password'],
                 'host': self.config['DatabaseSettings']['Endpoint'],
-                'port': port
+                'port': self.port
             }
-
-            self.conn = psycopg2.connect(**params)
-            self.curr = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
+            connection =  psycopg2.connect(**params)
+            return connection
         except BaseException as err:
             print(err)
             return None
@@ -53,3 +51,5 @@ class PostgresConnector:
         except BaseException as err:
             print(err)
             return None
+
+        

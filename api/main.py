@@ -1,5 +1,5 @@
 from configparser import ConfigParser
-from fastapi import status, HTTPException, Depends
+from fastapi import status, Depends
 from fastapi.applications import FastAPI
 from authhandler import AuthHandler
 import models as m
@@ -9,33 +9,24 @@ from usersUtils import UsersUtils
 from loginUtils import LoginUtils
 
 # global variables
+app = FastAPI()
 config = ConfigParser()
 config.read('settings.ini')
 config.sections()
 auth = AuthHandler(config)
-app = FastAPI()
+connector = PostgresConnector(config)
 
 @app.on_event("startup")
 def startup():
     """
     Initialize database connection and instantiate utility classes.
     """
-    global conn
     global roles
     global users
     global logins
-    conn = PostgresConnector(config)
-    roles = RolesUtils(conn)
-    users = UsersUtils(conn)
-    logins = LoginUtils(conn)
-    conn.curr.execute("SET search_path TO public;")
-
-@app.on_event("shutdown")
-def shutdown():
-    """
-    Free up resources.
-    """
-    conn.conn
+    roles = RolesUtils(connector)
+    users = UsersUtils(connector)
+    logins = LoginUtils(connector)
 
 #################### routes to interact with the users table ##################
 
@@ -52,8 +43,8 @@ async def fetchUserKey(username: str):
     """
     try:
         return await users.fetchKey(username)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.get("/users/fetchAll")
 async def fetchAllUsers(uid=Depends(auth.auth_wrapper)):
@@ -65,8 +56,8 @@ async def fetchAllUsers(uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await users.fetchAll()
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.get("/users/fetchOne/{key}")
 async def fetchOneUser(key: int, uid=Depends(auth.auth_wrapper)):
@@ -81,8 +72,8 @@ async def fetchOneUser(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await users.fetchOne(key)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.post("/users/insert")
 async def insertUser(userinfo: m.UsersIn, uid=Depends(auth.auth_wrapper)):
@@ -97,8 +88,8 @@ async def insertUser(userinfo: m.UsersIn, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await users.insert(userinfo)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.put("/users/update")
 async def updateUser(updated: m.Users, uid=Depends(auth.auth_wrapper)):
@@ -113,8 +104,8 @@ async def updateUser(updated: m.Users, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await users.update(updated)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.delete("/users/delete/{key}", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteUser(key: int, uid=Depends(auth.auth_wrapper)):
@@ -129,8 +120,8 @@ async def deleteUser(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await users.delete(key)
-    except:
-        raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 #################### routes to interact with the roles table ##################
 
@@ -147,8 +138,8 @@ async def fetchRoleKey(name: str, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.fetchKey(name)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.get("/roles/fetchAll/")
 async def fetchAllRoles(uid=Depends(auth.auth_wrapper)):
@@ -160,8 +151,8 @@ async def fetchAllRoles(uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.fetchAll()
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.get("/roles/fetchOne/{key}")
 async def fetchOneRole(key: int, uid=Depends(auth.auth_wrapper)):
@@ -176,8 +167,8 @@ async def fetchOneRole(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.fetchOne(key)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.post("/roles/insert/")
 async def insertRole(role: m.RolesIn, uid=Depends(auth.auth_wrapper)):
@@ -192,8 +183,8 @@ async def insertRole(role: m.RolesIn, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.insert(role)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.put("/roles/update")
 async def updateRole(updated: m.Roles, uid=Depends(auth.auth_wrapper)):
@@ -208,8 +199,8 @@ async def updateRole(updated: m.Roles, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.update(updated)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.delete("/roles/delete/{key}")
 async def deleteRole(key: int, uid=Depends(auth.auth_wrapper)):
@@ -224,12 +215,13 @@ async def deleteRole(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await roles.delete(key)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 #################### routes to interact with the login table ##################
 
 @app.get("/login/fetchOne/{key}")
+#async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
 async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
     """
     Route to fetch a login given the primary key.
@@ -242,8 +234,8 @@ async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await logins.fetchOne(key)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.post("/login/insert/")
 async def insertLogin(login: m.Login, uid=Depends(auth.auth_wrapper)):
@@ -258,8 +250,8 @@ async def insertLogin(login: m.Login, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await logins.insert(login)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.put("/login/update")
 async def updateLogin(updated: m.Login, uid=Depends(auth.auth_wrapper)):
@@ -274,8 +266,8 @@ async def updateLogin(updated: m.Login, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await logins.update(updated)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.delete("/login/delete/{key}")
 async def deleteLogin(key: int, uid=Depends(auth.auth_wrapper)):
@@ -290,16 +282,16 @@ async def deleteLogin(key: int, uid=Depends(auth.auth_wrapper)):
     """
     try:
         return await logins.delete(key)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+    except BaseException as err:
+        raise err
 
 @app.post("/login/login")
-async def login(attempt: m.Login):
+async def login(attempt: m.LoginAttempt):
     """
     Route to authenticate an attempted login.
 
     Parameters:
-        attempt (Login): The attempted login.
+        attempt (LoginAttempt): The attempted login.
 
     Raises:
         HTTPException: If authentication fails.
@@ -308,6 +300,6 @@ async def login(attempt: m.Login):
         token (str): Session token.
     """
     try:
-        return await logins.login(attempt)
-    except:
-            raise HTTPException(status_code=500, detail='Database query failed')
+        return await logins.login(attempt, users, auth)
+    except BaseException as err:
+        raise err

@@ -1,7 +1,7 @@
 import abc
 from pydantic import BaseModel
 from postgresconnector import PostgresConnector
-from psycopg2 import sql
+from psycopg2 import extras, OperationalError
 
 class TableUtils(abc.ABC):
     """
@@ -10,20 +10,47 @@ class TableUtils(abc.ABC):
     Attributes:
         conn (PostgresConnector): a psycopg2 connection to the database.
     """
-    
-    def __init__(self, conn: PostgresConnector):
+
+    def __init__(self, connector: PostgresConnector):
         """
         Constructor.
 
         Paratmeters:
-            conn (PostgresConnector): An open psycopg2 connection to the database.
+            conn (PostgresConnector): Connector to establish database connections.
         """
-        self.conn = conn
+        self.connector = connector
+        self.conn = self.__getConnection()
 
-        self.fetchKeyQuery = "SELECT {key} FROM {table} WHERE {column} = %s;"
-        self.fetchAllQuery = "SELECT * FROM {table};"
-        self.fetchOneQuery = "SELECT * FROM {table} WHERE {key} = %s;"
-        self.deleteQuery = "DELETE FROM {table} WHERE {key} = %s;"
+        # parameterezed strings for sql queries.
+        # insert/update query not general so derived class must define.
+        self.fetchKeyQuery = "SELECT {key} FROM public.{table} WHERE {column} = %s;"
+        self.fetchAllQuery = "SELECT * FROM public.{table};"
+        self.fetchOneQuery = "SELECT * FROM public.{table} WHERE {key} = %s;"
+        self.deleteQuery = "DELETE FROM public.{table} WHERE {key} = %s;"
+
+    def __getConnection(self):
+        """
+        Establish connection to database.
+
+        Returns:
+            Connection: A psycopg2 connection instance.
+        """
+        conn = self.connector.GetDatabaseConnection()
+        conn.autocommit = True
+        return conn
+
+    def getCursor(self):
+        """
+        Retrieve a cursor from the database connection.
+
+        Returns:
+            RealDictCursor: A psycopg2 cursor.
+        """
+        try:
+            self.conn.isolation_level
+        except OperationalError as err:
+            self.conn = self.__getConnection()
+        return self.conn.cursor(cursor_factory=extras.RealDictCursor)
 
     @abc.abstractmethod
     async def fetchKey(self, value):
@@ -32,6 +59,9 @@ class TableUtils(abc.ABC):
 
         Paremeters:
             value (Any): The entry's value for the specified column.
+
+        Raises:
+            HTTPException: If query fails or result is null.
 
         Returns:
             RealDictRow: The name of the primary key column and its value.
@@ -42,6 +72,9 @@ class TableUtils(abc.ABC):
     async def fetchAll(self):
         """
         Fetch all entries from the table.
+
+        Raises:
+            HTTPException: If query fails or result is null.
 
         Returns:
             list: A list of table objects (descended from BaseModel).
@@ -56,6 +89,9 @@ class TableUtils(abc.ABC):
         Parameters:
             key (int): The primary key for the row to fetch.
 
+        Raises:
+            HTTPException: If query fails or result is null.
+
         Returns:
             BaseModel: The row as a table object (descended from BaseModel).
         """
@@ -68,6 +104,9 @@ class TableUtils(abc.ABC):
 
         Parameters:
             model (BaseModel): The row to insert as a table_in model (descended from BaseModel).
+
+        Raises:
+            HTTPException: If query fails or result is null.
 
         Returns:
             RealDictRow: The name of the new row's primary key column and its value.
@@ -82,6 +121,9 @@ class TableUtils(abc.ABC):
         Parameters:
             updated (BaseModel): The updated model (descended from BaseModel).
 
+        Raises:
+            HTTPException: If query fails or result is null.
+
         Returns:
             BaseModel: The result of the update.
         """
@@ -94,6 +136,9 @@ class TableUtils(abc.ABC):
 
         Parameters:
             key (int): The primary key of the row to delete.
+
+        Raises:
+            HTTPException: If query fails or result is null.
 
         Returns:
             bool: True upon successful deletion, false otherwise.

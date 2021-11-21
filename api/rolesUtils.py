@@ -1,10 +1,9 @@
 from typing import List
-from psycopg2.extensions import SQL_IN
 from pydantic.tools import parse_obj_as
 from models import Roles, RolesIn
 from tableUtils import TableUtils
 from postgresconnector import PostgresConnector
-from psycopg2 import sql
+from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
 
 class RolesUtils(TableUtils):
@@ -15,11 +14,13 @@ class RolesUtils(TableUtils):
     def __init__(self, conn: PostgresConnector):
         super().__init__(conn)
 
-        self.insertQuery = ("INSERT INTO {table} ({columns}) "
+        # table dependent sql query strings.
+        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
             "VALUES (%s) RETURNING {key};")
 
-        self.updateQuery = "UPDATE {table} SET {name}=%s WHERE {key} = %s RETURNING *;"
+        self.updateQuery = "UPDATE public.{table} SET {name}=%s WHERE {key} = %s RETURNING *;"
 
+        # sequel statment objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
             table = sql.Identifier('roles'),
             key = sql.Identifier('id'),
@@ -47,42 +48,90 @@ class RolesUtils(TableUtils):
             key = sql.Identifier('id'))
 
     async def fetchKey(self, value: str):
-        self.conn.curr.execute(self.fetchKeySQL, (value,))
-        key = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchKeySQL, (value,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find role id')
+        cursor.close()
         return key
         
     async def fetchAll(self):
-        self.conn.curr.execute(self.fetchAllSQL)
-        roles = self.conn.curr.fetchall()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchAllSQL)
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        roles = cursor.fetchall()
+        if (roles == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find roles')
         models = parse_obj_as(List[Roles], roles)
+        cursor.close()
         return models
 
     async def fetchOne(self, key: int):
-        self.conn.curr.execute(self.fetchOneSQL, (key,))
-        role = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchOneSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        role = cursor.fetchone()
+        if (role == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find role')
         model = parse_obj_as(Roles, role)
+        cursor.close()
         return model
 
     async def insert(self, role: RolesIn):
-        self.conn.curr.execute(self.insertSQL, (role.name,))
-        self.conn.conn.commit()
-        key = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.insertSQL, (role.name,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to insert role')
+        cursor.close()
         return key
 
     async def update(self, updated: Roles):
-        self.conn.curr.execute(self.udpateSQL, (updated.name, updated.id, ))
-        self.conn.conn.commit()
-        result = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.udpateSQL, (updated.name, updated.id, ))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        result = cursor.fetchone()
+        if (result == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to update role')
         model = parse_obj_as(Roles, result)
+        cursor.close()
         return model
 
     async def delete(self, key: int):
-        self.conn.curr.execute(self.deleteSQL, (key,))
-        self.conn.conn.commit()
-        if (self.conn.curr.rowcount == 1):
-            return True
-        else:
-            return False
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.deleteSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        if (cursor.rowcount == 0):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to delete role')
+        cursor.close()
+        return True
 
     
     

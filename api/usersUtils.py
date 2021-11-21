@@ -3,7 +3,7 @@ from pydantic.tools import parse_obj_as
 from tableUtils import TableUtils
 from models import Users, UsersIn
 from postgresconnector import PostgresConnector
-from psycopg2 import sql
+from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
 
 class UsersUtils(TableUtils):
@@ -14,13 +14,15 @@ class UsersUtils(TableUtils):
     def __init__(self, conn: PostgresConnector):
         super().__init__(conn)
 
-        self.insertQuery = ("INSERT INTO {table} ({columns}) "
+        # table dependent sql query strings
+        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
             "VALUES (%s, %s, %s, %s,%s) RETURNING {key};")
 
-        self.updateQuery = ("UPDATE {table} SET "
+        self.updateQuery = ("UPDATE public.{table} SET "
             "{firstname}=%s, {lastname}=%s, {username}=%s, {rank}=%s, {role}=%s "
             "WHERE {key} = %s RETURNING *;")
 
+        # sql statement objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
             table = sql.Identifier('users'),
             key = sql.Identifier('uid'),
@@ -57,51 +59,99 @@ class UsersUtils(TableUtils):
             key = sql.Identifier('uid'))
 
     async def fetchKey(self, value: str):
-        self.conn.curr.execute(self.fetchKeySQL, (value,))
-        key = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchKeySQL, (value,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find user id')
+        cursor.close()
         return key
 
     async def fetchAll(self):
-        self.conn.curr.execute(self.fetchAllSQL)
-        users = self.conn.curr.fetchall()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchAllSQL)
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        users = cursor.fetchall()
+        if (users == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find users')
         models = parse_obj_as(List[Users], users)
+        cursor.close()
         return models 
 
     async def fetchOne(self, key: int):
-        self.conn.curr.execute(self.fetchOneSQL, (key,))
-        user = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.fetchOneSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        user = cursor.fetchone()
+        if (user == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find user')
         model = parse_obj_as(Users, user)
+        cursor.close()
         return model
 
     async def insert(self, user: UsersIn):
-        self.conn.curr.execute(self.insertSQL, (
-            user.firstname, 
-            user.lastname, 
-            user.username, 
-            user.rank, 
-            user.role,))
-        self.conn.conn.commit()
-        key = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.insertSQL, (
+                user.firstname, 
+                user.lastname, 
+                user.username, 
+                user.rank, 
+                user.role,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to insert user')
+        cursor.close()
         return key
 
     async def update(self, updated: Users):
-        self.conn.curr.execute(self.updateSQL, (
-            updated.firstname, 
-            updated.lastname, 
-            updated.username, 
-            updated.rank, 
-            updated.role, 
-            updated.uid, ))
-        self.conn.conn.commit()
-        result = self.conn.curr.fetchone()
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.updateSQL, (
+                updated.firstname, 
+                updated.lastname, 
+                updated.username, 
+                updated.rank, 
+                updated.role, 
+                updated.uid, ))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        result = cursor.fetchone()
+        if (result == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to update user')
         model = parse_obj_as(Users, result)
+        cursor.close()
         return model
 
     async def delete(self, key: int):
-        self.conn.curr.execute(self.deleteSQL, (key,))
-        self.conn.conn.commit()
-        if (self.conn.curr.rowcount == 1):
-            return True
-        else:
-            return False
+        cursor = self.getCursor()
+        try:
+            cursor.execute(self.deleteSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        if (cursor.rowcount == 0):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to delete user')
+        cursor.close()
+        return True
         

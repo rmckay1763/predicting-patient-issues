@@ -1,6 +1,0 @@
-fastapi==0.70.0
-passlib==1.7.4
-psycopg2==2.9.2
-pydantic==1.8.2
-PyJWT==2.3.0
-sshtunnel==0.4.0

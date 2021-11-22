@@ -49,7 +49,7 @@ async def fetchUserKey(username: str, uid=Depends(auth.auth_wrapper)):
     except BaseException as err:
         raise err
 
-@app.get("/users/fetchAll")
+@app.get("/users/fetchAll/")
 async def fetchAllUsers(uid=Depends(auth.auth_wrapper)):
     """
     Route to fetch all rows from the users table.
@@ -126,7 +126,7 @@ async def deleteUser(key: int, uid=Depends(auth.auth_wrapper)):
     except BaseException as err:
         raise err
 
-#################### routes to interact with the roles table ##################
+#################### routes to interact with the roles table #################
 
 @app.get("/roles/fetchKey/{name}")
 async def fetchRoleKey(name: str, uid=Depends(auth.auth_wrapper)):

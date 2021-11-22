@@ -1,0 +1,37 @@
+from fastapi.exceptions import HTTPException
+from models import LoginAttempt
+from userscrud import UsersCRUD
+from logincrud import LoginCRUD
+from authhandler import AuthHandler
+
+class LoginHandler():
+    """
+    Implements user logins sent from the front end.
+    """
+
+    def __init__(self, users: UsersCRUD, logins: LoginCRUD, auth: AuthHandler):
+        self.users = users
+        self.logins = logins
+        self.auth = auth
+
+    async def login(self, attempt: LoginAttempt):
+        """
+        Authenticates an attempted login.
+
+        Parameters:
+            attempt (LoginAttempt): The attempted login.
+            users (UsersUtils): To query users table.
+            auth (AuthHandler): Authentication handler.
+
+        Raises:
+            HTTPException: If authentication fails.
+
+        Returns:
+            token (str): Session token.
+        """
+        uid = await self.users.fetchKey(attempt.username)
+        actual = await self.logins.fetchOne(uid["uid"])
+        if (not self.auth.verify_password(attempt.password, actual.password)):
+            raise HTTPException(status_code=401, detail='Password is incorrect!')
+        token = self.auth.encode_token(actual.uid)
+        return {"token" : token}

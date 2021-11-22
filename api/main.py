@@ -4,9 +4,10 @@ from fastapi.applications import FastAPI
 from authhandler import AuthHandler
 import models as m
 from postgresconnector import PostgresConnector
-from rolesUtils import RolesUtils
-from usersUtils import UsersUtils
-from loginUtils import LoginUtils
+from rolescrud import RolesCRUD
+from userscrud import UsersCRUD
+from logincrud import LoginCRUD
+from loginhandler import LoginHandler
 
 # global variables
 app = FastAPI()
@@ -14,7 +15,6 @@ config = ConfigParser()
 config.read('settings.ini')
 config.sections()
 auth = AuthHandler(config)
-connector = PostgresConnector(config)
 
 @app.on_event("startup")
 def startup():
@@ -24,14 +24,17 @@ def startup():
     global roles
     global users
     global logins
-    roles = RolesUtils(connector)
-    users = UsersUtils(connector)
-    logins = LoginUtils(connector)
+    global loginHandler
+    connector = PostgresConnector(config)
+    roles = RolesCRUD(connector)
+    users = UsersCRUD(connector)
+    logins = LoginCRUD(connector)
+    loginHandler = LoginHandler(users, logins, auth)
 
 #################### routes to interact with the users table ##################
 
 @app.get("/users/fetchKey/{username}")
-async def fetchUserKey(username: str):
+async def fetchUserKey(username: str, uid=Depends(auth.auth_wrapper)):
     """
     Route to fetch the primary key of a user.
 
@@ -221,7 +224,6 @@ async def deleteRole(key: int, uid=Depends(auth.auth_wrapper)):
 #################### routes to interact with the login table ##################
 
 @app.get("/login/fetchOne/{key}")
-#async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
 async def fetchOneLogin(key: int, uid=Depends(auth.auth_wrapper)):
     """
     Route to fetch a login given the primary key.
@@ -300,6 +302,6 @@ async def login(attempt: m.LoginAttempt):
         token (str): Session token.
     """
     try:
-        return await logins.login(attempt, users, auth)
+        return await loginHandler.login(attempt)
     except BaseException as err:
         raise err

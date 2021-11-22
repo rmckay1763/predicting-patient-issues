@@ -1,13 +1,12 @@
-import psycopg2
-import psycopg2.extras
-import configparser
+from psycopg2 import connect, OperationalError
+from psycopg2.extras import RealDictCursor
 from sshtunnel import SSHTunnelForwarder
 
 class PostgresConnector:
     tunnel = None
-    curr = None
     config = None
     port = None
+    conn = None
 
     def __init__(self, config):
         self.config = config
@@ -34,8 +33,8 @@ class PostgresConnector:
                 'host': self.config['DatabaseSettings']['Endpoint'],
                 'port': self.port
             }
-            connection =  psycopg2.connect(**params)
-            return connection
+            self.conn = connect(**params)
+            self.conn.autocommit = True
         except BaseException as err:
             print(err)
             return None
@@ -51,5 +50,20 @@ class PostgresConnector:
         except BaseException as err:
             print(err)
             return None
+
+    def getCursor(self):
+        """
+        Retrieve a cursor from the database connection.
+
+        Returns:
+            RealDictCursor: A psycopg2 cursor.
+        """
+        if self.conn == None:
+            self.GetDatabaseConnection()
+        try:
+            self.conn.isolation_level
+        except OperationalError as err:
+            self.GetDatabaseConnection()
+        return self.conn.cursor(cursor_factory=RealDictCursor)
 
         

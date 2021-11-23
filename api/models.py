@@ -181,10 +181,19 @@ class UsersIn(BaseModel):
     rank: Optional[str] = ""
     role: Optional[int] = 0
 
-class Password(BaseModel):
+class Roles(BaseModel):
+    id: int
+    name: str
+
+class RolesIn(BaseModel):
+    name: str
+
+class Login(BaseModel):
     uid: int
     password: str
 
-class Login(BaseModel):
+class LoginAttempt(BaseModel):
     username: str
     password: str
+
+

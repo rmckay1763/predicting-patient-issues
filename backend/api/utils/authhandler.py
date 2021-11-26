@@ -1,5 +1,4 @@
 import jwt
-import configparser
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext

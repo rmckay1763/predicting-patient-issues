@@ -1,9 +1,9 @@
 from pydantic.tools import parse_obj_as
-from basecrud import BaseCRUD
-from models import Login
-from postgresconnector import PostgresConnector
 from fastapi import HTTPException
 from psycopg2 import sql, DatabaseError
+from api.userinfo.crud.basecrud import BaseCRUD
+from api.userinfo.models import Login
+from api.utils.postgresconnector import PostgresConnector
 
 class LoginCRUD(BaseCRUD):
     """

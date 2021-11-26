@@ -1,10 +1,11 @@
 from typing import List
 from pydantic.tools import parse_obj_as
-from basecrud import BaseCRUD
-from models import Users, UsersIn
-from postgresconnector import PostgresConnector
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
+from api.userinfo.crud.basecrud import BaseCRUD
+from api.userinfo.models import Users, UsersIn
+from api.utils.postgresconnector import PostgresConnector
+
 
 class UsersCRUD(BaseCRUD):
     """

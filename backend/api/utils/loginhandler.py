@@ -1,8 +1,8 @@
 from fastapi.exceptions import HTTPException
-from models import LoginAttempt
-from userscrud import UsersCRUD
-from logincrud import LoginCRUD
-from authhandler import AuthHandler
+from api.userinfo.models import LoginAttempt
+from api.userinfo.crud.userscrud import UsersCRUD
+from api.userinfo.crud.logincrud import LoginCRUD
+from api.utils.authhandler import AuthHandler
 
 class LoginHandler():
     """

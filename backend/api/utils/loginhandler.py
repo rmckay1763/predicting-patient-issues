@@ -6,7 +6,7 @@ from api.utils.authhandler import AuthHandler
 
 class LoginHandler():
     """
-    Implements user logins sent from the frontend.
+    Authenticates user logins sent from the frontend.
     """
 
     def __init__(self, users: UsersCRUD, logins: LoginCRUD, auth: AuthHandler):

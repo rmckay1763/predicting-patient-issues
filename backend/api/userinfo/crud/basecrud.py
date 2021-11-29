@@ -1,6 +1,6 @@
 import abc
 from pydantic import BaseModel
-from postgresconnector import PostgresConnector
+from api.utils.postgresconnector import PostgresConnector
 
 class BaseCRUD(abc.ABC):
     """

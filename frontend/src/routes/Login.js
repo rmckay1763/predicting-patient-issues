@@ -37,7 +37,7 @@ export default function Login() {
       <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Avatar />
         <Typography variant="h5">Associate Login</Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate method="post">
+        <Box component="form" onSubmit={handleSubmit} method="post">
           <TextField
             margin="normal"
             required

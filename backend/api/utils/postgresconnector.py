@@ -25,21 +25,18 @@ class PostgresConnector:
     # Opens database connection globally on given port
     # (must use OpenSSHTunnel if connecting remotely)
     def GetDatabaseConnection(self):
-        notConnected = True
-        while notConnected:
-            try:
-                params = {
-                    'database': self.config['DatabaseSettings']['Database'],
-                    'user': self.config['DatabaseSettings']['User'],
-                    'password': self.config['DatabaseSettings']['Password'],
-                    'host': self.config['DatabaseSettings']['Endpoint'],
-                    'port': self.port
-                }
-                self.conn = connect(**params)
-                self.conn.autocommit = True
-                notConnected = False
-            except BaseException as err:
-                print(err)
+        try:
+            params = {
+                'database': self.config['DatabaseSettings']['Database'],
+                'user': self.config['DatabaseSettings']['User'],
+                'password': self.config['DatabaseSettings']['Password'],
+                'host': self.config['DatabaseSettings']['Endpoint'],
+                'port': self.port
+            }
+            self.conn = connect(**params)
+            self.conn.autocommit = True
+        except BaseException as err:
+            print(err)
 
     # Opens SSH Tunnel globally to establish database connection remotely
     def OpenSSHTunnel(self):
@@ -60,7 +57,7 @@ class PostgresConnector:
         Returns:
             RealDictCursor: A psycopg2 cursor.
         """
-        if self.conn == None:
+        while self.conn == None or self.conn.closed:
             self.GetDatabaseConnection()
         try:
             self.conn.isolation_level

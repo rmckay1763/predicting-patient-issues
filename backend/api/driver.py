@@ -51,7 +51,7 @@ class APIDriver:
         cmd = ("gunicorn main:app "
             "--workers 4 "
             "--worker-class uvicorn.workers.UvicornWorker "
-            "--bind 127.0.0.1:8000 "
+            "--bind 0.0.0.0:8000 "
             "--daemon")
         cmds = shlex.split(cmd)
         subprocess.Popen(cmds, start_new_session=True)
@@ -61,4 +61,4 @@ class APIDriver:
         '''
         Start the service in development mode (reload mode)
         '''
-        uvicorn.run("main:app", host='127.0.0.1', port=8000, reload=True)
+        uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)

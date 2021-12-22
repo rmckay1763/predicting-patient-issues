@@ -56,7 +56,7 @@ The main.py file located in backend/ will start the service.
 *This is the recommend method for application development*
 
 **Synopsis**
-The dockerized application provides a completely containerized and independent environment to develop and test code.
+The dockerized application provides a completely containerized and isolated environment to develop and test code.
 
 **Prerequisites**
 - Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)

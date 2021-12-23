@@ -67,7 +67,8 @@ The dockerized application provides a completely containerized and isolated envi
     - set `[DatabaseSettings]:Endpoint = postgres`
     - set `[SSHTunnelSettings]:UseTunnel = False`
 - Verify `backend/main.py` set to start app in development mode
-- Verify existence of `frontend/.env` file
+- Verify `backend/dependencies` up to date
+- Verify `frontend/.env` up to date
 
 **Operation**
 - Navigate to project root directory

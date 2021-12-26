@@ -15,7 +15,7 @@ services:
       - ./postgres/data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
   
-  # backend fastapi service container
+  # backend fastapi container
   backend:
     build: ./backend
     image: backend

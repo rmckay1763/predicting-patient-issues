@@ -6,7 +6,7 @@ from api.userinfo.models import Patient, PatientIn
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
-class PatientCrud(BaseCRUD):
+class PatientCRUD(BaseCRUD):
     """
     Abstracts interacting with the patient table from the userinfo database.
     """
@@ -43,7 +43,7 @@ class PatientCrud(BaseCRUD):
                 sql.Identifier('gender'),
                 sql.Identifier('status')]))
 
-        self.udpateSQL = sql.SQL(self.updateQuery).format(
+        self.updateSQL = sql.SQL(self.updateQuery).format(
             table = sql.Identifier('patient'),
             status = sql.Identifier('status'),
             key = sql.Identifier('pid'))
@@ -118,7 +118,7 @@ class PatientCrud(BaseCRUD):
     async def update(self, updated: Patient):
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.updateSQL, (updated.status,))
+            cursor.execute(self.updateSQL, (updated.status, updated.pid,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

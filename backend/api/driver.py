@@ -6,9 +6,11 @@ from api.utils.postgresconnector import PostgresConnector
 from api.userinfo.crud.userscrud import UsersCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolescrud import RolesCRUD
+from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.router.usersrouter import UsersRouter
 from api.userinfo.router.rolesrouter import RolesRouter
 from api.userinfo.router.loginrouter import LoginRouter
+from api.userinfo.router.patientrouter import PatientRouter
 from api.utils.loginhandler import LoginHandler
 import uvicorn
 import subprocess
@@ -31,14 +33,17 @@ class APIDriver:
         users = UsersCRUD(connector)
         roles = RolesCRUD(connector)
         logins = LoginCRUD(connector)
+        patients = PatientCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
         usersRouter = UsersRouter(users)
         rolesRouter = RolesRouter(roles)
         loginRouter = LoginRouter(logins)
+        patientRouter = PatientRouter(patients)
         api = MainAPI(loginHandler)
         api.addRouter(usersRouter.router)
         api.addRouter(rolesRouter.router)
         api.addRouter(loginRouter.router)
+        api.addRouter(patientRouter.router)
         return api.app
 
     @staticmethod

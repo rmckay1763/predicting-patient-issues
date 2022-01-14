@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS public.roles (
 	id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	name VARCHAR(32) UNIQUE NOT NULL,
-	PRIMARY KEY(id)
+	name VARCHAR(32) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.users (
@@ -16,14 +15,6 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE TABLE IF NOT EXISTS public.login (
 	uid INT PRIMARY KEY REFERENCES public.users(uid),
 	password VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS public.patient (
-	pid INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	firstname VARCHAR(64) NOT NULL,
-	lastname VARCHAR(64) NOT NULL,
-	condition VARCHAR(64) NOT NULL DEFAULT 'unobserved' 
-		CHECK (condition IN ('stable', 'critical', 'unobserved'))
 );
 
 CREATE TABLE IF NOT EXISTS public.patient (

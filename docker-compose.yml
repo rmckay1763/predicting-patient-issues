@@ -33,5 +33,5 @@ services:
     ports:
       - "80:5000"
     volumes:
-      - "./frontend:/app/frontend"
+      - "./frontend/src:/app/frontend/src"
   

@@ -5,10 +5,10 @@ FROM node:16
 WORKDIR /app/frontend
 
 # add dependencies files
-COPY package*.json ./
+COPY package.json ./
 
 # install dependencies
-RUN npm install -s
+RUN npm install
 
 # add source code
 COPY . .

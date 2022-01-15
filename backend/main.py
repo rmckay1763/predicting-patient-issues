@@ -4,8 +4,8 @@ from api.driver import APIDriver
 app = APIDriver.getInstance()
 
 # start api in development mode
-# if __name__ == "__main__":
-#     APIDriver.startDevMode()
+if __name__ == "__main__":
+    APIDriver.startDevMode()
 
 # start api in deployment mode.
 # APIDriver.start()

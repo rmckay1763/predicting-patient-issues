@@ -48,3 +48,24 @@ class LoginAttempt(BaseModel):
     '''
     username: str
     password: str
+
+class Patient(BaseModel):
+    '''
+    Represents an entry in the patient table.
+    '''
+    pid: int
+    firstname: str
+    lastname: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    status: str
+
+class PatientIn(BaseModel):
+    '''
+    Represents a new entry in the patient table.
+    '''
+    firstname: str
+    lastname: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    status = "unobserved"

@@ -48,3 +48,31 @@ Refer to the router classes located at backend/api/[database_name]/routers/ for 
 
 The main.py file located in backend/ will start the service.
     * Uncomment the lines to start the service in the desired mode (development or deployment).
+
+---
+
+#### Dockerized Development Environment
+
+*This is the recommend method for application development*
+
+**Synopsis**
+The dockerized application provides a completely containerized and isolated environment to develop and test code.
+
+**Prerequisites**
+- Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
+- Docker Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
+
+**Preparation**
+- Modify `backend/settings.ini`:
+    - set `[DatabaseSettings]:Endpoint = postgres`
+    - set `[SSHTunnelSettings]:UseTunnel = False`
+- Verify `backend/main.py` set to start app in development mode
+- Verify `backend/dependencies` up to date
+- Verify `frontend/.env` up to date
+
+**Operation**
+- Navigate to project root directory
+- Run: `docker-compose up` to start the app
+- Navigate browser to [http://localhost](http://localhost) to access app
+- Stop app with `ctrl + c` 
+

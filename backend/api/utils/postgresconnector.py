@@ -37,7 +37,6 @@ class PostgresConnector:
             self.conn.autocommit = True
         except BaseException as err:
             print(err)
-            return None
 
     # Opens SSH Tunnel globally to establish database connection remotely
     def OpenSSHTunnel(self):
@@ -58,7 +57,7 @@ class PostgresConnector:
         Returns:
             RealDictCursor: A psycopg2 cursor.
         """
-        if self.conn == None:
+        while self.conn == None or self.conn.closed:
             self.GetDatabaseConnection()
         try:
             self.conn.isolation_level

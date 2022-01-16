@@ -62,17 +62,37 @@ The dockerized application provides a completely containerized and isolated envi
 - Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 - Docker Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
-**Preparation**
-- Modify `backend/settings.ini`:
-    - set `[DatabaseSettings]:Endpoint = postgres`
-    - set `[SSHTunnelSettings]:UseTunnel = False`
+**Configuration**
+
+- Use the following configuration files for development:
+
+    - `backend/settings.ini`
+        ```
+        [DatabaseSettings]
+        Endpoint = postgres
+        Port = 5432
+        User = postgres
+        Password = password
+        Database = userinfo
+
+        [SSHTunnelSettings]
+        UseTunnel = False 
+
+        [AuthSettings]
+        Secret = SECRET
+    - `frontend/.env`
+        ```
+        PORT=5000
+        REACT_APP_API_BASE_URL=http://localhost:8000
+    - `postgres/.env`
+        ```
+        DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
 - Verify `backend/main.py` set to start app in development mode
-- Verify `backend/dependencies` up to date
-- Verify `frontend/.env` up to date
+- Verify `backend/requirements.txt` up to date
 
 **Operation**
 - Navigate to project root directory
 - Run: `docker-compose up` to start the app
 - Navigate browser to [http://localhost](http://localhost) to access app
-- Stop app with `ctrl + c` 
+- Run: `docker-compose down` in a new terminal to stop the app
 

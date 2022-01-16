@@ -111,6 +111,11 @@ The dockerized application provides a completely containerized and isolated envi
 - Set `backend/main.py` to start app in development mode
 - Generate/update `backend/requirements.txt` [goto](#requirements-for-python-development)
 
+##### Database Migrations
+- The `migration` container will run `.sql` scripts on `docker-compose up`
+- Place `.sql` scripts in `postgres/db/migrations`
+- Refer to dbmate [documentation](https://github.com/amacneil/dbmate#creating-migrations) for script format
+
 **Operation**
 - Navigate to project root directory
 - Run: `docker-compose up` to start the app

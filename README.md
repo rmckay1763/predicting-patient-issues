@@ -1,11 +1,26 @@
 # Predicting Patient Issues
 
+#### Contents
+
+- [Backend](#backend)
+- [Frontend](#frontend)
+- [Docker](#dockerized-development-environment)
+
+---
+
+#### Backend
+
+##### Requirements for Python development
+
+- Python3
+- pip3
+
 For dependency installation, use the pipreqs module to generate a requirements.txt
 
 Use this command to install pipreqs:
 `pip3 install pipreqs`
 
-Once the pipreqs module is installed, move the current working directory to /api and generate the requirements.txt by:
+Once the pipreqs module is installed, move the current working directory to `/backend` and generate the requirements.txt by:
 `python3 -m pipreqs.pipreqs .`
 
 To install modules from requirements.txt, run this command:
@@ -13,7 +28,26 @@ To install modules from requirements.txt, run this command:
 
 This will install all necessary Python modules to run the backend service. Make sure to do this process with each fetch/pull.
 
+##### FastAPI for userinfo database
+
+The api provides routes to interact with each table in the userinfo database.
+- Each table has a class that implements basic CRUD operations.
+- Each table has a class that implements an APIRouter for the table routes.
+- The class for the main api adds the APIRouters to the FastAPI.
+
+Refer to the router classes located at `backend/api/[database_name]/routers/` for available routes.
+
+Operation:
+- Change working direction to `/backend`
+- Uncomment lines in `main.py` to start in desired mode
+- Run `python3 main.py` to start the service
+- Stop the service with `ctrl + c`
+
+[back to contents](#contents)
+
 ---
+
+#### Frontend
 
 ##### Requirements for ReactJS development:
 
@@ -34,20 +68,7 @@ Start the development server: `npm start`
 
 The development server should be accessible at [http://localhost:3000](http://localhost:3000).
 
-##### FastAPI for userinfo database
-
-Update dependencies if necessary (see above).
-
-The api provides routes to interact with each table in the userinfo database.
-
-    * Each table has a class that implements basic CRUD operations.
-    * Each table has a class that implements an APIRouter for the table routes.
-    * The class for the main api adds the APIRouters to the FastAPI.
-
-Refer to the router classes located at backend/api/[database_name]/routers/ for available routes.
-
-The main.py file located in backend/ will start the service.
-    * Uncomment the lines to start the service in the desired mode (development or deployment).
+[back to contents](#contents)
 
 ---
 
@@ -56,23 +77,53 @@ The main.py file located in backend/ will start the service.
 *This is the recommend method for application development*
 
 **Synopsis**
+
 The dockerized application provides a completely containerized and isolated environment to develop and test code.
 
 **Prerequisites**
+
 - Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 - Docker Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
-**Preparation**
-- Modify `backend/settings.ini`:
-    - set `[DatabaseSettings]:Endpoint = postgres`
-    - set `[SSHTunnelSettings]:UseTunnel = False`
-- Verify `backend/main.py` set to start app in development mode
-- Verify `backend/dependencies` up to date
-- Verify `frontend/.env` up to date
+**Configuration**
+
+- Use the following configuration files for development:
+
+    - `backend/settings.ini`
+        ```
+        [DatabaseSettings]
+        Endpoint = postgres
+        Port = 5432
+        User = postgres
+        Password = password
+        Database = userinfo
+
+        [SSHTunnelSettings]
+        UseTunnel = False 
+
+        [AuthSettings]
+        Secret = SECRET
+    - `frontend/.env`
+        ```
+        PORT=5000
+        REACT_APP_API_BASE_URL=http://localhost:8000
+    - `postgres/.env`
+        ```
+        DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
+- Set `backend/main.py` to start app in development mode
+- Generate/update `backend/requirements.txt` [goto](#requirements-for-python-development)
+
+**Database Migrations**
+
+- The `migration` container will run `.sql` scripts on `docker-compose up`
+- Place `.sql` scripts in `postgres/db/migrations`
+- Refer to dbmate [documentation](https://github.com/amacneil/dbmate#creating-migrations) for script format
 
 **Operation**
+
 - Navigate to project root directory
 - Run: `docker-compose up` to start the app
 - Navigate browser to [http://localhost](http://localhost) to access app
-- Stop app with `ctrl + c` 
+- Run: `docker-compose down` in a new terminal to stop the app
 
+[back to contents](#contents)

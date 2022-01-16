@@ -12,8 +12,14 @@ services:
     expose:
       - "5432"
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+
+  # database migration container
+  migration:
+    build: ./postgres
+    image: migration
+    depends_on:
+      - "postgres"
   
   # backend fastapi container
   backend:
@@ -21,8 +27,6 @@ services:
     image: backend
     ports:
       - "8000:8000"
-    depends_on:
-      - "postgres"
     volumes:
       - "./backend:/app/backend"
   
@@ -34,4 +38,7 @@ services:
       - "80:5000"
     volumes:
       - "./frontend/src:/app/frontend/src"
-  
+
+# internal volumes
+volumes:
+  postgres-data:

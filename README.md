@@ -1,6 +1,6 @@
 # Predicting Patient Issues
 
-#### Contents ####
+#### Contents
 
 - [Backend](#backend)
 - [Frontend](#frontend)
@@ -8,9 +8,9 @@
 
 ---
 
-#### Backend ####
+#### Backend
 
-##### Requirements for Python development #####
+##### Requirements for Python development
 
 - Python3
 - pip3
@@ -47,7 +47,7 @@ Operation:
 
 ---
 
-#### Frontend ####
+#### Frontend
 
 ##### Requirements for ReactJS development:
 
@@ -77,9 +77,11 @@ The development server should be accessible at [http://localhost:3000](http://lo
 *This is the recommend method for application development*
 
 **Synopsis**
+
 The dockerized application provides a completely containerized and isolated environment to develop and test code.
 
 **Prerequisites**
+
 - Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 - Docker Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
@@ -111,12 +113,14 @@ The dockerized application provides a completely containerized and isolated envi
 - Set `backend/main.py` to start app in development mode
 - Generate/update `backend/requirements.txt` [goto](#requirements-for-python-development)
 
-##### Database Migrations #####
+**Database Migrations**
+
 - The `migration` container will run `.sql` scripts on `docker-compose up`
 - Place `.sql` scripts in `postgres/db/migrations`
 - Refer to dbmate [documentation](https://github.com/amacneil/dbmate#creating-migrations) for script format
 
 **Operation**
+
 - Navigate to project root directory
 - Run: `docker-compose up` to start the app
 - Navigate browser to [http://localhost](http://localhost) to access app

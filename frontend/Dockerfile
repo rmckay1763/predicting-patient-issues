@@ -1,3 +1,5 @@
+# docker build file for frontend development
+
 # base nodejs image
 FROM node:16
 

@@ -1,0 +1,38 @@
+# docker build file for frontend production 
+
+################ first stage ##############
+
+# base nodejs image
+FROM node:16 AS builder
+
+# set frontend directory
+WORKDIR /app/frontend
+
+# add dependencies files
+COPY package.json ./
+
+# install dependencies
+RUN npm install
+
+# add source code
+COPY . .
+
+# create production build
+RUN npm run build
+
+############### second stage ################
+
+# nginx server for production
+FROM nginx:latest
+
+# remove default conf files
+RUN rm -f /etc/nginx/conf.d/*
+
+# add conf file for server
+COPY ./nginx/server.conf /etc/nginx/conf.d
+
+# add production build from builder stage
+COPY --from=builder /app/frontend/build /usr/share/nginx/html
+
+# expose http port
+EXPOSE 80

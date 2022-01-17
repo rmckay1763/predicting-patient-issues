@@ -1,3 +1,5 @@
+# docker build file for database migrations
+
 # base image for dbmate
 FROM amacneil/dbmate:latest
 

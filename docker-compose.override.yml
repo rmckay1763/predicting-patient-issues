@@ -1,0 +1,26 @@
+# override compose file for development
+
+version: "3.9"
+services:
+  
+  # backend fastapi container
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./backend:/app/backend"
+  
+  # frontend node js container
+  frontend:
+    build: ./frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "80:5000"
+    volumes:
+      - "./frontend/src:/app/frontend/src"
+
+# internal volumes
+volumes:
+  postgres-data:

@@ -1,0 +1,25 @@
+# docker build file for backend production
+
+# base python image
+FROM python:3.9
+
+# set backend directory
+WORKDIR /app/backend
+
+# add dependencies file
+COPY requirements.txt .
+
+# install dependencies
+RUN \
+    pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir --upgrade -r requirements.txt && \
+    pip3 install "uvicorn[standard]" gunicorn
+
+# add source code
+COPY . .
+
+# expose port for api
+EXPOSE 8000
+
+# start api service
+CMD ["gunicorn", "main:app", "--workers", "2", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]

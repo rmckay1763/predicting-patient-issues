@@ -1,3 +1,5 @@
+# docker build file for backend development
+
 # base python image
 FROM python:3.9
 
@@ -17,4 +19,4 @@ COPY . .
 EXPOSE 8000
 
 # start api service
-CMD [ "python3", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

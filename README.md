@@ -110,7 +110,6 @@ The dockerized application provides a completely containerized and isolated envi
     - `postgres/.env`
         ```
         DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
-- Set `backend/main.py` to start app in development mode
 - Generate/update `backend/requirements.txt` [goto](#requirements-for-python-development)
 
 **Database Migrations**

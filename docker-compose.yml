@@ -6,6 +6,7 @@ services:
   # userinfo database container
   postgres:
     image: postgres:14
+    container_name: postgres
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -20,16 +21,19 @@ services:
   migration:
     build: ./postgres
     image: migration
+    container_name: migration
     depends_on:
       - "postgres"
   
   # backend fastapi container
   backend:
     image: backend
+    container_name: backend
   
   # frontend node js container
   frontend:
     image: frontend
+    container_name: frontend
 
 # internal volumes
 volumes:

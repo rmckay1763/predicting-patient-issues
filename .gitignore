@@ -30,3 +30,6 @@ settings.ini
 .env
 requirements.txt
 __pycache__
+
+# vscode
+.vscode/

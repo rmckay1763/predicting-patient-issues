@@ -24,16 +24,6 @@ services:
     container_name: migration
     depends_on:
       - "postgres"
-  
-  # backend fastapi container
-  backend:
-    image: backend
-    container_name: backend
-  
-  # frontend node js container
-  frontend:
-    image: frontend
-    container_name: frontend
 
 # internal volumes
 volumes:

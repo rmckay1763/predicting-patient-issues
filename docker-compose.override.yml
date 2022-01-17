@@ -6,6 +6,8 @@ services:
   # backend fastapi container
   backend:
     build: ./backend
+    image: backend-dev
+    container_name: backend-dev
     ports:
       - "8000:8000"
     volumes:
@@ -14,13 +16,11 @@ services:
   # frontend node js container
   frontend:
     build: ./frontend
+    image: frontend-dev
+    container_name: frontend-dev
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
       - "80:5000"
     volumes:
       - "./frontend/src:/app/frontend/src"
-
-# internal volumes
-volumes:
-  postgres-data:

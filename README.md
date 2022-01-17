@@ -121,7 +121,8 @@ The dockerized application provides a completely containerized and isolated envi
 **Operation**
 
 - Navigate to project root directory
-- Run: `docker-compose up` to start the app
+- Run: `docker-compose up` to start the app in development mode
+- RUN: `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up` for production mode
 - Navigate browser to [http://localhost](http://localhost) to access app
 - Run: `docker-compose down` in a new terminal to stop the app
 

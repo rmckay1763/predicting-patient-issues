@@ -10,9 +10,14 @@ class MainAPI:
     def __init__(self, loginHandler: LoginHandler):
         self.loginHandler = loginHandler
         self.app = FastAPI()
+        self.origins = [
+            "http://localhost",
+            "http://localhost:8000",
+            "http://localhost:5000",
+        ]
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins = ['*'],
+            allow_origins = self.origins,
             allow_credentials = True,
             allow_methods = ['*'],
             allow_headers = ['*']

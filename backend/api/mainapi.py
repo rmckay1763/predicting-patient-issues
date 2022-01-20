@@ -14,6 +14,7 @@ class MainAPI:
             "http://localhost",
             "http://localhost:8000",
             "http://localhost:5000",
+            "http://04.csc.tntech.edu"
         ]
         self.app.add_middleware(
             CORSMiddleware,

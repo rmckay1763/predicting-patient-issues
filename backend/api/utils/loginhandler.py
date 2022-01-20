@@ -1,6 +1,6 @@
 from fastapi.exceptions import HTTPException
 from api.userinfo.models import LoginAttempt
-from api.userinfo.crud.userscrud import UsersCRUD
+from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.utils.authhandler import AuthHandler
 
@@ -9,7 +9,7 @@ class LoginHandler():
     Authenticates user logins sent from the frontend.
     """
 
-    def __init__(self, users: UsersCRUD, logins: LoginCRUD, auth: AuthHandler):
+    def __init__(self, users: UserCRUD, logins: LoginCRUD, auth: AuthHandler):
         self.users = users
         self.logins = logins
         self.auth = auth

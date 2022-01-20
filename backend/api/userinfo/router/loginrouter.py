@@ -18,8 +18,9 @@ class LoginRouter():
         '''
         self.logins = logins
         self.router = APIRouter(
-            prefix="/login",
-            dependencies=[Depends(auth.auth_wrapper)])
+            prefix="/api/login",
+            dependencies=[Depends(auth.auth_wrapper)]
+        )
         self.__addRoutes__()
 
     def __addRoutes__(self):

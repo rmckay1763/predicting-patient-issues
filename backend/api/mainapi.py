@@ -22,7 +22,7 @@ class MainAPI:
             allow_methods = ['*'],
             allow_headers = ['*']
         )
-        self.app.post("/login/")(self.login)
+        self.app.post("/api/login/")(self.login)
 
     def addRouter(self, router: APIRouter):
         '''

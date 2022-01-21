@@ -1,9 +1,9 @@
 import axios from "../config/api";
 
 export const Login = (username, password) => {
-  return axios.post("login/", { username: username, password: password });
+  return axios.post("api/login/", { username: username, password: password });
 };
 
 export const GetAllPatients = (token) => {
-  return axios.get("patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
+  return axios.get("api/patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 };

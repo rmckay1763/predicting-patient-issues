@@ -38,7 +38,7 @@ The api provides routes to interact with each table in the userinfo database.
 Refer to the router classes located at `backend/api/[database_name]/routers/` for available routes.
 
 Operation:
-- Change working direction to `/backend`
+- Change working directory to `/backend`
 - Uncomment lines in `main.py` to start in desired mode
 - Run `python3 main.py` to start the service
 - Stop the service with `ctrl + c`

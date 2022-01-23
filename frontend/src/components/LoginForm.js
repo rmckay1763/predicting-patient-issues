@@ -6,6 +6,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import {Colors} from "../config/colors";
+
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +39,7 @@ export default function LoginForm() {
     <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <Avatar />
       <Typography variant="h5">Associate Login</Typography>
-      <Box component="form" onSubmit={handleSubmit} method="post">
+      <Box component="form" onSubmit={handleSubmit} method="post" >
         <TextField
           margin="normal"
           required
@@ -62,7 +64,7 @@ export default function LoginForm() {
           error={error}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, bgcolor: Colors.primary }}>
           Login
         </Button>
       </Box>

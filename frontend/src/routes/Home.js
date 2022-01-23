@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { GetAllPatients } from "../controllers/APIController";
 
+import {Colors} from "../config/colors";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -40,12 +42,12 @@ export default function Home() {
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
-            <TableRow>
-              <TableCell>First name</TableCell>
-              <TableCell>Last name</TableCell>
-              <TableCell>Age</TableCell>
-              <TableCell>Gender</TableCell>
-              <TableCell>Status</TableCell>
+            <TableRow sx={{bgcolor: Colors.primary,}}>
+              <TableCell sx={{color: '#fff'}}>First name</TableCell>
+              <TableCell sx={{color: '#fff'}}>Last name</TableCell>
+              <TableCell sx={{color: '#fff'}}>Age</TableCell>
+              <TableCell sx={{color: '#fff'}}>Gender</TableCell>
+              <TableCell sx={{color: '#fff'}}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

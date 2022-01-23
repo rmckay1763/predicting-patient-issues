@@ -6,7 +6,7 @@ services:
   # backend fastapi container
   backend:
     build: ./backend
-    image: backend-dev
+    image: rmckay1763/backend-dev
     container_name: backend-dev
     ports:
       - "8000:8000"
@@ -16,11 +16,11 @@ services:
   # frontend node js container
   frontend:
     build: ./frontend
-    image: frontend-dev
+    image: rmckay1763/frontend-dev
     container_name: frontend-dev
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - "80:5000"
+      - "5000:5000"
     volumes:
       - "./frontend/src:/app/frontend/src"

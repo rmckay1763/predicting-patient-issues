@@ -20,7 +20,7 @@ services:
   # database migration container
   migration:
     build: ./postgres
-    image: migration
+    image: rmckay1763/migration
     container_name: migration
     depends_on:
       - "postgres"

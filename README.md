@@ -88,7 +88,14 @@ The dockerized application provides a completely containerized and isolated envi
 **Configuration**
 
 Use the following configuration files for development:
+(all paths relative to project root directory)
 
+- `.env`
+    ```
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    POSTGRES_DB=userinfo
+    ```
 - `backend/settings.ini`
     ```
     [DatabaseSettings]

@@ -33,6 +33,18 @@ const patients = [
     condition: "Minor",
     description: "Minor dehydration.",
   },
+  {
+    id: 5,
+    name: "Oprah Winfrey",
+    condition: "Minor",
+    description: "Minor dehydration.",
+  },
+  {
+    id: 7,
+    name: "Oprah Winfrey",
+    condition: "Minor",
+    description: "Minor dehydration.",
+  }
 ];
 
 export default function App() {

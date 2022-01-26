@@ -21,6 +21,8 @@ import IconButton from '@mui/material/IconButton';
 import { Colors } from "../config/colors";
 import { AppBar, Toolbar } from "@mui/material";
 import { CssBaseline } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 import Home from "../routes/Home";
 import EditProfileForm from "../components/EditProfileForm"
@@ -113,40 +115,44 @@ export const SplitPaneTop = (props) => {
     return (
         <div className="split-pane-top" ref={topRef} style={{ overflowX: "hidden", overflowY: "scroll" }}>
             <Grid container spacing={12} justify="center" sx={{ maxWidth: 450, minHeight: 2000 }} >
-            {patients.map((el, ) => {
-                return (
-                    <Grid item xs={12}>
-                    <Card sx={{ minWidth: 275, maxWidth: 275 }}>
-                        <CardContent>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                <WarningIcon />
-                                <u>
-                                    <strong>
-                                        Condition Shift: {el.condition}
-                                    </strong>
-                                </u>
-                                <IconButton>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Typography>
-                            <Divider />
-                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                Patient Name: {el.name}
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>
-                                    {el.description}
-                                </strong>
-                            </Typography>
-                        </CardContent>
-                        <Divider />
-                        <CardActions style={{ float: "right" }}>
-                            <Button size="small">Patient Profile</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-                );
+                {patients.map((el,) => {
+                    return (
+                        <Grid item xs={12}>
+                            <Card sx={{ minWidth: 275, maxWidth: 275 }}>
+                                <CardContent>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        <WarningIcon />
+                                        <u>
+                                            <strong>
+                                                Condition Shift: {el.condition}
+                                            </strong>
+                                        </u>
+                                        <IconButton>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </Typography>
+                                    <Divider />
+                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                        Patient Name: {el.name}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>
+                                            {el.description}
+                                        </strong>
+                                    </Typography>
+                                </CardContent>
+                                <Divider />
+                                <CardActions style={{ float: "right" }}>
+                                    <Button size="small">Patient Profile</Button>
+                                </CardActions>
+                            </Card>
+                            <Box sx={{ width: 275, height: 15 }}></Box>
+                        </Grid>
+                    );
                 })}
+                <Grid item xs={12}>
+                    <Box sx={{ width: 275, height: 200 }}></Box>
+                </Grid>
             </Grid>
         </div>
     );
@@ -176,13 +182,32 @@ export const SplitPaneLeft = (props) => {
         topRef.current.style.maxWidth = clientWidth + "px";
     }, [clientWidth]);
 
+        
+    const handleChange = (event) => {
+        
+      };   
+
+
     return (<div {...props} className="split-pane-left" ref={topRef}>
         <AppBar position="static" sx={{ maxHeight: 56.8, borderRadius: 1, bgcolor: Colors.primary }}>
             <CssBaseline />
             <Toolbar>
-                <Typography>
+                <Typography sx={{ paddingRight: 10 }}>
                     Notifications
                 </Typography>
+                <FormControl variant="filled" size="small" sx={{ width: 200 }}>
+                    <InputLabel id="filter-notification-label">Filter By</InputLabel>
+                    <Select
+                        labelId="filter-notification-label"
+                        id="filter-notifcation-select"
+                        label="Filter By"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={"Condition Shift"}>Condition Shift</MenuItem>
+                        <MenuItem value={"Vital Activity"}>Vital Activity</MenuItem>
+                    </Select>
+                </FormControl>
+
             </Toolbar>
         </AppBar>
         <SplitPane className="split-pane-col">
@@ -193,7 +218,7 @@ export const SplitPaneLeft = (props) => {
 
 export const SplitPaneRightPatients = (props) => {
     useEffect(() => {
-        document.title = "PPCD - Home";  
+        document.title = "PPCD - Home";
     }, []);
 
     return (

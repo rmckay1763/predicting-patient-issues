@@ -14,15 +14,20 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export default function Home() {
-  const { token, setToken } = useAuth();
+  const { useToken, useUser } = useAuth();
+  const [token, setToken] = useToken;
+  const [user, setUser] = useUser;
   const [patients, setPatients] = useState([]);
   const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem("uid");
+    localStorage.removeItem("user");
     setToken(null);
+    setUser(null);
     return navigate("/login");
   };
+
 
   const getPatients = async () => {
     try {
@@ -34,11 +39,17 @@ export default function Home() {
     }
   };
 
+  // for testing
+  const showUser = () => {
+    console.log(user);
+  }
+
   return (
     <div>
       <h1>Home</h1>
       <button onClick={logout}>Logout</button>
       <button onClick={getPatients}>Get Patients</button>
+      <button onClick={showUser}>Show User</button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>

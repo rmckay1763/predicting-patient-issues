@@ -4,11 +4,12 @@ import Login from "./routes/Login";
 import { AuthProvider, AuthRoute, GenericRoute } from "./contexts/AuthContext";
 
 let token = localStorage.getItem("uid");
+let user = JSON.parse(localStorage.getItem("user"));
 
 export default function App() {
   return (
     <Router>
-      <AuthProvider userToken={token}>
+      <AuthProvider token={token} user={user}>
         <Routes>
           <Route
             exact

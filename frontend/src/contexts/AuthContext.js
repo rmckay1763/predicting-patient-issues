@@ -4,10 +4,16 @@ import PropTypes from "prop-types";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ userToken, children }) => {
-  let [token, setToken] = useState(userToken);
+export const AuthProvider = props => {
+  let [token, setToken] = useState(props.token);
+  let [user, setUser] = useState(props.user);
 
-  return <AuthContext.Provider value={{ token, setToken }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider 
+      value={{ useToken: [token, setToken], useUser: [user, setUser] }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
 };
 
 AuthProvider.propTypes = {
@@ -18,13 +24,15 @@ AuthProvider.propTypes = {
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthRoute = ({ children }) => {
-  let auth = useAuth();
+  let { useToken, } = useAuth();
+  let [token,] = useToken;
 
-  return auth.token ? children : <Navigate to="/login" />;
+  return token ? children : <Navigate to="/login" />;
 };
 
 export const GenericRoute = ({ children }) => {
-  let auth = useAuth();
+  let { useToken, } = useAuth();
+  let [token,] = useToken;
 
-  return auth.token ? <Navigate to="/" /> : children;
+  return token ? <Navigate to="/" /> : children;
 };

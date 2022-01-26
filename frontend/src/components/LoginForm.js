@@ -12,7 +12,10 @@ export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const { setToken } = useAuth();
+  const { useToken, useUser } = useAuth();
+  const [, setToken] = useToken;
+  const [, setUser] = useUser;
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,10 +33,14 @@ export default function LoginForm() {
 
   const setProfile = async (response) => {
     let token = response.data.token;
+    let user = response.data.user;
     setToken(token);
+    setUser(user);
     localStorage.setItem("uid", token);
+    localStorage.setItem("user", JSON.stringify(user));
     return navigate("/");
   };
+
 
   return (
     <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>

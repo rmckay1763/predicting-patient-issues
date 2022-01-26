@@ -7,3 +7,7 @@ export const Login = (username, password) => {
 export const GetAllPatients = (token) => {
   return axios.get("api/patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 };
+
+export const GetUserInfo = (token) => {
+  return axios.get("/api/userinfo/fetchOne/"+token, { headers: { Authorization: `Bearer ${token}` } });
+}

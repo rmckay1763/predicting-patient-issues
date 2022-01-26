@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { GetAllPatients } from "../controllers/APIController";
 
@@ -16,13 +15,6 @@ import Paper from "@mui/material/Paper";
 export default function Home() {
   const { token, setToken } = useAuth();
   const [patients, setPatients] = useState([]);
-  const navigate = useNavigate();
-
-  const logout = () => {
-    localStorage.removeItem("uid");
-    setToken(null);
-    return navigate("/login");
-  };
 
   const getPatients = async () => {
     try {
@@ -36,9 +28,6 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Home</h1>
-      <button onClick={logout}>Logout</button>
-      <button onClick={getPatients}>Get Patients</button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
           <TableHead>

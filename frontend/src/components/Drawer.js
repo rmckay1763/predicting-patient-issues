@@ -11,24 +11,21 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(()=>({
-    link:{
-        textDecoration:"none",
-        color: "blue",
-        fontSize: "20px",
-    },
-    icon:{
-        color: "white"
-    }
+  paper: {
+    overflowX: "hidden"
+  }
 }));
 
 function DrawerComponent() {
 const classes = useStyles();
-  const [openDrawer, setOpenDrawer] = useState(false);
+const [openDrawer, setOpenDrawer] = useState(false);
+
   return (
     <>
       <Drawer
         open={openDrawer}
         onClose={() => setOpenDrawer(false)}
+        classes = {{ paper: classes.paper }}
       >
         <List>
          <ListItem onClick={() => setOpenDrawer(false)}>

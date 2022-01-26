@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Navbar from "./components/NavBar";
 import NotificationContext from "./contexts/NotificationContext";
@@ -12,9 +11,29 @@ import SplitPane, {
   SplitPaneTop,
 } from "./components/SplitPane";
 import { AuthProvider, AuthRoute, GenericRoute } from "./contexts/AuthContext";
-import { useState } from "react";
 
 let token = localStorage.getItem("uid");
+
+const patients = [
+  {
+    id: 1,
+    name: "Nelson Mandela",
+    condition: "Critical",
+    description: "Blood sugar is dropping.",
+  },
+  {
+    id: 2,
+    name: "Walt Disney",
+    condition: "Adverse",
+    description: "Needs assistance.",
+  },
+  {
+    id: 3,
+    name: "Oprah Winfrey",
+    condition: "Minor",
+    description: "Minor dehydration.",
+  },
+];
 
 export default function App() {
   document.body.style.overflow = 'hidden';
@@ -36,11 +55,10 @@ export default function App() {
             exact
             path="/"
             element={
-              // Turn to AuthRoute
               <AuthRoute>
                 <Navbar />
                 <div>
-                  <NotificationContext.Provider value={{}}>
+                  <NotificationContext.Provider value={{patients}}>
                     <SplitPane className="split-pane-row">
                       <SplitPaneLeft/>
                       <SplitPaneRightPatients />
@@ -55,11 +73,10 @@ export default function App() {
             exact
             path="/editProfile"
             element={
-              // Turn to AuthRoute
-              <GenericRoute>
+              <AuthRoute>
                 <Navbar />
                 <div>
-                  <NotificationContext.Provider value={{}}>
+                  <NotificationContext.Provider value={{patients}}>
                     <SplitPane className="split-pane-row">
                       <SplitPaneLeft/>
                       <SplitPaneRightEditProfile />
@@ -67,7 +84,7 @@ export default function App() {
                   </NotificationContext.Provider>
                 </div>
 
-              </GenericRoute>
+              </AuthRoute>
             }
           />
         </Routes>

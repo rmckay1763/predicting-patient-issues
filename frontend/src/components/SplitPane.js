@@ -98,7 +98,7 @@ export const DividerPane = (props) => {
 export const SplitPaneTop = (props) => {
     const topRef = createRef();
     const { clientHeight, setClientHeight } = useContext(SplitPaneContext);
-    const { quotes, setCurrQuote } = useContext(NotificationContext);
+    const { patients } = useContext(NotificationContext);
 
     useEffect(() => {
         if (!clientHeight) {
@@ -113,14 +113,16 @@ export const SplitPaneTop = (props) => {
     return (
         <div className="split-pane-top" ref={topRef} style={{ overflowX: "hidden", overflowY: "scroll" }}>
             <Grid container spacing={12} justify="center" sx={{ maxWidth: 450, minHeight: 2000 }} >
-                <Grid item xs={12}>
+            {patients.map((el, ) => {
+                return (
+                    <Grid item xs={12}>
                     <Card sx={{ minWidth: 275, maxWidth: 275 }}>
                         <CardContent>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                                 <WarningIcon />
                                 <u>
                                     <strong>
-                                        Condition Shift: Critical
+                                        Condition Shift: {el.condition}
                                     </strong>
                                 </u>
                                 <IconButton>
@@ -129,11 +131,11 @@ export const SplitPaneTop = (props) => {
                             </Typography>
                             <Divider />
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                Patient Name: Michael Scott
+                                Patient Name: {el.name}
                             </Typography>
                             <Typography variant="body2">
                                 <strong>
-                                    Blood sugar is Dropping.
+                                    {el.description}
                                 </strong>
                             </Typography>
                         </CardContent>
@@ -143,68 +145,9 @@ export const SplitPaneTop = (props) => {
                         </CardActions>
                     </Card>
                 </Grid>
-                <Grid item xs={12}>
-                    <Card sx={{ minWidth: 275, maxWidth: 275 }}>
-                        <CardContent>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                <WarningIcon />
-                                <u>
-                                    <strong>
-                                        Condition Shift: Critical
-                                    </strong>
-                                </u>
-                                <IconButton>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Typography>
-                            <Divider />
-                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                Patient Name: Michael Scott
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>
-                                    Blood sugar is Dropping.
-                                </strong>
-                            </Typography>
-                        </CardContent>
-                        <Divider />
-                        <CardActions style={{ float: "right" }}>
-                            <Button size="small">Patient Profile</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
-                <Grid item xs={12}>
-                    <Card sx={{ minWidth: 275, maxWidth: 275 }}>
-                        <CardContent>
-                            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                <WarningIcon />
-                                <u>
-                                    <strong>
-                                        Condition Shift: Critical
-                                    </strong>
-                                </u>
-                                <IconButton>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Typography>
-                            <Divider />
-                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                Patient Name: Michael Scott
-                            </Typography>
-                            <Typography variant="body2">
-                                <strong>
-                                    Blood sugar is Dropping.
-                                </strong>
-                            </Typography>
-                        </CardContent>
-                        <Divider />
-                        <CardActions style={{ float: "right" }}>
-                            <Button size="small">Patient Profile</Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
+                );
+                })}
             </Grid>
-
         </div>
     );
 };
@@ -249,6 +192,9 @@ export const SplitPaneLeft = (props) => {
 };
 
 export const SplitPaneRightPatients = (props) => {
+    useEffect(() => {
+        document.title = "PPCD - Home";  
+    }, []);
 
     return (
         <div {...props} className="split-pane-right">

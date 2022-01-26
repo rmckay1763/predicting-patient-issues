@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, TextField, Typography, Button } from "@mui/material";
 import { Box } from "@mui/system";
 import { Login } from "../controllers/APIController";
@@ -14,6 +14,10 @@ export default function LoginForm() {
   const [error, setError] = useState(false);
   const { setToken } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "PPCD - Login";  
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

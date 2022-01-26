@@ -9,5 +9,5 @@ export const GetAllPatients = (token) => {
 };
 
 export const GetUserInfo = (token) => {
-  return axios.get("/api/userinfo/fetchOne/"+token, { headers: { Authorization: `Bearer ${token}` } });
+  return axios.get("/api/userinfo/fetchCurrent/", { headers: { Authorization: `Bearer ${token}` } });
 }

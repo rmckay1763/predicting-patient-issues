@@ -1,9 +1,15 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Divider, Typography } from '@mui/material';
 
 export default function EditProfileForm() {
+  
+  useEffect(() => {
+    document.title = "PPCD - Edit Profile";  
+  }, []);
+
   return (
     <Box
       component="form"
@@ -14,7 +20,7 @@ export default function EditProfileForm() {
       autoComplete="off"
       paddingTop= {5}
     >
-        <li>
+        <p>
         <Typography
           sx={{ mt: 0.5, ml: 2 }}
           color="text.secondary"
@@ -23,7 +29,7 @@ export default function EditProfileForm() {
         >
           User Info
         </Typography>
-      </li>
+      </p>
       <div>
       <TextField
           disabled
@@ -54,8 +60,8 @@ export default function EditProfileForm() {
     </div>
 
     <div>
-    <Divider component="li" />
-      <li>
+    <Divider component="p" />
+      <p>
         <Typography
           sx={{ mt: 0.5, ml: 2 }}
           color="text.secondary"
@@ -64,7 +70,7 @@ export default function EditProfileForm() {
         >
           Change Password
         </Typography>
-      </li>
+      </p>
         <TextField
           id="standard-password-input"
           label="Old Password"

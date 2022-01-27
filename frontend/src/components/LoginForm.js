@@ -36,10 +36,14 @@ export default function LoginForm() {
 
   const setProfile = async (response) => {
     let token = response.data.token;
+    let user = response.data.user;
     setToken(token);
+    setUser(user);
     localStorage.setItem("uid", token);
+    localStorage.setItem("user", JSON.stringify(user));
     return navigate("/");
   };
+
 
   return (
     <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>

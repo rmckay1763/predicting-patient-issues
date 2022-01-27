@@ -4,12 +4,6 @@ import PropTypes from "prop-types";
 
 const AuthContext = createContext(null);
 
-// export const AuthProvider = ({ userToken, children }) => {
-//   let [token, setToken] = useState(userToken);
-
-//   return <AuthContext.Provider value={{ token, setToken }}>{children}</AuthContext.Provider>;
-// };
-
 export const AuthProvider = props => {
   let [token, setToken] = useState(props.token);
   let [user, setUser] = useState(props.user);

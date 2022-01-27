@@ -34,4 +34,5 @@ class LoginHandler():
         if (not self.auth.verify_password(attempt.password, actual.password)):
             raise HTTPException(status_code=401, detail='Password is incorrect!')
         token = self.auth.encode_token(actual.uid)
-        return {"token" : token}
+        user = await self.users.fetchOne(uid["uid"])
+        return {"token" : token, "user": user}

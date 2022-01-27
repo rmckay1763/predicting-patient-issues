@@ -11,3 +11,13 @@ export const GetAllPatients = (token) => {
 export const GetUserInfo = (token) => {
   return axios.get("/api/userinfo/fetchCurrent/", { headers: { Authorization: `Bearer ${token}` } });
 }
+
+/**
+ * Get all vital records from the database.
+ * @param {*} token Bearer token for authentication
+ * @returns Promise with JSON array of vitals
+ */
+ export const GetAllVitals = async (token) => {
+  return axios.get("api/vital/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
+}
+

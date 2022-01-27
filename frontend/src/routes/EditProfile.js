@@ -1,10 +1,14 @@
-import { Container } from "@mui/material";
-import EditProfileForm from "../components/EditProfileForm";
+import SplitPane from "../components/SplitPane";
+import { SplitPaneLeft } from "../components/SplitPane";
+import { SplitPaneRightEditProfile } from "../components/SplitPane";
 
 export default function EditProfile() {
   return (
-    <Container>
-      <EditProfileForm />
-    </Container>
+    <div>
+      <SplitPane className="split-pane-row">
+        <SplitPaneLeft />
+        <SplitPaneRightEditProfile />
+      </SplitPane>
+    </div>
   );
 }

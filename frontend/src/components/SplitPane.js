@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Grid from "@material-ui/core/Grid"
+import Grid from "@mui/material/Grid"
 import Button from '@mui/material/Button';
 import WarningIcon from '@mui/icons-material/Warning'
 import Typography from '@mui/material/Typography';
@@ -22,17 +22,15 @@ import { Colors } from "../config/colors";
 import { AppBar, Toolbar } from "@mui/material";
 import { CssBaseline } from "@mui/material";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { grey } from "@mui/material/colors";
-
-import Home from "../routes/Home";
+import { COLORS } from "../resources/Colors";
 import EditProfileForm from "../components/EditProfileForm"
+import PatientTable from "./PatientTable";
 
 const bull = (
     <Box
         component="span"
         sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
     >
-        •
     </Box>
 );
 
@@ -143,7 +141,7 @@ export const SplitPaneTop = (props) => {
                                 </CardContent>
                                 <Divider />
                                 <CardActions style={{ float: "right" }}>
-                                    <Button size="small">Patient Profile</Button>
+                                    <Button size="small" style={{ color: COLORS.primary}}>Patient Profile</Button>
                                 </CardActions>
                             </Card>
                             <Box sx={{ width: 275, height: 15 }}></Box>
@@ -159,12 +157,9 @@ export const SplitPaneTop = (props) => {
 };
 
 export const SplitPaneBottom = (props) => {
-    const { currQuote } = useContext(NotificationContext);
-
+    
     return (
-        <div {...props} className="split-pane-bottom">
-            Current <b>quote id</b>: {currQuote}
-        </div>
+        <div></div>
     );
 };
 
@@ -216,14 +211,14 @@ export const SplitPaneLeft = (props) => {
     </div>);
 };
 
-export const SplitPaneRightPatients = (props) => {
+export const SplitPaneRightPatientsTable = (props) => {
     useEffect(() => {
-        document.title = "PPCD - Home";
+        document.title = "PPCD - Table";
     }, []);
 
     return (
         <div {...props} className="split-pane-right">
-            <Home />
+            <PatientTable patients={props.patients} vitals={props.vitals}/>
         </div>
     );
 };

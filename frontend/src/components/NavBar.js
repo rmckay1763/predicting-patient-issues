@@ -20,6 +20,9 @@ import { Divider } from "@mui/material";
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import SettingsIcon from '@mui/icons-material/Settings'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { COLORS } from "../resources/Colors"
+
+const user = JSON.parse(localStorage.getItem("user"));
 
 const useStyles = makeStyles((theme) => ({
   navlinks: {
@@ -61,7 +64,7 @@ const StyledMenu = styled((props) => (
     marginTop: theme.spacing(1),
     minWidth: 180,
     color:
-      theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+      theme.palette.mode === 'light' ? COLORS.primary : theme.palette.grey[300],
     boxShadow:
       'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
     '& .MuiMenu-list': {
@@ -70,12 +73,12 @@ const StyledMenu = styled((props) => (
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
         fontSize: 18,
-        color: theme.palette.text.secondary,
+        color: COLORS.secondary,
         marginRight: theme.spacing(1.5),
       },
       '&:active': {
         backgroundColor: alpha(
-          theme.palette.primary.main,
+          COLORS.primary,
           theme.palette.action.selectedOpacity,
         ),
       },
@@ -114,7 +117,7 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" s>
+    <AppBar position="static" style={{ background: COLORS.primary }}s>
       <CssBaseline />
       <Toolbar>
         <DrawerComponent />
@@ -129,6 +132,7 @@ function Navbar() {
           variant="contained"
           disableElevation
           onClick={handleClick}
+          style={{ background: COLORS.primary }}
         >
           <Avatar src="/broken-image.jpg" />
         </Button>
@@ -143,7 +147,7 @@ function Navbar() {
       >
         <MenuItem disableRipple disabled={true}>
           <VerifiedUserIcon />
-         Username 
+         {user}
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={editProfile} disableRipple>

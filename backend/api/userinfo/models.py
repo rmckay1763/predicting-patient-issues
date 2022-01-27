@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
@@ -69,3 +70,12 @@ class PatientIn(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
     status = "unobserved"
+
+class Vital(BaseModel):
+    '''
+    Represents an entry in the vitals table
+    '''
+    pid: int
+    entered_at: datetime
+    heart_rate: float
+    temperature: float

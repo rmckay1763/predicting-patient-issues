@@ -7,10 +7,12 @@ from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
 from api.userinfo.crud.patientcrud import PatientCRUD
+from api.userinfo.crud.vitalcrud import VitalCRUD
 from api.userinfo.router.userrouter import UserRouter
 from api.userinfo.router.rolerouter import RoleRouter
 from api.userinfo.router.loginrouter import LoginRouter
 from api.userinfo.router.patientrouter import PatientRouter
+from api.userinfo.router.vitalrouter import VitalRouter
 from api.utils.loginhandler import LoginHandler
 import uvicorn
 import subprocess
@@ -34,16 +36,19 @@ class APIDriver:
         roles = RoleCRUD(connector)
         logins = LoginCRUD(connector)
         patients = PatientCRUD(connector)
+        vitals = VitalCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
         usersRouter = UserRouter(users)
         rolesRouter = RoleRouter(roles)
         loginRouter = LoginRouter(logins)
         patientRouter = PatientRouter(patients)
+        vitalRouter = VitalRouter(vitals)
         api = MainAPI(loginHandler)
         api.addRouter(usersRouter.router)
         api.addRouter(rolesRouter.router)
         api.addRouter(loginRouter.router)
         api.addRouter(patientRouter.router)
+        api.addRouter(vitalRouter.router)
         return api.app
 
     @staticmethod

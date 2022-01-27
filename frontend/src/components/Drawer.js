@@ -7,8 +7,9 @@ import {
  makeStyles
 } from "@material-ui/core";
 import IconButton from "@mui/material/IconButton"
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { COLORS } from "../resources/Colors";
 
 const useStyles = makeStyles(()=>({
   paper: {
@@ -30,7 +31,7 @@ const [openDrawer, setOpenDrawer] = useState(false);
         <List>
          <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/">Patients</Link>
+              <Link style={{ color: COLORS.primary }} to="/">Patients</Link>
             </ListItemText>
           </ListItem>
         </List>

@@ -8,9 +8,13 @@ import SplitPane, {
   SplitPaneLeft,
   SplitPaneRightEditProfile,
   SplitPaneRightPatients,
+  SplitPaneRightTable,
   SplitPaneTop,
 } from "./components/SplitPane";
 import { AuthProvider, AuthRoute, GenericRoute } from "./contexts/AuthContext";
+import PatientTable from "./components/PatientTable";
+import HomePatients from "./routes/HomePatients";
+import EditProfile from "./routes/EditProfile";
 
 let token = localStorage.getItem("uid");
 
@@ -52,7 +56,7 @@ export default function App() {
 
   return (
     <Router>
-      <AuthProvider userToken={token}>
+      <AuthProvider token={token} user={user}>
         <Routes>
           <Route
             exact
@@ -71,10 +75,7 @@ export default function App() {
                 <Navbar />
                 <div>
                   <NotificationContext.Provider value={{patients}}>
-                    <SplitPane className="split-pane-row">
-                      <SplitPaneLeft/>
-                      <SplitPaneRightPatients />
-                    </SplitPane>
+                    <HomePatients/>
                   </NotificationContext.Provider>
                 </div>
 
@@ -89,10 +90,7 @@ export default function App() {
                 <Navbar />
                 <div>
                   <NotificationContext.Provider value={{patients}}>
-                    <SplitPane className="split-pane-row">
-                      <SplitPaneLeft/>
-                      <SplitPaneRightEditProfile />
-                    </SplitPane>
+                    <EditProfile/>
                   </NotificationContext.Provider>
                 </div>
 

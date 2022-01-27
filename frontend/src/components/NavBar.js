@@ -89,8 +89,9 @@ const StyledMenu = styled((props) => (
 function Navbar() {
   const classes = useStyles();
   const theme = useTheme();
-
-  const { token, setToken } = useAuth();
+  const { useToken, useUser } = useAuth();
+  const [token, setToken] = useToken;
+  const [user, setUser] = useUser;
   const [patients, setPatients] = useState([]);
   const navigate = useNavigate();
 
@@ -147,7 +148,7 @@ function Navbar() {
       >
         <MenuItem disableRipple disabled={true}>
           <VerifiedUserIcon />
-         {user}
+         
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={editProfile} disableRipple>

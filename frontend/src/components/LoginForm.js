@@ -12,7 +12,9 @@ export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const { setToken } = useAuth();
+  const { useToken, useUser } = useAuth();
+  const [token, setToken] = useToken;
+  const [user, setUser] = useUser;
   const navigate = useNavigate();
 
   useEffect(() => {

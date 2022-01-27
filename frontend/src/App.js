@@ -17,6 +17,7 @@ import HomePatients from "./routes/HomePatients";
 import EditProfile from "./routes/EditProfile";
 
 let token = localStorage.getItem("uid");
+let user = JSON.parse(localStorage.getItem("user"));
 
 const patients = [
   {

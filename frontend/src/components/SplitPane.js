@@ -5,34 +5,30 @@ import React, {
     useRef,
     useState,
 } from "react";
+import { 
+    FormControl, 
+    InputLabel, 
+    Select, 
+    MenuItem, 
+    Box, 
+    Card,
+    CardActions, 
+    CardContent,
+    Grid, 
+    Button, 
+    IconButton, 
+    Typography, 
+    Divider, 
+    AppBar, 
+    Toolbar, 
+    CssBaseline
+} from "@mui/material";
 import NotificationContext from "../contexts/NotificationContext";
 import SplitPaneContext from "../contexts/SplitPaneContext";
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Grid from "@mui/material/Grid"
-import Button from '@mui/material/Button';
-import WarningIcon from '@mui/icons-material/Warning'
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import CloseIcon from '@mui/icons-material/Close'
-import IconButton from '@mui/material/IconButton';
-import { Colors } from "../config/colors";
-import { AppBar, Toolbar } from "@mui/material";
-import { CssBaseline } from "@mui/material";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { COLORS } from "../resources/Colors";
 import EditProfileForm from "../components/EditProfileForm"
 import PatientTable from "./PatientTable";
-
-const bull = (
-    <Box
-        component="span"
-        sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-    </Box>
-);
+import { Colors } from "../resources/Colors";
+import { Icons } from "../resources/Icons";
 
 const SplitPane = ({ children, ...props }) => {
     const [clientHeight, setClientHeight] = useState(null);
@@ -108,25 +104,25 @@ export const SplitPaneTop = (props) => {
 
         topRef.current.style.minHeight = clientHeight + "px";
         topRef.current.style.maxHeight = clientHeight + "px";
-    }, [clientHeight]);
+    }, [clientHeight, setClientHeight, topRef]);
 
     return (
         <div className="split-pane-top" ref={topRef} style={{ overflowX: "hidden", overflowY: "scroll" }}>
             <Grid container spacing={12} justify="center" sx={{ maxWidth: 450, minHeight: 2000 }} >
-                {patients.map((el,) => {
+                {patients.map((el, i) => {
                     return (
-                        <Grid item xs={12}>
+                        <Grid key={i} item xs={12}>
                             <Card sx={{ minWidth: 275, maxWidth: 275 }}>
                                 <CardContent>
                                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                        <WarningIcon />
+                                        {Icons.warning}
                                         <u>
                                             <strong>
                                                 Condition Shift: {el.condition}
                                             </strong>
                                         </u>
                                         <IconButton>
-                                            <CloseIcon />
+                                            {Icons.close}
                                         </IconButton>
                                     </Typography>
                                     <Divider />
@@ -141,7 +137,7 @@ export const SplitPaneTop = (props) => {
                                 </CardContent>
                                 <Divider />
                                 <CardActions style={{ float: "right" }}>
-                                    <Button size="small" style={{ color: COLORS.primary}}>Patient Profile</Button>
+                                    <Button size="small" style={{ color: Colors.primary}}>Patient Profile</Button>
                                 </CardActions>
                             </Card>
                             <Box sx={{ width: 275, height: 15 }}></Box>
@@ -175,12 +171,12 @@ export const SplitPaneLeft = (props) => {
 
         topRef.current.style.minWidth = clientWidth + "px";
         topRef.current.style.maxWidth = clientWidth + "px";
-    }, [clientWidth]);
+    }, [clientWidth, setClientWidth, topRef]);
 
         
-    const handleChange = (event) => {
+    // const handleChange = (event) => {
         
-      };   
+    // };   
 
 
     return (<div {...props} className="split-pane-left" ref={topRef}>
@@ -196,7 +192,8 @@ export const SplitPaneLeft = (props) => {
                         labelId="filter-notification-label"
                         id="filter-notifcation-select"
                         label="Filter By"
-                        onChange={handleChange}
+                        defaultValue=""
+                        //onChange={handleChange}
                     >
                         <MenuItem value={"Condition Shift"}>Condition Shift</MenuItem>
                         <MenuItem value={"Vital Activity"}>Vital Activity</MenuItem>

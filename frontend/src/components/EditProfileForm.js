@@ -1,8 +1,10 @@
-import * as React from 'react';
 import { useEffect } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Divider, Typography } from '@mui/material';
+import { 
+  Divider, 
+  Typography, 
+  Box, 
+  TextField 
+} from '@mui/material';
 
 export default function EditProfileForm() {
   

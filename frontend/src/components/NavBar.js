@@ -1,49 +1,22 @@
-import React from "react";
-import DrawerComponent from "./Drawer"
-import {
-  AppBar,
-  Toolbar,
-  CssBaseline,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
-import { useTheme } from "@emotion/react";
-import { Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { 
+  AppBar, 
+  Toolbar, 
+  CssBaseline, 
+  Typography, 
+  Button, 
+  Box, 
+  Divider, 
+  MenuItem, 
+  Menu,
+  Avatar 
+} from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar'
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { Divider } from "@mui/material";
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
-import SettingsIcon from '@mui/icons-material/Settings'
-import LogoutIcon from '@mui/icons-material/Logout'
-import { COLORS } from "../resources/Colors"
-
-const user = JSON.parse(localStorage.getItem("user"));
-
-const useStyles = makeStyles((theme) => ({
-  navlinks: {
-    marginLeft: theme.spacing(10),
-    display: "flex",
-  },
- logo: {
-    flexGrow: "1",
-    cursor: "pointer",
-  },
-  link: {
-    textDecoration: "none",
-    color: "white",
-    fontSize: "20px",
-    marginLeft: theme.spacing(20),
-    "&:hover": {
-      color: "yellow",
-      borderBottom: "1px solid white",
-    },
-  },
-}));
+import { useAuth } from "../contexts/AuthContext";
+import DrawerComponent from "./Drawer"
+import { Colors } from "../resources/Colors"
+import { Icons } from "../resources/Icons"
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -64,7 +37,7 @@ const StyledMenu = styled((props) => (
     marginTop: theme.spacing(1),
     minWidth: 180,
     color:
-      theme.palette.mode === 'light' ? COLORS.primary : theme.palette.grey[300],
+      theme.palette.mode === 'light' ? Colors.primary : theme.palette.grey[300],
     boxShadow:
       'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
     '& .MuiMenu-list': {
@@ -73,12 +46,12 @@ const StyledMenu = styled((props) => (
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
         fontSize: 18,
-        color: COLORS.secondary,
+        color: Colors.secondary,
         marginRight: theme.spacing(1.5),
       },
       '&:active': {
         backgroundColor: alpha(
-          COLORS.primary,
+          Colors.primary,
           theme.palette.action.selectedOpacity,
         ),
       },
@@ -87,15 +60,11 @@ const StyledMenu = styled((props) => (
 }));
 
 function Navbar() {
-  const classes = useStyles();
-  const theme = useTheme();
-  const { useToken, useUser } = useAuth();
-  const [token, setToken] = useToken;
-  const [user, setUser] = useUser;
-  const [patients, setPatients] = useState([]);
+  const { useToken, } = useAuth();
+  const [, setToken] = useToken;
   const navigate = useNavigate();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
@@ -118,13 +87,15 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" style={{ background: COLORS.primary }}s>
+    <AppBar position="static" style={{ background: Colors.primary }}s>
       <CssBaseline />
       <Toolbar>
         <DrawerComponent />
-        <Typography variant="h6" className={classes.logo}>
+        <Box sx={{flexGrow: 1, cursor: 'pointer'}}>
+        <Typography variant="h6">
           Predicting Patient Conditions Database
         </Typography>
+        </Box>
         <Button
           id="account-button"
           aria-controls={open ? 'account-menu' : undefined}
@@ -133,7 +104,7 @@ function Navbar() {
           variant="contained"
           disableElevation
           onClick={handleClick}
-          style={{ background: COLORS.primary }}
+          style={{ background: Colors.primary }}
         >
           <Avatar src="/broken-image.jpg" />
         </Button>
@@ -147,16 +118,15 @@ function Navbar() {
         onClose={handleClose}
       >
         <MenuItem disableRipple disabled={true}>
-          <VerifiedUserIcon />
-         
+          {Icons.verifiedUser}
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={editProfile} disableRipple>
-          <SettingsIcon />
+          {Icons.settings}
           Edit Profile
         </MenuItem>
         <MenuItem onClick={logout} disableRipple>
-          <LogoutIcon />
+          {Icons.logout}
           Logout
         </MenuItem>
       </StyledMenu>

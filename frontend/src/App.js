@@ -2,17 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./routes/Login";
 import Navbar from "./components/NavBar";
 import NotificationContext from "./contexts/NotificationContext";
-import SplitPane, {
-  DividerPane,
-  SplitPaneBottom,
-  SplitPaneLeft,
-  SplitPaneRightEditProfile,
-  SplitPaneRightPatients,
-  SplitPaneRightTable,
-  SplitPaneTop,
-} from "./components/SplitPane";
 import { AuthProvider, AuthRoute, GenericRoute } from "./contexts/AuthContext";
-import PatientTable from "./components/PatientTable";
 import HomePatients from "./routes/HomePatients";
 import EditProfile from "./routes/EditProfile";
 

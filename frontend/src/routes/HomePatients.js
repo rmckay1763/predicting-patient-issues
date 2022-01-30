@@ -41,25 +41,25 @@ export default function HomePatients() {
     * Utility function to get patients with critical status.
     * @returns List of critical patients
     */
-   const getCritical = () => {
-      let critical = [];
-      for (let row in state.patients) {
-          if (state.patients[row].status === "critical") {
-              let entry = {
-                  lastname: state.patients[row].lastname,
-                  firstname: state.patients[row].firstname,
-                  status: state.patients[row].status
-              };
-              critical.push(entry);
-          }
-      }
-      return critical;
-   }; 
+//    const getCritical = () => {
+//       let critical = [];
+//       for (let row in state.patients) {
+//           if (state.patients[row].status === "critical") {
+//               let entry = {
+//                   lastname: state.patients[row].lastname,
+//                   firstname: state.patients[row].firstname,
+//                   status: state.patients[row].status
+//               };
+//               critical.push(entry);
+//           }
+//       }
+//       return critical;
+//    }; 
    
     return (
         <div>                  
             <SplitPane className="split-pane-row">
-                <SplitPaneLeft patients={getCritical()}/>
+                <SplitPaneLeft />
                 <SplitPaneRightPatientsTable />
             </SplitPane>
         </div>

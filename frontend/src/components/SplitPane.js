@@ -28,6 +28,7 @@ import EditProfileForm from "../components/EditProfileForm"
 import PatientTable from "./PatientTable";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
+import { useGlobal } from "../contexts/GlobalContext";
 
 const SplitPane = ({ children, ...props }) => {
     const [clientHeight, setClientHeight] = useState(null);
@@ -93,7 +94,8 @@ export const DividerPane = (props) => {
 export const SplitPaneTop = (props) => {
     const topRef = createRef();
     const { clientHeight, setClientHeight } = useContext(SplitPaneContext);
-    const [patients, setPatients] = useState([])
+    const [patients, setPatients] = useState([]);
+    const [state, ] = useGlobal();
 
     useEffect(() => {
         if (!clientHeight) {
@@ -106,10 +108,10 @@ export const SplitPaneTop = (props) => {
     }, [clientHeight, setClientHeight, topRef]);
 
     useEffect(() => {
-        setPatients(props.patients);
-    }, [props])
+        setPatients(state.patients);
+    }, [state.patients])
 
-    if (!patients) return null
+    if (!patients) return <div>Loading...</div>
 
     return (
         <div className="split-pane-top" ref={topRef} style={{ backgroundColor: Colors.backgroundLight, overflowX: "visible", overflowY: "scroll" }}>
@@ -203,7 +205,7 @@ export const SplitPaneLeft = (props) => {
             </Toolbar>
         </AppBar>
         <SplitPane className="split-pane-col">
-            <SplitPaneTop patients={props.patients} />
+            <SplitPaneTop />
         </SplitPane>
     </div>);
 };

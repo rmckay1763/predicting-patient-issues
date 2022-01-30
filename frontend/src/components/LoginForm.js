@@ -8,22 +8,18 @@ import {
   Box 
 } from "@mui/material";
 import { Login } from "../controllers/APIController";
-import { useAuth } from "../contexts/AuthContext";
-
-
-import {Colors} from "../resources/Colors";
+import { Actions, useGlobal } from "../contexts/GlobalContext";
+import { Colors } from "../resources/Colors";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const { useToken, useUser } = useAuth();
-  const [, setToken] = useToken;
-  const [, setUser] = useUser;
   const navigate = useNavigate();
+  const [, dispatch] = useGlobal();
 
   useEffect(() => {
-    document.title = "PPCD - Login";  
+    document.title = "PPCD - Login";
   }, []);
 
   const handleSubmit = async (e) => {
@@ -42,8 +38,8 @@ export default function LoginForm() {
   const setProfile = async (response) => {
     let token = response.data.token;
     let user = response.data.user;
-    setToken(token);
-    setUser(user);
+    dispatch({type: Actions.setToken, payload: token})
+    dispatch({type: Actions.setUser, payload: user})
     localStorage.setItem("uid", token);
     localStorage.setItem("user", JSON.stringify(user));
     return navigate("/");

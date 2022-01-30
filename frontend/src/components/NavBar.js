@@ -13,10 +13,11 @@ import {
   Avatar 
 } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
-import { useAuth } from "../contexts/AuthContext";
+//import { useAuth } from "../contexts/AuthContext";
 import DrawerComponent from "./Drawer"
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
+import { useGlobal, Actions } from "../contexts/GlobalContext"
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -60,9 +61,10 @@ const StyledMenu = styled((props) => (
 }));
 
 function Navbar() {
-  const { useToken, } = useAuth();
-  const [, setToken] = useToken;
+  //const { useToken, } = useAuth();
+  //const [, setToken] = useToken;
   const navigate = useNavigate();
+  const [, dispatch] = useGlobal();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -82,7 +84,8 @@ function Navbar() {
 
   const logout = () => {
     localStorage.removeItem("uid");
-    setToken(null);
+    dispatch({type: Actions.clearToken})
+    dispatch({type: Actions.clearUser})
     return navigate("/login");
   };
 

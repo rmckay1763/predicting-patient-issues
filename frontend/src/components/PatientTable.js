@@ -13,6 +13,7 @@ import {
 import DataTable, { createTheme } from 'react-data-table-component';
 import { Colors } from "../resources/Colors"
 import { Icons } from '../resources/Icons';
+import { useGlobal } from '../contexts/GlobalContext';
  
 /**
  * Creates the data table component.
@@ -21,13 +22,15 @@ import { Icons } from '../resources/Icons';
  */
 export default function PatientTable(props) {
     
-    const [patients, setPatients] = useState(props.patients);
-    const [vitals, setVitals] = useState(props.vitals);
+    const [state, ] = useGlobal();
+    const [data, setData] = useState([]);
     const [criticalOnly, setCriticalOnly] = useState(false);
     const [query, setQuery] = useState('');
 
     useEffect(() => {
-        let temp = props.patients.filter((patient) => {
+        let temp = state.patients;
+        if (!temp) return;
+        temp = temp.filter((patient) => {
             return (
                 patient.lastname.toLowerCase().includes(query.toLowerCase()) ||
                 patient.firstname.toLowerCase().includes(query.toLowerCase()) ||
@@ -39,12 +42,8 @@ export default function PatientTable(props) {
                 return patient.status === 'critical';
             });
         }
-        setPatients(temp);
-    }, [props.patients, query, criticalOnly]);
-
-    useEffect(() => {
-        setVitals(props.vitals);
-    }, [props.vitals]);
+        setData(temp);
+    }, [props.patients, state.patients, query, criticalOnly]);
     
     /**
      * Handler for critical only toggle button.
@@ -88,7 +87,8 @@ export default function PatientTable(props) {
     
     // subtable component for expanded rows
     const expandedComponent = ({data}) => {
-        const rows = vitals.filter((vital) => {
+        let rows = state.vitals
+        rows = rows.filter((vital) => {
             return vital.pid === data.pid;
         });
         const columns = [
@@ -207,7 +207,7 @@ export default function PatientTable(props) {
             expandableRowsComponent = {expandedComponent}
             actions = {searchComponent}
             columns = {columns}
-            data = {patients}
+            data = {data}
         />
     );
 }

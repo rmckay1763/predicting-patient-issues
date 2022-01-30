@@ -23,7 +23,6 @@ import {
     Toolbar, 
     CssBaseline
 } from "@mui/material";
-import NotificationContext from "../contexts/NotificationContext";
 import SplitPaneContext from "../contexts/SplitPaneContext";
 import EditProfileForm from "../components/EditProfileForm"
 import PatientTable from "./PatientTable";
@@ -94,31 +93,37 @@ export const DividerPane = (props) => {
 export const SplitPaneTop = (props) => {
     const topRef = createRef();
     const { clientHeight, setClientHeight } = useContext(SplitPaneContext);
-    const { patients } = useContext(NotificationContext);
+    const [patients, setPatients] = useState([])
 
     useEffect(() => {
         if (!clientHeight) {
             setClientHeight(topRef.current.clientHeight);
             return;
         }
-
+        if (!topRef.current) return;
         topRef.current.style.minHeight = clientHeight + "px";
         topRef.current.style.maxHeight = clientHeight + "px";
     }, [clientHeight, setClientHeight, topRef]);
 
+    useEffect(() => {
+        setPatients(props.patients);
+    }, [props])
+
+    if (!patients) return null
+
     return (
-        <div className="split-pane-top" ref={topRef} style={{ overflowX: "hidden", overflowY: "scroll" }}>
+        <div className="split-pane-top" ref={topRef} style={{ backgroundColor: Colors.backgroundLight, overflowX: "visible", overflowY: "scroll" }}>
             <Grid container spacing={12} justify="center" sx={{ maxWidth: 450, minHeight: 2000 }} >
                 {patients.map((el, i) => {
                     return (
-                        <Grid key={i} item xs={12}>
+                        <Grid key={i} item xs="auto">
                             <Card sx={{ minWidth: 275, maxWidth: 275 }}>
                                 <CardContent>
-                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                    <Typography sx={{ fontSize: 14 }} color={Colors.primary} gutterBottom>
                                         {Icons.warning}
                                         <u>
                                             <strong>
-                                                Condition Shift: {el.condition}
+                                                Condition Shift: {el.status}
                                             </strong>
                                         </u>
                                         <IconButton>
@@ -126,13 +131,8 @@ export const SplitPaneTop = (props) => {
                                         </IconButton>
                                     </Typography>
                                     <Divider />
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        Patient Name: {el.name}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        <strong>
-                                            {el.description}
-                                        </strong>
+                                    <Typography sx={{ mb: 1.5 }} color={Colors.primary}>
+                                        Patient Name: {el.firstname} {el.lastname}
                                     </Typography>
                                 </CardContent>
                                 <Divider />
@@ -203,7 +203,7 @@ export const SplitPaneLeft = (props) => {
             </Toolbar>
         </AppBar>
         <SplitPane className="split-pane-col">
-            <SplitPaneTop />
+            <SplitPaneTop patients={props.patients} />
         </SplitPane>
     </div>);
 };
@@ -215,7 +215,7 @@ export const SplitPaneRightPatientsTable = (props) => {
 
     return (
         <div {...props} className="split-pane-right">
-            <PatientTable patients={props.patients} vitals={props.vitals}/>
+            <PatientTable />
         </div>
     );
 };

@@ -1,24 +1,25 @@
-import React, { useEffect } from "react";
-import { Avatar, TextField, Typography, Button } from "@mui/material";
-import { Box } from "@mui/system";
-import { Login } from "../controllers/APIController";
-import { useAuth } from "../contexts/AuthContext";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import {Colors} from "../config/colors";
+import { 
+  Avatar, 
+  TextField, 
+  Typography, 
+  Button, 
+  Box 
+} from "@mui/material";
+import { Login } from "../controllers/APIController";
+import { Actions, useGlobal } from "../contexts/GlobalContext";
+import { Colors } from "../resources/Colors";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const { useToken, useUser } = useAuth();
-  const [token, setToken] = useToken;
-  const [user, setUser] = useUser;
   const navigate = useNavigate();
+  const [, dispatch] = useGlobal();
 
   useEffect(() => {
-    document.title = "PPCD - Login";  
+    document.title = "PPCD - Login";
   }, []);
 
   const handleSubmit = async (e) => {
@@ -37,8 +38,8 @@ export default function LoginForm() {
   const setProfile = async (response) => {
     let token = response.data.token;
     let user = response.data.user;
-    setToken(token);
-    setUser(user);
+    dispatch({type: Actions.setToken, payload: token})
+    dispatch({type: Actions.setUser, payload: user})
     localStorage.setItem("uid", token);
     localStorage.setItem("user", JSON.stringify(user));
     return navigate("/");
@@ -74,7 +75,7 @@ export default function LoginForm() {
           error={error}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, bgcolor: Colors.primary }}>
+        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, bgcolor:  Colors.primary }}>
           Login
         </Button>
       </Box>

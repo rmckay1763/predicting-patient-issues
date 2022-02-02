@@ -111,8 +111,6 @@ export const SplitPaneTop = (props) => {
         setPatients(state.patients);
     }, [state.patients])
 
-    if (!patients) return <div>Loading...</div>
-
     return (
         <div className="split-pane-top" ref={topRef} style={{ backgroundColor: Colors.backgroundLight, overflowX: "visible", overflowY: "scroll" }}>
             <Grid container spacing={12} justify="center" sx={{ maxWidth: 450, minHeight: 2000 }} >

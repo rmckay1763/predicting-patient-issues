@@ -20,7 +20,7 @@ import { useGlobal } from '../contexts/GlobalContext';
  * @param {*} props The list of patients and list of vitals
  * @returns DataTable component with list of patients
  */
-export default function PatientTable(props) {
+export default function PatientTable() {
     
     const [state, ] = useGlobal();
     const [data, setData] = useState([]);
@@ -29,7 +29,6 @@ export default function PatientTable(props) {
 
     useEffect(() => {
         let temp = state.patients;
-        if (!temp) return;
         temp = temp.filter((patient) => {
             return (
                 patient.lastname.toLowerCase().includes(query.toLowerCase()) ||
@@ -43,7 +42,7 @@ export default function PatientTable(props) {
             });
         }
         setData(temp);
-    }, [props.patients, state.patients, query, criticalOnly]);
+    }, [state.patients, query, criticalOnly]);
     
     /**
      * Handler for critical only toggle button.

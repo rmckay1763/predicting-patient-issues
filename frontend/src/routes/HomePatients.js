@@ -11,8 +11,8 @@ import SplitPane, { SplitPaneLeft, SplitPaneRightPatientsTable } from "../compon
 * @returns home page component
 */
 export default function HomePatients() {
+    
     const [state, dispatch] = useGlobal();
-
     const MINUTE_MS = 10000;
 
     useEffect(() => {
@@ -36,25 +36,6 @@ export default function HomePatients() {
         }, MINUTE_MS);
         return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     }, [state.token, dispatch])
-
-   /**
-    * Utility function to get patients with critical status.
-    * @returns List of critical patients
-    */
-//    const getCritical = () => {
-//       let critical = [];
-//       for (let row in state.patients) {
-//           if (state.patients[row].status === "critical") {
-//               let entry = {
-//                   lastname: state.patients[row].lastname,
-//                   firstname: state.patients[row].firstname,
-//                   status: state.patients[row].status
-//               };
-//               critical.push(entry);
-//           }
-//       }
-//       return critical;
-//    }; 
    
     return (
         <div>                  

@@ -13,7 +13,6 @@ import {
   Avatar 
 } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
-//import { useAuth } from "../contexts/AuthContext";
 import DrawerComponent from "./Drawer"
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
@@ -61,8 +60,6 @@ const StyledMenu = styled((props) => (
 }));
 
 function Navbar() {
-  //const { useToken, } = useAuth();
-  //const [, setToken] = useToken;
   const navigate = useNavigate();
   const [, dispatch] = useGlobal();
 

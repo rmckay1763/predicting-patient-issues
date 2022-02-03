@@ -48,7 +48,7 @@ class LoginRouter():
         except BaseException as err:
             raise err
 
-    async def insert(self, login: Login):
+    async def insert(self, login: Login, uid=Depends(auth.auth_wrapper)):
         """
         Route to insert a new login into the login table.
 
@@ -59,6 +59,7 @@ class LoginRouter():
             RealDictRow: The primay key of the new login.
         """
         try:
+            await self.authenticate(uid, None)
             return await self.logins.insert(login)
         except BaseException as err:
             raise err
@@ -100,11 +101,11 @@ class LoginRouter():
         """
         Athenticate the user for the request. 
         Checks if uid of current user matches uid of request or if current user is an admin.
-        For admin only authentication, pass in 'None' for 
+        For admin only authentication, pass in 'None' for candidate
 
         Parameters:
-            userKey (int): The primary key (uid) of the current user.
-            loginKey (int): The primary key of the login to modify.
+            actual (int): The primary key (uid) of the current user.
+            candidate (int): The primary key of the login to modify.
 
         Raises:
             HTTPException: Upon failed authentication.

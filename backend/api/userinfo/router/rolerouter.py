@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
 from api.userinfo.models import Role, RoleIn
 from api.userinfo.crud.rolecrud import RoleCRUD
-from api.utils.authhandler import AuthHandler
 from api.dependencies import auth
 
 class RoleRouter:

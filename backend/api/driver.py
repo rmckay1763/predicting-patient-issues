@@ -40,7 +40,7 @@ class APIDriver:
         loginHandler = LoginHandler(users, logins, auth)
         usersRouter = UserRouter(users)
         rolesRouter = RoleRouter(roles)
-        loginRouter = LoginRouter(logins)
+        loginRouter = LoginRouter(logins, users)
         patientRouter = PatientRouter(patients)
         vitalRouter = VitalRouter(vitals)
         api = MainAPI(loginHandler)

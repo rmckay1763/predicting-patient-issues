@@ -12,6 +12,7 @@ class User(BaseModel):
     username: str
     rank: Optional[str] = ""
     role: Optional[int] = 0
+    admin: bool
 
 class UserIn(BaseModel):
     '''
@@ -22,6 +23,7 @@ class UserIn(BaseModel):
     username: str
     rank: Optional[str] = ""
     role: Optional[int] = 0
+    admin = False
 
 class Role(BaseModel):
     '''

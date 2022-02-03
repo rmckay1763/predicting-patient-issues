@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from api.userinfo.models import Login
 from api.userinfo.crud.logincrud import LoginCRUD
-from api.utils.authhandler import AuthHandler
+from api.userinfo.crud.usercrud import UserCRUD
 from api.dependencies import auth
 
 class LoginRouter():
@@ -9,7 +9,7 @@ class LoginRouter():
     Implements routes for the login table using an APIRouter
     '''
 
-    def __init__(self, logins: LoginCRUD):
+    def __init__(self, logins: LoginCRUD, users: UserCRUD):
         '''
         Constructor.
 
@@ -17,6 +17,7 @@ class LoginRouter():
             logins (LoginCrud): The crud to interact with the table.
         '''
         self.logins = logins
+        self.users = users
         self.router = APIRouter(
             prefix="/api/login",
             dependencies=[Depends(auth.auth_wrapper)]
@@ -62,7 +63,7 @@ class LoginRouter():
         except BaseException as err:
             raise err
 
-    async def update(self, updated: Login):
+    async def update(self, updated: Login, uid=Depends(auth.auth_wrapper)):
         """
         Route to update a login in the login table.
 
@@ -72,12 +73,14 @@ class LoginRouter():
         Returns:
             Login: The result of the update.
         """
+
         try:
+            await self.authenticate(uid, updated.uid)
             return await self.logins.update(updated)
         except BaseException as err:
             raise err
 
-    async def delete(self, key: int):
+    async def delete(self, key: int, uid=Depends(auth.auth_wrapper)):
         """
         Route to delete a login from the login table.
 
@@ -88,6 +91,27 @@ class LoginRouter():
             bool: True if successful, false otherwise.
         """
         try:
+            await self.authenticate(uid, key)
             return await self.logins.delete(key)
         except BaseException as err:
             raise err
+
+    async def authenticate(self, actual: int, candidate: int):
+        """
+        Athenticate the user for the request. 
+        Checks if uid of current user matches uid of request or if current user is an admin.
+        For admin only authentication, pass in 'None' for 
+
+        Parameters:
+            userKey (int): The primary key (uid) of the current user.
+            loginKey (int): The primary key of the login to modify.
+
+        Raises:
+            HTTPException: Upon failed authentication.
+        """
+        if (actual == candidate):
+            return
+        user = await self.users.fetchOne(actual)
+        if (user.admin):
+            return
+        raise HTTPException(status_code=401, detail='Unathenticated user id')

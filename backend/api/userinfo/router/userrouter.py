@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from api.userinfo.models import User, UserIn
 from api.userinfo.crud.usercrud import UserCRUD
 from api.dependencies import auth
@@ -48,7 +48,7 @@ class UserRouter:
         except BaseException as err:
             raise err
 
-    async def fetchAll(self):
+    async def fetchAll(self, uid=Depends(auth.auth_wrapper)):
         """
         Route to fetch all rows from the user table.
 
@@ -56,6 +56,7 @@ class UserRouter:
             list: A list of User objects.
         """
         try:
+            await self.authenticate(uid, None)
             return await self.users.fetchAll()
         except BaseException as err:
             raise err
@@ -75,7 +76,7 @@ class UserRouter:
         except BaseException as err:
             raise err
 
-    async def insert(self, userinfo: UserIn):
+    async def insert(self, userinfo: UserIn, uid=Depends(auth.auth_wrapper)):
         """
         Route to insert a new user into the user table.
 
@@ -86,11 +87,12 @@ class UserRouter:
             RealDictRow: The primay key of the new user.
         """
         try:
+            await self.authenticate(uid, None)
             return await self.users.insert(userinfo)
         except BaseException as err:
             raise err
 
-    async def update(self, updated: User):
+    async def update(self, updated: User, uid=Depends(auth.auth_wrapper)):
         """
         Route to update a user in the user table.
 
@@ -101,11 +103,12 @@ class UserRouter:
             User: The result of the update.
         """
         try:
+            await self.authenticate(uid, updated.uid)
             return await self.users.update(updated)
         except BaseException as err:
             raise err
 
-    async def delete(self, key: int):
+    async def delete(self, key: int, uid=Depends(auth.auth_wrapper)):
         """
         Route to delete a user from the user table.
 
@@ -116,6 +119,27 @@ class UserRouter:
             bool: True if successful, false otherwise.
         """
         try:
-            return await self.user.delete(key)
+            await self.authenticate(uid, None)
+            return await self.users.delete(key)
         except BaseException as err:
             raise err
+
+    async def authenticate(self, actual: int, candidate: int):
+        """
+        Athenticate the user for the request. 
+        Checks if uid of current user matches uid of request or if current user is an admin.
+        For admin only authentication, pass in 'None' for candidate
+
+        Parameters:
+            actual (int): The primary key (uid) of the current user.
+            candidate (int): The primary key of the user to modify.
+
+        Raises:
+            HTTPException: Upon failed authentication.
+        """
+        if (actual == candidate):
+            return
+        user = await self.users.fetchOne(actual)
+        if (user.admin):
+            return
+        raise HTTPException(status_code=401, detail='Unathenticated user id')

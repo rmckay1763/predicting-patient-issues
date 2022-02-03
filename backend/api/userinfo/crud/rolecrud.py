@@ -2,13 +2,13 @@ from typing import List
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
-from api.userinfo.models import Roles, RolesIn
+from api.userinfo.models import Role, RoleIn
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
-class RolesCRUD(BaseCRUD):
+class RoleCRUD(BaseCRUD):
     """
-    Abstracts interacting with the roles table from the userinfo database.
+    Abstracts interacting with the role table from the userinfo database.
     """
     
     def __init__(self, conn: PostgresConnector):
@@ -22,29 +22,29 @@ class RolesCRUD(BaseCRUD):
 
         # sequel statment objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
-            table = sql.Identifier('roles'),
+            table = sql.Identifier('role'),
             key = sql.Identifier('id'),
             column = sql.Identifier('name'))
         
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
-            table = sql.Identifier('roles'))
+            table = sql.Identifier('role'))
         
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
-            table = sql.Identifier('roles'),
+            table = sql.Identifier('role'),
             key = sql.Identifier('id'))
 
         self.insertSQL = sql.SQL(self.insertQuery).format(
-            table = sql.Identifier('roles'),
+            table = sql.Identifier('role'),
             key = sql.Identifier('id'),
             columns = sql.Identifier('name'))
 
         self.udpateSQL = sql.SQL(self.updateQuery).format(
-            table = sql.Identifier('roles'),
+            table = sql.Identifier('role'),
             name = sql.Identifier('name'),
             key = sql.Identifier('id'))
             
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
-            table = sql.Identifier('roles'),
+            table = sql.Identifier('role'),
             key = sql.Identifier('id'))
 
     async def fetchKey(self, value: str):
@@ -72,7 +72,7 @@ class RolesCRUD(BaseCRUD):
         if (roles == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to find roles')
-        models = parse_obj_as(List[Roles], roles)
+        models = parse_obj_as(List[Role], roles)
         cursor.close()
         return models
 
@@ -87,11 +87,11 @@ class RolesCRUD(BaseCRUD):
         if (role == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to find role')
-        model = parse_obj_as(Roles, role)
+        model = parse_obj_as(Role, role)
         cursor.close()
         return model
 
-    async def insert(self, role: RolesIn):
+    async def insert(self, role: RoleIn):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (role.name,))
@@ -105,7 +105,7 @@ class RolesCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, updated: Roles):
+    async def update(self, updated: Role):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.udpateSQL, (updated.name, updated.id, ))
@@ -116,7 +116,7 @@ class RolesCRUD(BaseCRUD):
         if (result == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to update role')
-        model = parse_obj_as(Roles, result)
+        model = parse_obj_as(Role, result)
         cursor.close()
         return model
 

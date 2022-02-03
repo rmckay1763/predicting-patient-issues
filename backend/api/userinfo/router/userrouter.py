@@ -1,24 +1,25 @@
 from fastapi import APIRouter, Depends
-from api.userinfo.models import Users, UsersIn
-from api.userinfo.crud.userscrud import UsersCRUD
+from api.userinfo.models import User, UserIn
+from api.userinfo.crud.usercrud import UserCRUD
 from api.dependencies import auth
 
-class UsersRouter:
+class UserRouter:
     '''
-    Implements routes for the users table using an APIRouter
+    Implements routes for the user table using an APIRouter
     '''
 
-    def __init__(self, users: UsersCRUD):
+    def __init__(self, users: UserCRUD):
         '''
         Constructor.
 
         Parameters:
-            users (UsersCRUD): The crud to interact with the table.
+            users (UserCRUD): The crud to interact with the table.
         '''
         self.users = users
         self.router = APIRouter(
-            prefix="/users",
-            dependencies=[Depends(auth.auth_wrapper)])
+            prefix="/api/user",
+            dependencies=[Depends(auth.auth_wrapper)]
+        )
         self.__addRoutes__()
 
     def __addRoutes__(self):
@@ -49,10 +50,10 @@ class UsersRouter:
 
     async def fetchAll(self):
         """
-        Route to fetch all rows from the users table.
+        Route to fetch all rows from the user table.
 
         Returns:
-            list: A list of Users objects.
+            list: A list of User objects.
         """
         try:
             return await self.users.fetchAll()
@@ -67,19 +68,19 @@ class UsersRouter:
             key (int): The primary key (uid) of the user.
 
         Returns:
-            Users: The user as a users model.
+            User: The user as a user model.
         """
         try:
             return await self.users.fetchOne(key)
         except BaseException as err:
             raise err
 
-    async def insert(self, userinfo: UsersIn):
+    async def insert(self, userinfo: UserIn):
         """
-        Route to insert a new user into the users table.
+        Route to insert a new user into the user table.
 
         Parameters:
-            userinfo (UsersIn): The information for the new user.
+            userinfo (UserIn): The information for the new user.
 
         Returns:
             RealDictRow: The primay key of the new user.
@@ -89,15 +90,15 @@ class UsersRouter:
         except BaseException as err:
             raise err
 
-    async def update(self, updated: Users):
+    async def update(self, updated: User):
         """
-        Route to update a user in the users table.
+        Route to update a user in the user table.
 
         Parameters:
-            updated (Users): The user with the updated data.
+            updated (User): The user with the updated data.
 
         Returns:
-            Users: The result of the update.
+            User: The result of the update.
         """
         try:
             return await self.users.update(updated)
@@ -106,7 +107,7 @@ class UsersRouter:
 
     async def delete(self, key: int):
         """
-        Route to delete a user from the users table.
+        Route to delete a user from the user table.
 
         Parameters:
             key (int): The primary key (uid) of the user.
@@ -115,6 +116,6 @@ class UsersRouter:
             bool: True if successful, false otherwise.
         """
         try:
-            return await self.users.delete(key)
+            return await self.user.delete(key)
         except BaseException as err:
             raise err

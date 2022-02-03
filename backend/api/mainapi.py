@@ -10,14 +10,20 @@ class MainAPI:
     def __init__(self, loginHandler: LoginHandler):
         self.loginHandler = loginHandler
         self.app = FastAPI()
+        self.origins = [
+            "http://localhost",
+            "http://localhost:8000",
+            "http://localhost:5000",
+            "http://04.csc.tntech.edu"
+        ]
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins = ['*'],
+            allow_origins = self.origins,
             allow_credentials = True,
             allow_methods = ['*'],
             allow_headers = ['*']
         )
-        self.app.post("/login/")(self.login)
+        self.app.post("/api/login/")(self.login)
 
     def addRouter(self, router: APIRouter):
         '''

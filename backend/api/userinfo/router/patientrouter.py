@@ -17,8 +17,9 @@ class PatientRouter:
         '''
         self.patients = patients
         self.router = APIRouter(
-            prefix="/patient",
-            dependencies=[Depends(auth.auth_wrapper)])
+            prefix="/api/patient",
+            dependencies=[Depends(auth.auth_wrapper)]
+        )
         self.__addRoutes__()
 
     def __addRoutes__(self):

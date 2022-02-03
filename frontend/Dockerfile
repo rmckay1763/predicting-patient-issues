@@ -1,7 +1,7 @@
 # docker build file for frontend development
 
 # base nodejs image
-FROM node:16
+FROM node:latest
 
 # set frontend directory
 WORKDIR /app/frontend

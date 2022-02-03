@@ -1,0 +1,43 @@
+# base docker compose file
+
+version: "3.9"
+services:
+  
+  # userinfo database container
+  postgres:
+    image: postgres:14
+    container_name: database
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=userinfo
+    expose:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # database migration container
+  migration:
+    image: rmckay1763/migration:iteration-2
+    container_name: dbmate
+    depends_on:
+      - "postgres"
+
+  # backend fastapi container
+  backend:
+    image: rmckay1763/backend-prod:iteration-2
+    container_name: app-backend
+    restart: always
+
+  # frontend node js container
+  frontend:
+    image: rmckay1763/frontend-prod:iteration-2
+    container_name: app-frontend
+    restart: always
+    ports:
+      - "80:80"
+
+# internal volumes
+volumes:
+  postgres-data:

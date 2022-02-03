@@ -1,25 +1,26 @@
 from fastapi import APIRouter, Depends
-from api.userinfo.models import Roles, RolesIn
-from api.userinfo.crud.rolescrud import RolesCRUD
+from api.userinfo.models import Role, RoleIn
+from api.userinfo.crud.rolecrud import RoleCRUD
 from api.utils.authhandler import AuthHandler
 from api.dependencies import auth
 
-class RolesRouter:
+class RoleRouter:
     '''
     Implements routes for the roles table using an APIRouter
     '''
 
-    def __init__(self, roles: RolesCRUD):
+    def __init__(self, roles: RoleCRUD):
         '''
         Constructor.
 
         Parameters:
-            roles (RolesCRUD): The crud to interact with the table.
+            roles (RoleCRUD): The crud to interact with the table.
         '''
         self.roles = roles
         self.router = APIRouter(
-            prefix="/roles",
-            dependencies=[Depends(auth.auth_wrapper)])
+            prefix="/api/role",
+            dependencies=[Depends(auth.auth_wrapper)]
+        )
         self.__addRoutes__()
     
     def __addRoutes__(self):
@@ -53,7 +54,7 @@ class RolesRouter:
         Route to fetch all rows from the roles table.
 
         Returns:
-            list: A list of Roles objects.
+            list: A list of Role objects.
         """
         try:
             return await self.roles.fetchAll()
@@ -68,19 +69,19 @@ class RolesRouter:
             key (int): The primary key (id) of the role.
 
         Returns:
-            Roles: The role as a roles model.
+            Role: The role as a roles model.
         """
         try:
             return await self.roles.fetchOne(key)
         except BaseException as err:
             raise err
 
-    async def insert(self, role: RolesIn):
+    async def insert(self, role: RoleIn):
         """
         Route to insert a new role into the roles table.
 
         Parameters:
-            role (RolesIn): The new role to insert.
+            role (RoleIn): The new role to insert.
 
         Returns:
             RealDictRow: The primay key of the new role.
@@ -90,15 +91,15 @@ class RolesRouter:
         except BaseException as err:
             raise err
 
-    async def update(self, updated: Roles):
+    async def update(self, updated: Role):
         """
         Route to update a role in the roles table.
 
         Parameters:
-            updated (Roles): The role with the updated data.
+            updated (Role): The role with the updated data.
 
         Returns:
-            Roles: The result of the update.
+            Role: The result of the update.
         """
         try:
             return await self.roles.update(updated)

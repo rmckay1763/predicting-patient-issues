@@ -1,9 +1,10 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 
-class Users(BaseModel):
+class User(BaseModel):
     '''
-    Represents an entry in the users table.
+    Represents an entry in the user table.
     '''
     uid: int
     firstname: str
@@ -12,7 +13,7 @@ class Users(BaseModel):
     rank: Optional[str] = ""
     role: Optional[int] = 0
 
-class UsersIn(BaseModel):
+class UserIn(BaseModel):
     '''
     Represents a new user to insert into the table.
     '''
@@ -22,14 +23,14 @@ class UsersIn(BaseModel):
     rank: Optional[str] = ""
     role: Optional[int] = 0
 
-class Roles(BaseModel):
+class Role(BaseModel):
     '''
-    Represents an entry in the roles table.
+    Represents an entry in the role table.
     '''
     id: int
     name: str
 
-class RolesIn(BaseModel):
+class RoleIn(BaseModel):
     '''
     Represents a new role to insert into the table.
     '''
@@ -69,3 +70,12 @@ class PatientIn(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
     status = "unobserved"
+
+class Vital(BaseModel):
+    '''
+    Represents an entry in the vitals table
+    '''
+    pid: int
+    entered_at: datetime
+    heart_rate: float
+    temperature: float

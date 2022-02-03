@@ -38,7 +38,7 @@ The api provides routes to interact with each table in the userinfo database.
 Refer to the router classes located at `backend/api/[database_name]/routers/` for available routes.
 
 Operation:
-- Change working direction to `/backend`
+- Change working directory to `/backend`
 - Uncomment lines in `main.py` to start in desired mode
 - Run `python3 main.py` to start the service
 - Stop the service with `ctrl + c`
@@ -87,30 +87,50 @@ The dockerized application provides a completely containerized and isolated envi
 
 **Configuration**
 
-- Use the following configuration files for development:
+Use the following configuration files for development:
+(all paths relative to project root directory)
 
-    - `backend/settings.ini`
-        ```
-        [DatabaseSettings]
-        Endpoint = postgres
-        Port = 5432
-        User = postgres
-        Password = password
-        Database = userinfo
+- `.env`
+    ```
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=password
+    POSTGRES_DB=userinfo
+    ```
+- `backend/settings.ini`
+    ```
+    [DatabaseSettings]
+    Endpoint = postgres
+    Port = 5432
+    User = postgres
+    Password = password
+    Database = userinfo
 
-        [SSHTunnelSettings]
-        UseTunnel = False 
+    [SSHTunnelSettings]
+    UseTunnel = False 
 
-        [AuthSettings]
-        Secret = SECRET
-    - `frontend/.env`
-        ```
-        PORT=5000
-        REACT_APP_API_BASE_URL=http://localhost:8000
-    - `postgres/.env`
-        ```
-        DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
-- Generate/update `backend/requirements.txt` [goto](#requirements-for-python-development)
+    [AuthSettings]
+    Secret = SECRET
+    ```
+- `frontend/.env` *Note: use port 80 for production build*
+    ```
+    PORT=5000
+    REACT_APP_API_BASE_URL=http://localhost:8000
+    ```
+
+- `postgres/.env`
+    ```
+    DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
+    ```
+- `backend/requirements.txt`
+    ```
+    fastapi==0.72.0
+    passlib==1.7.4
+    psycopg2==2.9.3
+    pydantic==1.9.0
+    PyJWT==2.3.0
+    sshtunnel==0.4.0
+    uvicorn==0.17.0
+    ```
 
 **Database Migrations**
 
@@ -122,8 +142,9 @@ The dockerized application provides a completely containerized and isolated envi
 
 - Navigate to project root directory
 - Run: `docker-compose up` to start the app in development mode
+- Navigate browser to [http://localhost:5000](http://localhost:5000) to access development build
 - RUN: `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up` for production mode
-- Navigate browser to [http://localhost](http://localhost) to access app
+- Navigate browser to [http://localhost](http://localhost) to access production build
 - Run: `docker-compose down` in a new terminal to stop the app
 
 [back to contents](#contents)

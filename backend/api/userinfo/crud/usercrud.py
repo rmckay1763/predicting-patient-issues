@@ -3,13 +3,13 @@ from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
 from api.userinfo.crud.basecrud import BaseCRUD
-from api.userinfo.models import Users, UsersIn
+from api.userinfo.models import User, UserIn
 from api.utils.postgresconnector import PostgresConnector
 
 
-class UsersCRUD(BaseCRUD):
+class UserCRUD(BaseCRUD):
     """
-    Abstracts interacting with the users table from the userinfo database.
+    Abstracts interacting with the user table from the userinfo database.
     """
 
     def __init__(self, conn: PostgresConnector):
@@ -25,19 +25,19 @@ class UsersCRUD(BaseCRUD):
 
         # sql statement objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
-            table = sql.Identifier('users'),
+            table = sql.Identifier('user'),
             key = sql.Identifier('uid'),
             column = sql.Identifier('username'))
         
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
-            table = sql.Identifier('users'))
+            table = sql.Identifier('user'))
         
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
-            table = sql.Identifier('users'),
+            table = sql.Identifier('user'),
             key = sql.Identifier('uid'))
 
         self.insertSQL = sql.SQL(self.insertQuery).format(
-            table = sql.Identifier('users'),
+            table = sql.Identifier('user'),
             key = sql.Identifier('uid'),
             columns = sql.SQL(',').join([
                 sql.Identifier('firstname'),
@@ -47,7 +47,7 @@ class UsersCRUD(BaseCRUD):
                 sql.Identifier('role')]))
 
         self.updateSQL = sql.SQL(self.updateQuery).format(
-            table = sql.Identifier('users'),
+            table = sql.Identifier('user'),
             key = sql.Identifier('uid'),
             firstname = sql.Identifier('firstname'),
             lastname = sql.Identifier('lastname'),
@@ -56,7 +56,7 @@ class UsersCRUD(BaseCRUD):
             role = sql.Identifier('role'))
             
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
-            table = sql.Identifier('users'),
+            table = sql.Identifier('user'),
             key = sql.Identifier('uid'))
 
     async def fetchKey(self, value: str):
@@ -84,7 +84,7 @@ class UsersCRUD(BaseCRUD):
         if (users == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to find users')
-        models = parse_obj_as(List[Users], users)
+        models = parse_obj_as(List[User], users)
         cursor.close()
         return models 
 
@@ -99,11 +99,11 @@ class UsersCRUD(BaseCRUD):
         if (user == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to find user')
-        model = parse_obj_as(Users, user)
+        model = parse_obj_as(User, user)
         cursor.close()
         return model
 
-    async def insert(self, user: UsersIn):
+    async def insert(self, user: UserIn):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
@@ -122,7 +122,7 @@ class UsersCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, updated: Users):
+    async def update(self, updated: User):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.updateSQL, (
@@ -139,7 +139,7 @@ class UsersCRUD(BaseCRUD):
         if (result == None):
             cursor.close()
             raise HTTPException(status_code=404, detail='Failed to update user')
-        model = parse_obj_as(Users, result)
+        model = parse_obj_as(User, result)
         cursor.close()
         return model
 

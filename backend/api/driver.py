@@ -34,7 +34,7 @@ class APIDriver:
         connector = PostgresConnector(config)
         users = UserCRUD(connector)
         roles = RoleCRUD(connector)
-        logins = LoginCRUD(connector)
+        logins = LoginCRUD(connector, users, auth)
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)

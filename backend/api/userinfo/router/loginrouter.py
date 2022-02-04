@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from api.userinfo.models import Login
+from api.userinfo.models import Login, LoginUpdated
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.usercrud import UserCRUD
 from api.dependencies import auth
@@ -64,7 +64,7 @@ class LoginRouter():
         except BaseException as err:
             raise err
 
-    async def update(self, updated: Login, uid=Depends(auth.auth_wrapper)):
+    async def update(self, updated: LoginUpdated, uid=Depends(auth.auth_wrapper)):
         """
         Route to update a login in the login table.
 

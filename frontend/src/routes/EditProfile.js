@@ -4,35 +4,41 @@ import {
   ReflexElement
 } from 'react-reflex'
 
-import { AppBar, CssBaseline, Toolbar, Typography } from '@mui/material';
-
-import { Colors } from "../resources/Colors";
 import EditProfileForm from '../components/EditProfileForm'
 import NotificationPanel from '../components/NotificationPanel';
+import { useViewport } from '../contexts/UseViewport';
 
 import 'react-reflex/styles.css'
 
 export default function EditProfile() {
+  const { width } = useViewport();
+  const breakpoint = 900;
+
+  document.title = "PPCD - Edit Profile";
+
+  if (width < breakpoint) {
+    document.body.style.overflow = 'scroll';
+
+    return (
+      <EditProfileForm />
+    )
+  }
+  else {
+    document.body.style.overflow = 'hidden';
+  }
+
   return (
     <ReflexContainer orientation="vertical">
-            <ReflexElement className="left-pane" maxSize="400">
-                <div className="pane-content">
-                    <NotificationPanel />
-                </div>
-            </ReflexElement>
-            <ReflexSplitter style={{ height : "1080px", width : "1px" }}>
-            </ReflexSplitter>
-            <ReflexElement className="right-pane">
-              <AppBar position="static" sx={{ maxHeight: 56.8, borderRadius: 1, bgcolor: Colors.primary }}>
-                  <CssBaseline />
-                  <Toolbar>
-                      <Typography>
-                          Edit Profile
-                      </Typography>
-                  </Toolbar>
-              </AppBar>
-              <EditProfileForm />
-            </ReflexElement>
-        </ReflexContainer>
+      <ReflexElement className="left-pane" maxSize="400">
+        <div className="pane-content">
+          <NotificationPanel />
+        </div>
+      </ReflexElement>
+      <ReflexSplitter style={{ height: "1080px", width: "1px" }}>
+      </ReflexSplitter>
+      <ReflexElement className="right-pane">
+        <EditProfileForm />
+      </ReflexElement>
+    </ReflexContainer>
   );
 }

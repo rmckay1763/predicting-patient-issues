@@ -5,11 +5,13 @@
 import Search from "@mui/icons-material/Search";
 import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import MenuIcon from "@mui/icons-material/Menu";
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
-import SettingsIcon from '@mui/icons-material/Settings'
-import LogoutIcon from '@mui/icons-material/Logout'
-import CloseIcon from '@mui/icons-material/Close'
-import WarningIcon from '@mui/icons-material/Warning'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import CloseIcon from '@mui/icons-material/Close';
+import WarningIcon from '@mui/icons-material/Warning';
+import AddIcon from '@mui/icons-material/Add';
+import InfoIcon from '@mui/icons-material/Info';
 
 export const Icons = {
     arrowDownward: <ArrowDownward />,
@@ -19,5 +21,7 @@ export const Icons = {
     settings: <SettingsIcon />,
     logout: <LogoutIcon />,
     close: <CloseIcon />,
-    warning: <WarningIcon />
+    warning: <WarningIcon />,
+    add: <AddIcon />,
+    info: <InfoIcon />
 }

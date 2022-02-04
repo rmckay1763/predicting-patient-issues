@@ -34,29 +34,29 @@ VALUES
 INSERT INTO
 	public.vital (pid, timestamp, heart_rate, sao2, respiration)
 VALUES
-	(1, NOW() + INTERVAL '2 minutes', 77, 96, 21),
-	(2, NOW() + INTERVAL '2 minutes', 68, 91, 32),
-	(3, NOW() + INTERVAL '2 minutes', 101, 93, 18),
-	(4, NOW() + INTERVAL '2 minutes', 83, 98, 25),
-	(5, NOW() + INTERVAL '2 minutes', 82, 97, 21);
+	(1, NOW() + INTERVAL '5 minutes', 77, 96, 21),
+	(2, NOW() + INTERVAL '5 minutes', 68, 91, 32),
+	(3, NOW() + INTERVAL '5 minutes', 101, 93, 18),
+	(4, NOW() + INTERVAL '5 minutes', 83, 98, 25),
+	(5, NOW() + INTERVAL '5 minutes', 82, 97, 21);
 	
 INSERT INTO
 	public.vital (pid, timestamp, heart_rate, sao2, respiration)
 VALUES
-	(1, NOW() + INTERVAL '4 minutes', 78, 93, 26),
-	(2, NOW() + INTERVAL '4 minutes', 74, 94, 25),
-	(3, NOW() + INTERVAL '4 minutes', 102, 93, 16),
-	(4, NOW() + INTERVAL '4 minutes', 77, 95, 31),
-	(5, NOW() + INTERVAL '4 minutes', 91, 96, 23);
+	(1, NOW() + INTERVAL '10 minutes', 78, 93, 26),
+	(2, NOW() + INTERVAL '10 minutes', 74, 94, 25),
+	(3, NOW() + INTERVAL '10 minutes', 102, 93, 16),
+	(4, NOW() + INTERVAL '10 minutes', 77, 95, 31),
+	(5, NOW() + INTERVAL '10 minutes', 91, 96, 23);
 	
 INSERT INTO
 	public.vital (pid, timestamp, heart_rate, sao2, respiration)
 VALUES
-	(1, NOW() + INTERVAL '6 minutes', 84, 94, 26),
-	(2, NOW() + INTERVAL '6 minutes', 73, 93, 31),
-	(3, NOW() + INTERVAL '6 minutes', 102, 96, 18),
-	(4, NOW() + INTERVAL '6 minutes', 73, 99, 20),
-	(5, NOW() + INTERVAL '6 minutes', 72, 96, 19);
+	(1, NOW() + INTERVAL '15 minutes', 84, 94, 26),
+	(2, NOW() + INTERVAL '15 minutes', 73, 93, 31),
+	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18),
+	(4, NOW() + INTERVAL '15 minutes', 73, 99, 20),
+	(5, NOW() + INTERVAL '15 minutes', 72, 96, 19);
 
 -- migrate:down
 DROP TABLE IF EXISTS public.vital;

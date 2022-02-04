@@ -180,7 +180,7 @@ export const SplitPaneLeft = (props) => {
 
 
     return (<div {...props} className="split-pane-left" ref={topRef}>
-        <AppBar position="static" sx={{ maxHeight: 56.8, borderRadius: 1, bgcolor: Colors.primary }}>
+        <AppBar position="static" sx={{ maxHeight: 56.8, borderRadius: 1, bgcolor: Colors.secondary, color: Colors.primary }}>
             <CssBaseline />
             <Toolbar>
                 <Typography sx={{ paddingRight: 10 }}>

@@ -106,6 +106,7 @@ export default function PatientTable() {
             },
         ];
         return (
+            <div >
             <DataTable
                 defaultSortFieldId='time'
                 defaultSortAsc={false}
@@ -114,6 +115,7 @@ export default function PatientTable() {
                 columns={columns}
                 data={rows}
             />
+            </div>
         );
     }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   AppBar, 
@@ -61,10 +61,17 @@ const StyledMenu = styled((props) => (
 
 function Navbar() {
   const navigate = useNavigate();
-  const [, dispatch] = useGlobal();
+  const [state, dispatch] = useGlobal();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+      setUser(state.user);
+  }, [state.user])
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,6 +84,10 @@ function Navbar() {
   const editProfile = () => {
     handleClose();
     return navigate("/editProfile");
+  }
+
+  const handleRefresh = () => {
+    window.location.reload(false);
   }
 
   const logout = () => {
@@ -96,6 +107,15 @@ function Navbar() {
           Predicting Patient Conditions Database
         </Typography>
         </Box>
+        <Button
+          id="refresh-button"
+          variant="contained"
+          disableElevation
+          onClick={handleRefresh}
+          style={{ background: Colors.primary }}
+        >
+          {Icons.refresh}
+        </Button>
         <Button
           id="account-button"
           aria-controls={open ? 'account-menu' : undefined}
@@ -117,8 +137,9 @@ function Navbar() {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem disableRipple disabled={true}>
+        <MenuItem disableRipple>
           {Icons.verifiedUser}
+          {user.username}
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={editProfile} disableRipple>

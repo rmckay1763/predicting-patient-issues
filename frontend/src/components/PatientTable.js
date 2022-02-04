@@ -119,7 +119,7 @@ export default function PatientTable() {
         },
         {
             maxWidth: "10%",
-            cell: () => Icons.info
+            cell: () => Icons.patientProfile
         },
         {
             id: 'lastname',

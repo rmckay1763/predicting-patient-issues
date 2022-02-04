@@ -13,6 +13,8 @@ import WarningIcon from '@mui/icons-material/Warning';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import FolderSharedIcon from '@mui/icons-material/FolderShared';
+
 
 export const Icons = {
     arrowDownward: <ArrowDownward />,
@@ -25,5 +27,6 @@ export const Icons = {
     warning: <WarningIcon />,
     add: <AddIcon />,
     info: <InfoIcon />,
-    refresh: <RefreshIcon />
+    refresh: <RefreshIcon />,
+    patientProfile: <FolderSharedIcon />
 }

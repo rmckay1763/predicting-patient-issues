@@ -52,6 +52,14 @@ class LoginAttempt(BaseModel):
     username: str
     password: str
 
+class LoginUpdated(BaseModel):
+    '''
+    Represents a login update from the frontend.
+    '''
+    uid: int
+    old_password: str
+    new_password: str    
+
 class Patient(BaseModel):
     '''
     Represents an entry in the patient table.

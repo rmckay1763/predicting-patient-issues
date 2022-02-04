@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import WarningIcon from '@mui/icons-material/Warning';
 import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 export const Icons = {
     arrowDownward: <ArrowDownward />,
@@ -23,5 +24,6 @@ export const Icons = {
     close: <CloseIcon />,
     warning: <WarningIcon />,
     add: <AddIcon />,
-    info: <InfoIcon />
+    info: <InfoIcon />,
+    refresh: <RefreshIcon />
 }

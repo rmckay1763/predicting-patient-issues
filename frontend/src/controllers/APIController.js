@@ -4,6 +4,10 @@ export const Login = (username, password) => {
   return axios.post("api/login/", { username: username, password: password });
 };
 
+export const ChangePassword = (token, uid, old_password, new_password) => {
+  return axios.put("api/login/update", {uid: uid, old_password: old_password, new_password: new_password}, { headers: { Authorization: `Bearer ${token}` }});
+}
+
 export const GetAllPatients = (token) => {
   return axios.get("api/patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 };

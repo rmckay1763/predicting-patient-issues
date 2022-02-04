@@ -28,7 +28,20 @@ export default function PatientTable() {
     const [query, setQuery] = useState('');
 
     useEffect(() => {
+        function mapStatus(patient) {
+            switch (patient.status) {
+                case 0:
+                    patient.status = 'Critical';
+                    break;
+                case 9:
+                    patient.status = 'Stable';
+                    break;
+                default:
+                    break;
+            }
+        }
         let temp = state.patients;
+        temp.sort((a, b) => a.status - b.status);
         temp = temp.filter((patient) => {
             return (
                 patient.lastname.toLowerCase().includes(query.toLowerCase()) ||
@@ -38,12 +51,13 @@ export default function PatientTable() {
         });
         if (criticalOnly) {
             temp = temp.filter((patient) => {
-                return patient.status === 'critical';
+                return patient.status === 'Critical';
             });
         }
+        temp.map(mapStatus);
         setData(temp);
     }, [state.patients, query, criticalOnly]);
-    
+
     /**
      * Handler for critical only toggle button.
      * @param {*} event From the critical only switch
@@ -94,15 +108,19 @@ export default function PatientTable() {
             {
                 id: 'time',
                 name: 'Time',
-                selector: row => row.entered_at,
+                selector: row => row.timestamp,
             },
             {
                 name: 'Heart Rate',
                 selector: row => row.heart_rate,
             },
             {
-                name: 'Temperature',
-                selector: row => row.temperature,
+                name: 'SaO2',
+                selector: row => row.sao2,
+            },
+            {
+                name: 'Respiration',
+                selector: row => row.respiration,
             },
         ];
         return (
@@ -120,7 +138,7 @@ export default function PatientTable() {
     // conditional styling for critical status
     const conditionalCellStyles = [
         {
-            when: row => row.status === 'critical',
+            when: row => row.status === 'Critical',
             style: {
                 backgroundColor: Colors.alert,
                 color: Colors.white
@@ -197,7 +215,6 @@ export default function PatientTable() {
             theme = 'theme'
             title = {title}
             keyField = 'pid'
-            defaultSortFieldId = 'status'
             sortIcon = {Icons.arrowDownward}
             striped = {true}
             highlightOnHover = {true}

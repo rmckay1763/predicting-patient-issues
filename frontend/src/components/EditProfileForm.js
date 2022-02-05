@@ -6,18 +6,14 @@ import {
   TextField,
   Button
 } from '@mui/material';
-
-import { AppBar, CssBaseline, Toolbar } from '@mui/material';
-
+import BaseToolbar from './BaseToolbar';
 import { Colors } from "../resources/Colors";
 import { ChangePassword } from '../controllers/APIController';
-import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
 
 export default function EditProfileForm() {
   const [state, dispatch] = useGlobal();
-  const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const [token, setToken] = useState([]);
 
@@ -55,14 +51,8 @@ export default function EditProfileForm() {
 
   return (
     <div>
-    <AppBar position="static" sx={{ maxHeight: 56.8, borderRadius: 1, bgcolor: Colors.primary }}>
-                  <CssBaseline />
-                  <Toolbar>
-                      <Typography>
-                          Edit Profile
-                      </Typography>
-                  </Toolbar>
-              </AppBar>
+        <BaseToolbar title="Edit Profile" >
+        </BaseToolbar>
     <Box
       component="form"
       onSubmit={handleSubmit} method="post"

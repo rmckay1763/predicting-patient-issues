@@ -10,10 +10,11 @@ import {
   Divider, 
   MenuItem, 
   Menu,
-  Avatar 
+  Avatar,
+  IconButton 
 } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
-import DrawerComponent from "./Drawer"
+//import DrawerComponent from "./Drawer"
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
 import { useGlobal, Actions } from "../contexts/GlobalContext"
@@ -90,6 +91,10 @@ function Navbar() {
     window.location.reload(false);
   }
 
+  const handleHome = () => {
+    return navigate("/");
+  }
+
   const logout = () => {
     localStorage.removeItem("uid");
     dispatch({type: Actions.clearToken})
@@ -98,24 +103,27 @@ function Navbar() {
   };
 
   return (
-    <AppBar position="static" style={{ background: Colors.primary }}s>
+    <AppBar position="static" >
       <CssBaseline />
-      <Toolbar>
-        <DrawerComponent />
-        <Box sx={{flexGrow: 1, cursor: 'pointer'}}>
-        <Typography variant="h6">
+      <Toolbar style={{ background: Colors.primary, color: Colors.backgroundLighter }}>
+        <Box sx={{flexGrow: 10, cursor: 'pointer'}}>
+        <Typography variant="h5">
           Predicting Patient Conditions Database
         </Typography>
         </Box>
-        <Button
-          id="refresh-button"
-          variant="contained"
-          disableElevation
+        <IconButton 
+          style={{ background: Colors.primary, color: Colors.backgroundLighter, flexGrow: 1}}
+          onClick={handleHome}
+        >
+          {Icons.home}
+        </IconButton>
+        <IconButton 
+          style={{ background: Colors.primary, color: Colors.backgroundLighter, flexGrow: 1 }}
           onClick={handleRefresh}
-          style={{ background: Colors.primary }}
         >
           {Icons.refresh}
-        </Button>
+        </IconButton>
+        
         <Button
           id="account-button"
           aria-controls={open ? 'account-menu' : undefined}
@@ -124,7 +132,7 @@ function Navbar() {
           variant="contained"
           disableElevation
           onClick={handleClick}
-          style={{ background: Colors.primary }}
+          style={{ background: Colors.primary, flexGrow: 1 }}
         >
           <Avatar src="/broken-image.jpg" />
         </Button>

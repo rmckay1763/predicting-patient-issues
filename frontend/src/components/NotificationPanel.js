@@ -16,10 +16,8 @@ import {
     IconButton, 
     Typography, 
     Divider, 
-    Fragment, 
-    Toolbar, 
 } from "@mui/material";
-
+import BaseToolbar from "./BaseToolbar";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
@@ -34,10 +32,7 @@ export default function NotificationPanel() {
 
     return (
         <div style={{backgroundColor: Colors.backgroundLight, color: Colors.primary }}>
-            <Toolbar style={{ backgroundColor: Colors.secondary,  }}>
-                <Typography sx={{ paddingRight: 10 }}>
-                    Notifications
-                </Typography>
+            <BaseToolbar title="Notifications">
                 <FormControl variant="filled" size="small" sx={{ width: 200 }}>
                     <InputLabel 
                         sx={{color: Colors.primary}}
@@ -55,7 +50,8 @@ export default function NotificationPanel() {
                         <MenuItem value={"Vital Activity"}>Vital Activity</MenuItem>
                     </Select>
                 </FormControl>
-            </Toolbar>
+            </BaseToolbar>
+            
     
             <div style={{ maxHeight: "100vh", overflowX: "visible", overflowY: "scroll" }}>
                 <Grid paddingLeft="45px" container spacing={4} justify="center" sx={{ maxWidth: 400 }} >

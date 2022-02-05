@@ -1,7 +1,3 @@
-/**
- * Data table for list of patients.
- */
-
 import { Fragment, useEffect, useState } from 'react';
 import DataTable, { createTheme } from 'react-data-table-component';
 import PatientTableToolbar from './PatientTableToolbar';
@@ -12,7 +8,6 @@ import { useGlobal } from '../contexts/GlobalContext';
  
 /**
  * Creates the data table component.
- * @param {*} props The list of patients and list of vitals
  * @returns DataTable component with list of patients
  */
 export default function PatientTable() {
@@ -22,6 +17,7 @@ export default function PatientTable() {
     const [criticalOnly, setCriticalOnly] = useState(false);
     const [query, setQuery] = useState('');
 
+    // prepare patient data for rendering
     useEffect(() => {
         function mapStatus(patient) {
             switch (patient.status) {
@@ -53,6 +49,7 @@ export default function PatientTable() {
         setData(temp);
     }, [state.patients, query, criticalOnly]);
 
+    // click handler for table rows
     const onRowClicked = (row) => {
         let selected = state.patients.find((patient) => patient.pid === row.pid);
         console.log(selected);
@@ -118,7 +115,7 @@ export default function PatientTable() {
             maxWidth: "10%"
         },
         {
-            maxWidth: "10%",
+            button: true,
             cell: () => Icons.info
         },
         {

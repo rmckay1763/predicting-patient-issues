@@ -6,7 +6,7 @@ import {
 
 import EditProfileForm from '../components/EditProfileForm'
 import NotificationPanel from '../components/NotificationPanel';
-import { useViewport } from '../contexts/UseViewport';
+import { useViewport } from '../contexts/Dimensions';
 
 import 'react-reflex/styles.css'
 

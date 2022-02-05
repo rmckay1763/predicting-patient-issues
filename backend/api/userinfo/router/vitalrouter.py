@@ -28,6 +28,7 @@ class VitalRouter:
         '''
         self.router.get("/fetchOne/{key}")(self.fetchOne)
         self.router.get("/fetchAll/")(self.fetchAll)
+        self.router.post("/insert/")(self.insert)
 
     async def fetchOne(self, key: int):
         """
@@ -56,3 +57,14 @@ class VitalRouter:
         except BaseException as err:
             raise err
 
+    async def insert(self, vital: Vital):
+        """
+        Route to insert a new vital record into the table
+
+        Returns:
+            int: The patient id associated with the new record
+        """
+        try:
+            return await self.vitals.insert(vital)
+        except BaseException as err:
+            raise err

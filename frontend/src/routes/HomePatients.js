@@ -1,33 +1,24 @@
-/**
- * Parent Component for home page.
- */
-
-import { useViewport } from "../contexts/UseViewport";
 import { useEffect } from "react";
 import { useGlobal, Actions } from "../contexts/GlobalContext";
 import { GetAllPatients, GetAllVitals } from "../controllers/APIController";
-
-import {
-    ReflexContainer,
-    ReflexSplitter,
-    ReflexElement
-} from 'react-reflex'
-
-import { BrowserView, MobileView } from 'react-device-detect';
-
+import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
-
+import { BrowserView, MobileView } from 'react-device-detect';
+import { useViewport } from "../contexts/Dimensions";
 import PatientTable from "../components/PatientTable";
 import NotificationPanel from "../components/NotificationPanel";
+
 /**
 * Generate the component for the home page.
 * @returns home page component
 */
 export default function HomePatients() {
+
     const [state, dispatch] = useGlobal();
     const MINUTE_MS = 10000;
-
-    document.title = "PPCD - Patients";  
+    const { width } = useViewport();
+    const breakpoint = 900;
+    document.title = "PPCD - Patients";
 
     useEffect(() => {
         const loadData = async () => {
@@ -51,9 +42,6 @@ export default function HomePatients() {
         return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     }, [state.token, dispatch])
 
-    const { width } = useViewport();
-    const breakpoint = 900;
-
     if (width < breakpoint) {
         document.body.style.overflow = 'scroll';
 
@@ -69,15 +57,15 @@ export default function HomePatients() {
     return (
         <div>
             <BrowserView>
-                <ReflexContainer orientation="vertical">
-                    <ReflexElement className="left-pane" maxSize="400">
+                <ReflexContainer orientation="vertical" windowResizeAware="true">
+                    <ReflexElement className="left-pane" flex="1">
                         <div className="pane-content">
                             <NotificationPanel />
                         </div>
                     </ReflexElement>
                     <ReflexSplitter style={{ height: "1080px" }}>
                     </ReflexSplitter>
-                    <ReflexElement className="right-pane">
+                    <ReflexElement className="right-pane" flex="3">
                         <div className="pane-content">
                             <PatientTable />
                         </div>

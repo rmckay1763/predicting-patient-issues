@@ -65,27 +65,30 @@ class Patient(BaseModel):
     Represents an entry in the patient table.
     '''
     pid: int
+    admit_time: datetime
     firstname: str
     lastname: str
     age: Optional[int] = None
     gender: Optional[str] = None
-    status: str
+    status: int
 
 class PatientIn(BaseModel):
     '''
     Represents a new entry in the patient table.
     '''
+    admit_time = datetime.now()
     firstname: str
     lastname: str
     age: Optional[int] = None
     gender: Optional[str] = None
-    status = "unobserved"
+    status = 10
 
 class Vital(BaseModel):
     '''
     Represents an entry in the vitals table
     '''
     pid: int
-    entered_at: datetime
-    heart_rate: float
-    temperature: float
+    timestamp: datetime
+    heart_rate: int
+    sao2: int
+    respiration: int

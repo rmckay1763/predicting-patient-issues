@@ -116,7 +116,7 @@ export default function PatientTable() {
         },
         {
             button: true,
-            cell: () => Icons.info
+            cell: () => Icons.patientProfile
         },
         {
             id: 'lastname',

@@ -14,6 +14,8 @@ import AddIcon from '@mui/icons-material/Add';
 import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import HomeIcon from '@mui/icons-material/Home';
+import FolderSharedIcon from '@mui/icons-material/FolderShared';
+
 
 export const Icons = {
     arrowDownward: <ArrowDownward />,
@@ -27,5 +29,6 @@ export const Icons = {
     add: <AddIcon />,
     info: <InfoIcon />,
     refresh: <RefreshIcon />,
-    home: <HomeIcon />
+    home: <HomeIcon />,
+    patientProfile: <FolderSharedIcon />
 }

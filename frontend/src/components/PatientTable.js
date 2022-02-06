@@ -16,6 +16,7 @@ export default function PatientTable() {
     const [data, setData] = useState([]);
     const [criticalOnly, setCriticalOnly] = useState(false);
     const [query, setQuery] = useState('');
+    document.title = "PPCD - Patients";
 
     // prepare patient data for rendering
     useEffect(() => {

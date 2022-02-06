@@ -14,7 +14,7 @@ export const useViewport = () => {
   }
 
 /**
- * Tracks the width of a component.
+ * Custom hook to track the width of a component.
  * @param {*} ref The component to track.
  * @returns The width of the component.
  */

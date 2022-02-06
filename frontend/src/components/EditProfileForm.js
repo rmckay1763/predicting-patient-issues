@@ -21,6 +21,8 @@ export default function EditProfileForm() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
+  document.title = "PPCD - Edit Profile";
+
   useEffect(() => {
       setUser(state.user);
       setToken(state.token);

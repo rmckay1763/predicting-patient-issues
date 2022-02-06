@@ -1,9 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./routes/Login";
-import Navbar from "./components/NavBar";
-import { AuthRoute, GenericRoute } from "./routes/BaseRoutes";
-import HomePatients from "./routes/HomePatients";
-import EditProfile from "./routes/EditProfile";
+import { LoginRoute, HomeRoute } from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
 let token = localStorage.getItem("uid");
@@ -20,34 +16,14 @@ export default function App() {
             exact
             path="/login"
             element={
-              <GenericRoute>
-                <Login />
-              </GenericRoute>
+              <LoginRoute />
             }
           />
           <Route
             exact
             path="/"
             element={
-              <AuthRoute>
-                <Navbar />
-                <div>
-                  <HomePatients/>
-                </div>
-
-              </AuthRoute>
-            }
-          />
-          <Route
-            exact
-            path="/editProfile"
-            element={
-              <AuthRoute>
-                <Navbar />
-                <div>
-                  <EditProfile/>
-                </div>
-              </AuthRoute>
+              <HomeRoute />
             }
           />
         </Routes>

@@ -77,13 +77,11 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
                     children={Icons.add} 
                     style={{color: Colors.primary}} />} 
                 label="Add Patient"
-                labelPlacement="right"
                 onChange={onAddPatient} />
             <FormControlLabel 
                 control={<Switch  
                     style={{color: Colors.primary}} />} 
                 label="Critical Only"
-                labelPlacement="right"
                 onChange = {onCriticalOnlyChanged} />
             <Input 
                 id="filter"

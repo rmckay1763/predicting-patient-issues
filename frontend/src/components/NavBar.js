@@ -99,28 +99,33 @@ function Navbar(props) {
     return navigate("/login");
   };
 
+  const NavButton = (props) => {
+    return (
+      <Box sx={{flexGrow: 1}} >
+      <IconButton
+        sx={{
+          color: Colors.backgroundLighter, 
+          '&:hover': { color: Colors.primary, background: Colors.secondary}
+        }}
+        onClick={props.handler}
+      >
+        {props.icon}
+      </IconButton>
+      </Box>
+    )
+  }
+
   return (
     <AppBar position="static" >
       <CssBaseline />
       <Toolbar style={{ background: Colors.primary, color: Colors.backgroundLighter }}>
-        <Box sx={{flexGrow: 10, cursor: 'pointer'}}>
+        <Box sx={{flexGrow: 10 }}>
         <Typography variant="h5">
           Predicting Patient Conditions Database
         </Typography>
         </Box>
-        <IconButton 
-          style={{ background: Colors.primary, color: Colors.backgroundLighter, flexGrow: 1 }}
-          onClick={home}
-        >
-          {Icons.home}
-        </IconButton>
-        <IconButton 
-          style={{ background: Colors.primary, color: Colors.backgroundLighter, flexGrow: 1 }}
-          onClick={handleRefresh}
-        >
-          {Icons.refresh}
-        </IconButton>
-        
+        <NavButton icon={Icons.home} handler={home} />
+        <NavButton icon={Icons.refresh} handler={handleRefresh} />
         <Button
           id="account-button"
           aria-controls={open ? 'account-menu' : undefined}

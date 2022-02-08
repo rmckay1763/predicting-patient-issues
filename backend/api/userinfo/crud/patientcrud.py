@@ -1,4 +1,5 @@
 from typing import List
+from xml.dom.minidom import Identified
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
@@ -15,10 +16,14 @@ class PatientCRUD(BaseCRUD):
         super().__init__(conn)
 
         # table dependent sql query strings.
-        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
+        self.insertQuery = (
+            "INSERT INTO public.{table} ({columns}) "
             "VALUES (%s, %s, %s, %s, %s) RETURNING {key};")
 
-        self.updateQuery = "UPDATE public.{table} SET {status}=%s WHERE {key}=%s RETURNING *;"
+        self.updateQuery = (
+            "UPDATE public.{table} "
+            "SET {firstname}=%s, {lastname}=%s, {age}=%s, {gender}=%s "
+            "WHERE {key} = %s RETURNING *;")
 
         # sequel statment objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
@@ -45,7 +50,10 @@ class PatientCRUD(BaseCRUD):
 
         self.updateSQL = sql.SQL(self.updateQuery).format(
             table = sql.Identifier('patient'),
-            status = sql.Identifier('status'),
+            firstname = sql.Identifier('firstname'),
+            lastname = sql.Identifier('lastname'),
+            age = sql.Identifier('age'),
+            gender = sql.Identifier('gender'),
             key = sql.Identifier('pid'))
 
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
@@ -118,7 +126,12 @@ class PatientCRUD(BaseCRUD):
     async def update(self, updated: Patient):
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.updateSQL, (updated.status, updated.pid,))
+            cursor.execute(self.updateSQL, (
+                updated.firstname, 
+                updated.lastname, 
+                updated.age, 
+                updated.gender,  
+                updated.pid, ))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

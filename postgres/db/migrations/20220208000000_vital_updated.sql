@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.patient (
 );
 
 CREATE TABLE IF NOT EXISTS public.vital (
-	pid INT REFERENCES public.patient(pid),
+	pid INT REFERENCES public.patient(pid) ON DELETE CASCADE,
 	timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	heart_rate INT,
 	sao2 INT,

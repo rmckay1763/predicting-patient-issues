@@ -12,12 +12,19 @@ export const GetAllPatients = (token) => {
   return axios.get("api/patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 };
 
-/**
- * Get all vital records from the database.
- * @param {*} token Bearer token for authentication
- * @returns Promise with JSON array of vitals
- */
  export const GetAllVitals = async (token) => {
   return axios.get("api/vital/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 }
 
+export const AddPatient = async (token, patient) => {
+  return axios.post("api/patient/insert", patient, { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export const UpdatePatient = async (token, patient) => {
+  return axios.put("api/patient/update", patient, { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export const DeletePatient = async (token, pid) => {
+  let path = "api/patient/delete/" + pid;
+  return axios.delete(path, { headers: { Authorization: `Bearer ${token}` } })
+}

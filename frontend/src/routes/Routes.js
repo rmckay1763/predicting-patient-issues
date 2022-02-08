@@ -1,8 +1,10 @@
 import { Navigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
-import Home from "../components/Home";
 import { useGlobal } from "../contexts/GlobalContext";
-import { NavigatorProvider } from "../contexts/Navigator";
+import BaseRoute from "./BaseRoute";
+import PatientTable from "../components/PatientTable";
+import EditProfileForm from "../components/EditProfileForm";
+import PatientProfile from "../components/PatientProfile";
 
 /**
  * Wrapper for authentication routes
@@ -15,7 +17,7 @@ const AuthRoute = ({ children }) => {
 };
 
 /**
- * Wrappper for generic routes
+ * Wrapper for generic routes
  * @param {*} param0 The route to wrapp
  * @returns Route to child if not authenticated, home page otherwise
  */
@@ -25,7 +27,6 @@ const GenericRoute = ({ children }) => {
 };
 
 /**
- * Login Route
  * @returns Component for login route
  */
 export const LoginRoute = () => {
@@ -37,15 +38,40 @@ export const LoginRoute = () => {
 }
 
 /**
- * Authenticated home page route
- * @returns Component for home page route
+ * @returns Component for patient table route
  */
-export const HomeRoute = () => {
+export const PatientTableRoute = () => {
   return (
     <AuthRoute>
-      <NavigatorProvider>
-        <Home />
-      </NavigatorProvider>
+      <BaseRoute>
+        <PatientTable />
+      </BaseRoute>
+    </AuthRoute>
+  );
+}
+
+/**
+ * @returns Component for edit profile route
+ */
+export const EditProfileRoute = () => {
+  return (
+    <AuthRoute>
+      <BaseRoute>
+        <EditProfileForm />
+      </BaseRoute>
+    </AuthRoute>
+  );
+}
+
+/**
+ * @returns Component for patient profile route
+ */
+ export const PatientProfileRoute = () => {
+  return (
+    <AuthRoute>
+      <BaseRoute>
+        <PatientProfile />
+      </BaseRoute>
     </AuthRoute>
   );
 }

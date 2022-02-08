@@ -1,12 +1,10 @@
 ## Documentation for Frontend
 
-### Custom Hooks
+ #### Global State
 
-The following custom hooks combine useContext and useReducer hooks:
+ The global state uses the following React hooks:
 - [useContext](https://reactjs.org/docs/hooks-reference.html#usecontext)
 - [useReducer](https://reactjs.org/docs/hooks-reference.html#usereducer)
-
- #### Global State
  
 To use the global state, first import the dependencies:
 
@@ -25,7 +23,7 @@ Now the component can access any member of the `state` object, for example, `sta
 **Updating state**
 
 The reference to the `dispatch` object returned from the `useGlobal()` hook allows updates to the `state` object. To update the state, call `dispatch` and provide it with an Action. For example, to update `state.patients`, assuming that `response.data` is the updated list
-
+    
     dispatch({ type: Actions.setPatients, payload: response.data });
 
 The action provided to `dispatch` has the following form
@@ -34,23 +32,54 @@ The action provided to `dispatch` has the following form
 
 where `type` specifies the update to perform and `payload` provides any necessary data. The `payload` is optional and not included for all actions. To see available actions, or to add an action, refer to the documentation inside `frontend/contexts/GlobalContext.js`
 
-#### Navigation
+#### Adding Routes
 
-To use the custom navigator, first import the dependencies
+The `BaseRoute` component provides a convenient wrapper element to render components in the right pane of the application. Follow these steps to add a route to the application.
+- Create a React component with the desired functionality. For example:
+    ```
+    /frontend/components/NewComponent.js
+    ```
+- Import the new component into `/frontend/routes/Routes.js`
+    ```
+    import NewComponent from ../components/NewComponent.js
+    ```
+- Create a function in `/frontend/routes/Routes.js` to return the new component wrapped with `BaseRoute`.
+    ```
+    export const NewComponentRoute = () => {
+        return (
+            <AuthRoute>
+                <BaseRoute>
+                    <NewComponent />
+                </BaseRoute>
+            </AuthRoute>
+        );
+    }
+    ```
+- Create a new `Route` in `/frontend/App.js` and add the wrapped component as the `element`
+    ```
+    <Route
+        exact
+        path="/newComponent"
+        element={
+            <NewComponentRoute />
+        }
+    />
+    ```
 
-    import { useNavigator, Destinations } from "../contexts/Navigator";
+#### Toolbar for Components
+To maintain consistency, each component that renders as the right pane should include a `BaseToolbar` element. First add the import:
 
-Then, inside a functional component, call the custom hook to get a reference to the `location` object and the `navigator` to navigate to destinations:
+    import BaseToolbar from './BaseToolbar';
 
-    const [location, navigator] = useNavigator();
+`BaseToolbar` expects a title to to passed as a prop
 
-The `location` object references the component currently rendered in the right pane of the app. Only `Home.js` should need a reference to this object, so other components can import just the navigator:
+    <BaseToolbar title="Some Title" />
 
-    const [, navigator] = useNavigator();
+To add elements such a as buttons, icons, etc, list them as children. The elements will display in left-to-right order, beginning with the first child
 
-To render a page in the right pane, call the `navigator` object and pass in the destination. For example, to render the patient table:
+    <BaseToolbar title="Some Title">
+        <Input />
+        <Button />
+    </BaseToolbar>
 
-    navigator(Destinations.patientTable);
-
-To see available destinations, or to add a new destination, refer to the documentation inside `frontend/contexts/Navigator.js`
-
+will produce a toolbar titled "Some Title" with a `Input` element and a `Button` element

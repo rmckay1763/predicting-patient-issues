@@ -17,7 +17,6 @@ import { styled } from '@mui/material/styles';
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
 import { useGlobal, Actions } from "../contexts/GlobalContext"
-import { useNavigator, Destinations } from "../contexts/Navigator";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -59,7 +58,6 @@ const StyledMenu = styled((props) => (
 
 function Navbar(props) {
   const navigate = useNavigate();
-  const [, navigator] = useNavigator();
   const [state, dispatch] = useGlobal();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -83,12 +81,13 @@ function Navbar(props) {
   }
 
   const home = () => {
-    navigator(Destinations.patientTable);
+    return navigate("/");
   }
 
   const editProfile = () => {
     handleClose();
-    navigator(Destinations.editProfile);
+    return navigate("/editProfile");
+    
   }
 
   const logout = () => {

@@ -27,7 +27,22 @@ export default function NotificationPanel() {
     const [state, ] = useGlobal();
 
     useEffect(() => {
-        setPatients(state.patients);
+        function mapStatus(patient) {
+            switch (patient.status) {
+                case 0:
+                    patient.status = 'Critical';
+                    break;
+                case 9:
+                    patient.status = 'Stable';
+                    break;
+                default:
+                    break;
+            }
+        }
+        let temp = state.patients;
+        temp.sort((a, b) => a.status - b.status);
+        temp.map(mapStatus);
+        setPatients(temp);
     }, [state.patients])
 
     return (

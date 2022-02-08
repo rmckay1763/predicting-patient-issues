@@ -1,5 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { LoginRoute, HomeRoute } from "./routes/Routes";
+import { 
+  LoginRoute, 
+  PatientTableRoute, 
+  EditProfileRoute, 
+  PatientProfileRoute 
+} from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
 let token = localStorage.getItem("uid");
@@ -23,7 +28,21 @@ export default function App() {
             exact
             path="/"
             element={
-              <HomeRoute />
+              <PatientTableRoute />
+            }
+          />
+          <Route
+            exact
+            path="/editProfile"
+            element={
+              <EditProfileRoute />
+            }
+          />
+          <Route
+            exact
+            path="/patientProfile"
+            element={
+              <PatientProfileRoute />
             }
           />
         </Routes>

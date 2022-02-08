@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import DataTable, { createTheme } from 'react-data-table-component';
 import PatientTableToolbar from './PatientTableToolbar';
 import PatientTableExpandedRow from './PatientTableExpandedRow';
@@ -6,7 +7,6 @@ import { Colors } from "../resources/Colors"
 import { Icons } from '../resources/Icons';
 import { useGlobal } from '../contexts/GlobalContext';
 import { IconButton } from '@mui/material';
-import { useNavigator, Destinations } from '../contexts/Navigator';
  
 /**
  * Creates the data table component.
@@ -18,7 +18,7 @@ export default function PatientTable() {
     const [data, setData] = useState([]);
     const [criticalOnly, setCriticalOnly] = useState(false);
     const [query, setQuery] = useState('');
-    const [, navigator ] = useNavigator();
+    const navigate = useNavigate();
     document.title = "PPCD - Patients";
 
     // prepare patient data for rendering
@@ -56,7 +56,7 @@ export default function PatientTable() {
     // click handler for table rows
     const onRowClicked = (row) => {
         let selected = state.patients.find((patient) => patient.pid === row.pid);
-        console.log(selected);
+        return navigate('/patientProfile', {state: {patient: selected}})
     }
 
     // component for expanded rows
@@ -69,10 +69,10 @@ export default function PatientTable() {
     }
 
     // action button for patient profile
-    const profileButton = () => {
+    const profileButton = (row) => {
         return (
             <IconButton 
-                onClick={onRowClicked} 
+                onClick={() => onRowClicked(row)} 
                 sx={{
                     color: Colors.primary, 
                     '&:hover': { color: Colors.secondary, background: Colors.primary}
@@ -156,7 +156,7 @@ export default function PatientTable() {
         },
         {
             button: true,
-            cell: () => profileButton()
+            cell: (row) => profileButton(row)
             
         },
         {
@@ -189,8 +189,6 @@ export default function PatientTable() {
                 sortIcon = {Icons.arrowDownward}
                 striped = {true}
                 highlightOnHover = {true}
-                //pointerOnHover = {true}
-                //onRowClicked = {onRowClicked}
                 pagination = {true}
                 expandableRows = {true}
                 expandableRowsComponent = {expandedComponent}

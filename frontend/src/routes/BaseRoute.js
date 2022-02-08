@@ -5,19 +5,17 @@ import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
 import { GetAllPatients, GetAllVitals } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
-import Navbar from "./NavBar";
+import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
-import { useNavigator } from "../contexts/Navigator";
 
 /**
- * Home page for application. 
- * Makes api calls to update data. 
- * @returns Component for the home page
+ * Base route for destinations. 
+ * Child component will render as the right pane of the application.
+ * @returns Split pane layout with appbar.
  */
-export default function Home() {
+export default function BaseRoute(props) {
 
     const [state, dispatch] = useGlobal();
-    const [destination, ] = useNavigator();
     const MINUTE_MS = 10000;
     const { width } = useViewport();
     const breakpoint = 900;
@@ -53,7 +51,7 @@ export default function Home() {
         return (
             <Fragment>
                 <Navbar refresh={loadData} />
-                {destination}
+                {props.children}
             </Fragment>
         );
     }
@@ -69,12 +67,12 @@ export default function Home() {
                     </ReflexElement>
                     <ReflexSplitter style={{ height: "1080px" }} />
                     <ReflexElement flex="3">
-                        {destination}
+                        {props.children}
                     </ReflexElement>
                 </ReflexContainer>
             </BrowserView>
             <MobileView>
-                {destination}
+                {props.children}
             </MobileView>
         </Fragment>
     );

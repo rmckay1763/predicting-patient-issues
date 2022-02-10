@@ -5,6 +5,7 @@ import BaseRoute from "./BaseRoute";
 import PatientTable from "../components/PatientTable";
 import EditProfileForm from "../components/EditProfileForm";
 import PatientProfile from "../components/PatientProfile";
+import AddPatientForm from "../components/AddPatientForm";
 
 /**
  * Wrapper for authentication routes
@@ -74,4 +75,17 @@ export const EditProfileRoute = () => {
       </BaseRoute>
     </AuthRoute>
   );
+}
+
+/**
+ * @returns Component for add patient route
+ */
+export const AddPatientRoute = () => {
+  return (
+    <AuthRoute>
+      <BaseRoute>
+        <AddPatientForm />
+      </BaseRoute>
+    </AuthRoute>
+  )
 }

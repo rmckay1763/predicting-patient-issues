@@ -31,6 +31,9 @@ export default function PatientTable() {
                 case 9:
                     patient.status = 'Stable';
                     break;
+                case 10:
+                    patient.status = 'Unobserved';
+                    break;
                 default:
                     break;
             }

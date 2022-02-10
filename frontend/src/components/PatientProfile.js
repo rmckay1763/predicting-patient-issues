@@ -10,8 +10,8 @@ export default function PatientProfile() {
     const [patient, setPatient] = useState(location.state.patient);
 
     useEffect(() => {
-        console.log(state.token);
-    }, [state])
+        document.title = "PPCD - Patient Profile";
+    }, []);
 
     const handleUpdate = async () => {
         try {

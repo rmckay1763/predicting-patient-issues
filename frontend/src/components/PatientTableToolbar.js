@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useNavigate } from "react-router-dom";
 import { 
     Switch,  
     FormControlLabel, 
@@ -18,7 +19,8 @@ import { Icons } from '../resources/Icons';
  */
 export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
 
-    const toolbar = useRef(null)
+    const navigate = useNavigate();
+    const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
     const breakpoint = 700; 
 
@@ -42,7 +44,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
      * Handler for add patient button.
      */
     const onAddPatient = () => {
-
+        return navigate("/newPatient");
     }
 
     // Reduced toolbar for small screen sized
@@ -77,7 +79,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
                     children={Icons.add} 
                     style={{color: Colors.primary}} />} 
                 label="Add Patient"
-                onChange={onAddPatient} />
+                onClick={onAddPatient} />
             <FormControlLabel 
                 control={<Switch  
                     style={{color: Colors.primary}} />} 

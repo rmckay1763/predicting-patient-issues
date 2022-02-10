@@ -6,13 +6,11 @@ import {
     TextField,
     MenuItem,
     Button,
-    Snackbar,
-    Alert
 } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import BaseToolbar from "./BaseToolbar";
-import { SuccessToast, WarningToast } from "../resources/Toasts";
+import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 
 /**
@@ -20,13 +18,12 @@ import { Colors } from "../resources/Colors";
  */
 export default function AddPatientForm() {
     const navigate = useNavigate();
-    const [state, ] = useGlobal();
+    const [state, dispatch] = useGlobal();
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
     const [ageError, setAgeError] = useState(false);
-    const [alert, setAlert] = useState({open: false, severity: "", message: ""});
 
     useEffect(() => {
         document.title = "PPCD - Add Patient";
@@ -39,13 +36,6 @@ export default function AddPatientForm() {
         setGender("");
     }
 
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-        setAlert({ open: false, severity: "", message: "" });
-      };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         let patient = {
@@ -56,10 +46,11 @@ export default function AddPatientForm() {
         }
         let response = await AddPatient(state.token, patient);
         if (response.data) {
-            setAlert({open: true, severity: "success", message: "Patient added!"});
-            clearInput();
+            AlertSuccess(dispatch, "Patient successfully added!");
+            return navigate("/");
         } else {
-            setAlert({open: true, severity: "error", message: "Failed to add patient"});
+            AlertError(dispatch, "Failed to add patient!");
+            clearInput();
         }
     }
 
@@ -164,17 +155,6 @@ export default function AddPatientForm() {
                     Add Patient
                 </Button>
             </Box>
-            <Snackbar 
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                open={alert.open}
-                onClose={handleAlertClose}
-                autoHideDuration={5000}
-                message={alert.message}
-            >
-                <Alert severity={alert.severity} variant="filled">
-                    {alert.message}
-                </Alert>
-            </Snackbar>
         </Fragment>
     )
 }

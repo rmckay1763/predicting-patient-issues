@@ -7,6 +7,7 @@ import { GetAllPatients, GetAllVitals } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
+import AlertMessage from "../components/AlertMessage";
 
 /**
  * Base route for destinations. 
@@ -50,6 +51,7 @@ export default function BaseRoute(props) {
         document.body.style.overflow = 'scroll';
         return (
             <Fragment>
+                <AlertMessage />
                 <Navbar refresh={loadData} />
                 {props.children}
             </Fragment>
@@ -59,6 +61,7 @@ export default function BaseRoute(props) {
     // return split pane for normal screen size
     return (
         <Fragment>
+            <AlertMessage />
             <Navbar refresh={loadData}/>
             <BrowserView>
                 <ReflexContainer orientation="vertical" windowResizeAware={true}>

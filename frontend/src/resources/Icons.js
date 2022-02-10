@@ -15,6 +15,8 @@ import InfoIcon from '@mui/icons-material/Info';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import HomeIcon from '@mui/icons-material/Home';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
 
 
 export const Icons = {
@@ -30,5 +32,7 @@ export const Icons = {
     info: <InfoIcon />,
     refresh: <RefreshIcon />,
     home: <HomeIcon />,
+    check: <DoneIcon />,
+    error: <ErrorIcon />,
     patientProfile: <FolderSharedIcon />
 }

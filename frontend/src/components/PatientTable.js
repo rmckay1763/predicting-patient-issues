@@ -1,10 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import DataTable, { createTheme } from 'react-data-table-component';
 import PatientTableToolbar from './PatientTableToolbar';
 import PatientTableExpandedRow from './PatientTableExpandedRow';
 import { Colors } from "../resources/Colors"
 import { Icons } from '../resources/Icons';
 import { useGlobal } from '../contexts/GlobalContext';
+import { IconButton } from '@mui/material';
  
 /**
  * Creates the data table component.
@@ -16,6 +18,8 @@ export default function PatientTable() {
     const [data, setData] = useState([]);
     const [criticalOnly, setCriticalOnly] = useState(false);
     const [query, setQuery] = useState('');
+    const navigate = useNavigate();
+    document.title = "PPCD - Patients";
 
     // prepare patient data for rendering
     useEffect(() => {
@@ -26,6 +30,9 @@ export default function PatientTable() {
                     break;
                 case 9:
                     patient.status = 'Stable';
+                    break;
+                case 10:
+                    patient.status = 'Unobserved';
                     break;
                 default:
                     break;
@@ -52,19 +59,32 @@ export default function PatientTable() {
     // click handler for table rows
     const onRowClicked = (row) => {
         let selected = state.patients.find((patient) => patient.pid === row.pid);
-        console.log(selected);
+        return navigate('/patientProfile', {state: {patient: selected}})
     }
 
-    // conditional styling for critical status
-    const conditionalCellStyles = [
-        {
-            when: row => row.status === 'Critical',
-            style: {
-                backgroundColor: Colors.alert,
-                color: Colors.white
-            }
-        }
-    ]
+    // component for expanded rows
+    const expandedComponent = ({data}) => {
+        let rows = state.vitals
+        rows = rows.filter((vital) => {
+            return vital.pid === data.pid;
+        });
+        return <PatientTableExpandedRow data={rows} />
+    }
+
+    // action button for patient profile
+    const profileButton = (row) => {
+        return (
+            <IconButton 
+                onClick={() => onRowClicked(row)} 
+                sx={{
+                    color: Colors.primary, 
+                    '&:hover': { color: Colors.secondary, background: Colors.primary}
+                }}
+            >
+                {Icons.patientProfile}
+            </IconButton>
+        )
+    }
 
     // theme for table
     createTheme(
@@ -96,14 +116,37 @@ export default function PatientTable() {
         }
     )
 
-    // component for expanded rows
-    const expandedComponent = ({data}) => {
-        let rows = state.vitals
-        rows = rows.filter((vital) => {
-            return vital.pid === data.pid;
-        });
-        return <PatientTableExpandedRow data={rows} />
+    // custom style for expander button
+    const customStyles = {
+        expanderButton: {
+            style: {
+                '&:hover:enabled': {
+                    cursor: 'pointer',
+                    color: Colors.secondary,
+                    backgroundColor: Colors.primary
+                },
+                '&:hover:not(:disabled)': {
+                    cursor: 'pointer',
+                    backgroundColor: Colors.primary,
+                },
+                '&:focus': {
+                    outline: 'none',
+                    backgroundColor: Colors.backgroundLight,
+                },
+            },
+        },
     }
+
+    // conditional styling for critical status
+    const conditionalCellStyles = [
+        {
+            when: row => row.status === 'Critical',
+            style: {
+                backgroundColor: Colors.alert,
+                color: Colors.white
+            }
+        }
+    ]
         
     // table columns
     const columns = [
@@ -116,7 +159,8 @@ export default function PatientTable() {
         },
         {
             button: true,
-            cell: () => Icons.patientProfile
+            cell: (row) => profileButton(row)
+            
         },
         {
             id: 'lastname',
@@ -148,13 +192,12 @@ export default function PatientTable() {
                 sortIcon = {Icons.arrowDownward}
                 striped = {true}
                 highlightOnHover = {true}
-                pointerOnHover = {true}
-                onRowClicked = {onRowClicked}
                 pagination = {true}
                 expandableRows = {true}
                 expandableRowsComponent = {expandedComponent}
                 columns = {columns}
                 data = {data}
+                customStyles={customStyles}
             />
         </Fragment>
     );

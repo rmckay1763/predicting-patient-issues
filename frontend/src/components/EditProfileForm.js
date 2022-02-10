@@ -21,6 +21,8 @@ export default function EditProfileForm() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
+  document.title = "PPCD - Edit Profile";
+
   useEffect(() => {
       setUser(state.user);
       setToken(state.token);
@@ -66,7 +68,7 @@ export default function EditProfileForm() {
         <p>
         <Typography
           sx={{ mt: 0.5, ml: 2 }}
-          color="text.secondary"
+          color="text.primary"
           display="block"
           variant="caption"
         >

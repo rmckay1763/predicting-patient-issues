@@ -5,7 +5,9 @@ import {
     Typography,
     TextField,
     MenuItem,
-    Button
+    Button,
+    Snackbar,
+    Alert
 } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
@@ -24,6 +26,7 @@ export default function AddPatientForm() {
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
     const [ageError, setAgeError] = useState(false);
+    const [alert, setAlert] = useState({open: false, severity: "", message: ""});
 
     useEffect(() => {
         document.title = "PPCD - Add Patient";
@@ -36,6 +39,13 @@ export default function AddPatientForm() {
         setGender("");
     }
 
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setAlert({ open: false, severity: "", message: "" });
+      };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         let patient = {
@@ -44,13 +54,13 @@ export default function AddPatientForm() {
             gender: gender,
             age: age
         }
-        clearInput();
         let response = await AddPatient(state.token, patient);
         if (response.data) {
-            SuccessToast("Patient added!");
-            return navigate("/");
+            setAlert({open: true, severity: "success", message: "Patient added!"});
+            clearInput();
+        } else {
+            setAlert({open: true, severity: "error", message: "Failed to add patient"});
         }
-        WarningToast("Something went wrong. Please try again.");
     }
 
     return (
@@ -154,6 +164,17 @@ export default function AddPatientForm() {
                     Add Patient
                 </Button>
             </Box>
+            <Snackbar 
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                open={alert.open}
+                onClose={handleAlertClose}
+                autoHideDuration={5000}
+                message={alert.message}
+            >
+                <Alert severity={alert.severity} variant="filled">
+                    {alert.message}
+                </Alert>
+            </Snackbar>
         </Fragment>
     )
 }

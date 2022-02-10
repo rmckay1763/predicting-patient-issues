@@ -2,7 +2,7 @@
  * Resource file for colors
  */
 
-import { red, grey } from '@mui/material/colors';
+import { red, grey, orange } from '@mui/material/colors';
 
 /*primary is a dark blue, and secondary in a light blue*/
 
@@ -14,4 +14,5 @@ export const Colors = {
     backgroundLight: grey[300],
     backgroundLighter: grey[100],
     focus: grey[400],
+    warning: orange[800]
 }

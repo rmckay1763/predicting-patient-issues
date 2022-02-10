@@ -17,7 +17,9 @@ export const Actions = {
     setUser: 'set_user',
     clearUser: 'clear_user',
     setPatients: 'set_patients',
-    setVitals: 'set_vitals'
+    setVitals: 'set_vitals',
+    setAlert: 'set_alert',
+    clearAlert: 'clear_alert'
 };
 
 /**
@@ -45,7 +47,8 @@ export const GlobalProvider = (props) => {
         token: props.token,
         user: props.user,
         patients: [],
-        vitals: []
+        vitals: [],
+        alert: {open: false, severity: "success", message: ""}
     };
     const [state, dispatch] = useReducer(reducer, initialState)
     return (
@@ -75,6 +78,10 @@ const reducer = (state, { type, payload }) => {
             return { ...state, patients: payload };
         case Actions.setVitals:
             return { ...state, vitals: payload };
+        case Actions.setAlert:
+            return { ...state, alert: payload };
+        case Actions.clearAlert:
+            return { ...state, alert: {...state.alert, open: false, message: ""} };
         default:
             throw new Error(`Unknown action type: ${type}`);
     }

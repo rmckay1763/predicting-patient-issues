@@ -5,12 +5,12 @@ import {
     Typography,
     TextField,
     MenuItem,
-    Button
+    Button,
 } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import BaseToolbar from "./BaseToolbar";
-import { SuccessToast, WarningToast } from "../resources/Toasts";
+import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 
 /**
@@ -18,7 +18,7 @@ import { Colors } from "../resources/Colors";
  */
 export default function AddPatientForm() {
     const navigate = useNavigate();
-    const [state, ] = useGlobal();
+    const [state, dispatch] = useGlobal();
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [age, setAge] = useState("");
@@ -44,13 +44,14 @@ export default function AddPatientForm() {
             gender: gender,
             age: age
         }
-        clearInput();
         let response = await AddPatient(state.token, patient);
         if (response.data) {
-            SuccessToast("Patient added!");
+            AlertSuccess(dispatch, "Patient successfully added!");
             return navigate("/");
+        } else {
+            AlertError(dispatch, "Failed to add patient!");
+            clearInput();
         }
-        WarningToast("Something went wrong. Please try again.");
     }
 
     return (

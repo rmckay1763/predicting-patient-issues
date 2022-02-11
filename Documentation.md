@@ -83,3 +83,24 @@ To add elements such a as buttons, icons, etc, list them as children. The elemen
     </BaseToolbar>
 
 will produce a toolbar titled "Some Title" with a `Input` element and a `Button` element
+
+#### Alert Messages
+The file `/components/AlertMessage.js` provides functions to render alert messages with the mui `Alert` and `Snackbar` components. There are 4 available alert types:
+
+    AlertSuccess
+    AlertError
+    AlertInfo
+    AlertWarning
+
+The app has a top level component for rendering alerts that uses global state to control the alerts. To make an alert, first get a reference to `dispatch` from the global state
+
+    import { useGlobal } from "../contexts/GlobalContext";
+    const [state, dispatch] = useGlobal();
+
+import the function for the desired alert, for example, to make a success alert
+
+    import { AlertSuccess } from "./AlertMessage";
+
+Then call the function and pass in the `dispatch` object and the desired message
+
+    AlertSuccess(dispatch, "Some success message!");

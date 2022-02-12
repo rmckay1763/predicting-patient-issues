@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
-import { useGlobal } from "../contexts/GlobalContext";
+import { Actions, useGlobal } from "../contexts/GlobalContext";
 import BaseRoute from "./BaseRoute";
 import PatientTable from "../components/PatientTable";
 import EditProfileForm from "../components/EditProfileForm";
 import PatientProfile from "../components/PatientProfile";
 import AddPatientForm from "../components/AddPatientForm";
+import { CheckToken } from "../controllers/APIController";
 
 /**
  * Wrapper for authentication routes
@@ -13,7 +14,9 @@ import AddPatientForm from "../components/AddPatientForm";
  * @returns Route to childe if authenticated, login route otherwise
  */
 const AuthRoute = ({ children }) => {
-  const [state,] = useGlobal();
+  const [state, dispatch] = useGlobal();
+  CheckToken(state.token)
+    .catch(() => dispatch({type: Actions.clearToken}));
   return state.token ? children : <Navigate to="/login" />;
 };
 
@@ -23,7 +26,7 @@ const AuthRoute = ({ children }) => {
  * @returns Route to child if not authenticated, home page otherwise
  */
 const GenericRoute = ({ children }) => {
-  const [state,] = useGlobal();
+  const [state, ] = useGlobal();
   return state.token ? <Navigate to="/" /> : children;
 };
 

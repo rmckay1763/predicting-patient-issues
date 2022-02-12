@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     FormControlLabel,
     IconButton
@@ -13,6 +13,7 @@ import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 
 export default function PatientProfile() {
+    const navigate = useNavigate();
     const [state, dispatch] = useGlobal();
     const location = useLocation();
     const [patient, setPatient] = useState(location.state.patient);
@@ -34,6 +35,7 @@ export default function PatientProfile() {
         try {
             await DeletePatient(state.token, patient.pid);
             AlertSuccess(dispatch, "Patient deleted");
+            return navigate("/")
         } catch (error) {
             console.error(error);
             AlertError(dispatch, "Failed to delete patient");
@@ -56,7 +58,7 @@ export default function PatientProfile() {
                 setOpen={setOpenDialog}
                 onConfirm={handleDelete}
                 title="Confirmation Required"
-                content="Remove patient and associate vital records?"
+                content="Remove patient and associated vital records?"
             />
         </Fragment>
     )

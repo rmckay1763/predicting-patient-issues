@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { UpdatePatient, DeletePatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
-import BaseToolbar from "./BaseToolbar";
+import BaseToolbar, {ToolbarLabeledIcon } from "./BaseToolbar";
 import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
@@ -45,12 +45,10 @@ export default function PatientProfile() {
     return (
         <Fragment>
             <BaseToolbar title="Patient Profile">
-            <FormControlLabel 
-                control={<IconButton 
-                    children={Icons.delete} 
-                    style={{color: Colors.primary}} />} 
-                label="Delete Patient"
-                onClick={() => setOpenDialog(true)} />
+                <ToolbarLabeledIcon 
+                    icon={Icons.delete} 
+                    label="Delete Patient" 
+                    onClick={() => setOpenDialog(true)} />
             </BaseToolbar>
             <h4>{patient.firstname} {patient.lastname}</h4>
             <ConfirmDialog

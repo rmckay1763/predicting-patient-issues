@@ -1,16 +1,13 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { 
-    Switch,  
-    FormControlLabel, 
-    Input, 
-    InputAdornment,
-    IconButton,
-    TextField
-} from '@mui/material'
-import BaseToolbar from './BaseToolbar';
+import BaseToolbar, {
+    ToolbarIcon,
+    ToolbarLabeledIcon,
+    ToolbarSwitch,
+    ToolbarLabeledSwitch,
+    ToolbarSearch
+} from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
-import { Colors } from "../resources/Colors"
 import { Icons } from '../resources/Icons';
 
 /**
@@ -51,105 +48,27 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
     // Reduced toolbar for small screen sized
     if (width < breakpoint) return (
         <BaseToolbar title="Patients" ref={toolbar}>
-            <IconButton 
-                children={Icons.add}
-                style={{color: Colors.primary}}
-                onChange={onAddPatient}
-            />
-            <Switch 
-                onChange = {onCriticalOnlyChanged} 
-                sx={{
-                    color: Colors.primary,
-                    '& .Mui-checked': {
-                        color: Colors.alert,
-                        backgroundColor: Colors.alert
-                    }
-                }}
-            />
-            <Input 
-                id="filter"
-                placeholder="Search"
-                startAdornment={
-                    <InputAdornment position="start" style={{color: Colors.primary}} >
-                        {Icons.search}
-                    </InputAdornment>
-                }
-                onChange={onSearchChanged}
-            />
+            <ToolbarIcon 
+                onClick={onAddPatient} 
+                icon={Icons.add} />
+            <ToolbarSwitch onChange={onCriticalOnlyChanged} />
+            <ToolbarSearch onChange={onSearchChanged} />
         </BaseToolbar> 
     )
 
     // Toolbar for standard screen size
     return (
         <BaseToolbar title="Patients" ref={toolbar} >
-            <FormControlLabel 
-                control={<IconButton 
-                    children={Icons.add} 
-                    //sx={{color: Colors.primary}} 
-                />} 
-                label="Add Patient"
+            <ToolbarLabeledIcon 
+                icon={Icons.add}
                 onClick={onAddPatient} 
-                sx={{
-                    '& .MuiIconButton-root': {
-                        color: Colors.primary,
-                    },
-                    '&:hover .MuiFormControlLabel-label': {
-                        fontWeight: 600
-                    },
-                }} />
-            <FormControlLabel
-                control={<Switch />} 
+                label="Add Patient" />
+            <ToolbarLabeledSwitch 
+                onClick={onCriticalOnlyChanged}
                 label="Critical Only"
-                onChange = {onCriticalOnlyChanged}
-                sx={{
-                    color: Colors.primary,
-                    backgroundColor: Colors.secondary,
-                    '& .MuiSwitch-switchBase': {
-                        color: Colors.primary,
-                    },
-                    '& .Mui-checked': {
-                        color: Colors.alert,
-                        '& + .MuiSwitch-track': {
-                            backgroundColor: Colors.primary,
-                            },
-                    },
-                    '& .MuiSwitch-track': {
-                        backgroundColor: Colors.primary,
-                    },
-                    '&:hover .MuiFormControlLabel-label': {
-                        fontWeight: 600
-                    },
-                }} 
             />
-            <TextField 
-                variant="standard"
-                placeholder="Search"
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            {Icons.search}
-                        </InputAdornment>
-                    )
-                }}
-                onChange={onSearchChanged}
-                sx={{
-                    '& .MuiInput-underline': {
-                        color: Colors.primary,
-                    },
-                    '&& .MuiInput-underline:before': {
-                        borderColor: Colors.primary
-                    },
-                    '&& .MuiInput-underline:after': {
-                        borderColor: Colors.primary
-                    },
-                    '&& .MuiInput-underline:hover::before': {
-                        borderColor: Colors.primary
-                    },
-                    '& .MuiInputAdornment-root': {
-                        color: Colors.primary,
-                    },
-                }}
-            />
+            <ToolbarSearch onChange={onSearchChanged} />
         </BaseToolbar>
     )
 }
+

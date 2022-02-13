@@ -23,12 +23,7 @@ const BaseToolbar = (props, ref) => {
         let temp = Children.map(props.children, (child) => {
             if (isValidElement(child)) {
                 return (
-                    <Box 
-                        style={{
-                            backgroundColor: Colors.secondary,
-                            color: Colors.primary,
-                            flexGrow: 1}}
-                    >
+                    <Box style={{flexGrow: 1}}>
                         {child}
                     </Box>
                 )

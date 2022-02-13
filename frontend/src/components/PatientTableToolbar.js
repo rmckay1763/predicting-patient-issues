@@ -6,6 +6,7 @@ import {
     Input, 
     InputAdornment,
     IconButton,
+    TextField
 } from '@mui/material'
 import BaseToolbar from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
@@ -57,7 +58,14 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
             />
             <Switch 
                 onChange = {onCriticalOnlyChanged} 
-                style={{color: Colors.primary}}/>
+                sx={{
+                    color: Colors.primary,
+                    '& .Mui-checked': {
+                        color: Colors.alert,
+                        backgroundColor: Colors.alert
+                    }
+                }}
+            />
             <Input 
                 id="filter"
                 placeholder="Search"
@@ -73,27 +81,74 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
 
     // Toolbar for standard screen size
     return (
-        <BaseToolbar title="Patients" ref={toolbar}>
+        <BaseToolbar title="Patients" ref={toolbar} >
             <FormControlLabel 
                 control={<IconButton 
                     children={Icons.add} 
-                    style={{color: Colors.primary}} />} 
+                    //sx={{color: Colors.primary}} 
+                />} 
                 label="Add Patient"
-                onClick={onAddPatient} />
-            <FormControlLabel 
-                control={<Switch  
-                    style={{color: Colors.primary}} />} 
+                onClick={onAddPatient} 
+                sx={{
+                    '& .MuiIconButton-root': {
+                        color: Colors.primary,
+                    },
+                    '&:hover .MuiFormControlLabel-label': {
+                        fontWeight: 600
+                    },
+                }} />
+            <FormControlLabel
+                control={<Switch />} 
                 label="Critical Only"
-                onChange = {onCriticalOnlyChanged} />
-            <Input 
-                id="filter"
+                onChange = {onCriticalOnlyChanged}
+                sx={{
+                    color: Colors.primary,
+                    backgroundColor: Colors.secondary,
+                    '& .MuiSwitch-switchBase': {
+                        color: Colors.primary,
+                    },
+                    '& .Mui-checked': {
+                        color: Colors.alert,
+                        '& + .MuiSwitch-track': {
+                            backgroundColor: Colors.primary,
+                            },
+                    },
+                    '& .MuiSwitch-track': {
+                        backgroundColor: Colors.primary,
+                    },
+                    '&:hover .MuiFormControlLabel-label': {
+                        fontWeight: 600
+                    },
+                }} 
+            />
+            <TextField 
+                variant="standard"
                 placeholder="Search"
-                startAdornment={
-                    <InputAdornment position="start" style={{color: Colors.primary}} >
-                        {Icons.search}
-                    </InputAdornment>
-                }
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            {Icons.search}
+                        </InputAdornment>
+                    )
+                }}
                 onChange={onSearchChanged}
+                sx={{
+                    '& .MuiInput-underline': {
+                        color: Colors.primary,
+                    },
+                    '&& .MuiInput-underline:before': {
+                        borderColor: Colors.primary
+                    },
+                    '&& .MuiInput-underline:after': {
+                        borderColor: Colors.primary
+                    },
+                    '&& .MuiInput-underline:hover::before': {
+                        borderColor: Colors.primary
+                    },
+                    '& .MuiInputAdornment-root': {
+                        color: Colors.primary,
+                    },
+                }}
             />
         </BaseToolbar>
     )

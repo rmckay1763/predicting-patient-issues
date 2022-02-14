@@ -32,3 +32,7 @@ export const DeletePatient = async (token, pid) => {
   let path = "api/patient/delete/" + pid;
   return axios.delete(path, { headers: { Authorization: `Bearer ${token}` } })
 }
+
+export const AddVital = async (token, vital) => {
+  return axios.post("api/vital/insert", vital, { headers: { Authorization: `Bearer ${token}` } });
+}

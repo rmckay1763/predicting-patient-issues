@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { TextField, MenuItem } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
-import BaseToolbar from "./BaseToolbar";
+import BaseToolbar, { ToolbarLabeledIcon } from "./BaseToolbar";
 import BaseForm from "./BaseForm";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
+import { Icons } from "../resources/Icons";
 
 /**
  * @returns Component to add a patient.
@@ -21,7 +22,7 @@ export default function AddPatientForm() {
     const [ageError, setAgeError] = useState(false);
 
     useEffect(() => {
-        document.title = "PPCD - Add Patient";
+        document.title = "PPCD - Patient Profile";
     });
 
     const clearInput = () => {
@@ -39,11 +40,11 @@ export default function AddPatientForm() {
             gender: gender,
             age: age
         }
-        let response = await AddPatient(state.token, patient);
-        if (response.data) {
+        try {
+            await AddPatient(state.token, patient);
             AlertSuccess(dispatch, "Patient successfully added!");
             return navigate("/");
-        } else {
+        } catch (error) {
             AlertError(dispatch, "Failed to add patient!");
             clearInput();
         }
@@ -51,7 +52,12 @@ export default function AddPatientForm() {
 
     return (
         <Fragment>
-            <BaseToolbar title="Add New Patient"></BaseToolbar>
+            <BaseToolbar title="Add New Patient">
+                <ToolbarLabeledIcon
+                    label="Cancel"
+                    icon={Icons.close}
+                    onClick={() => navigate("/")} />
+            </BaseToolbar>
             <BaseForm 
                 title="Patient Information"
                 onSubmit={handleSubmit}

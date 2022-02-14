@@ -7,6 +7,9 @@ import {
 import { Colors } from "../resources/Colors";
 
 /**
+ * @props {function} onSubmit -- Callback for submit button
+ * @props {string} title -- Title at top of form
+ * @props {string} submitLabel -- Label for submit button
  * @returns Component to add a patient.
  */
 export default function BaseForm(props) {

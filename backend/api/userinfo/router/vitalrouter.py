@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from api.userinfo.models import Vital
+from api.userinfo.models import Vital, VitalIn
 from api.userinfo.crud.vitalcrud import VitalCRUD
 from api.dependencies import auth
 
@@ -57,7 +57,7 @@ class VitalRouter:
         except BaseException as err:
             raise err
 
-    async def insert(self, vital: Vital):
+    async def insert(self, vital: VitalIn):
         """
         Route to insert a new vital record into the table
 

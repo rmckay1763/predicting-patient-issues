@@ -47,7 +47,7 @@ export default function PatientProfile() {
 
     return (
         <Fragment>
-            <BaseToolbar title="Patient Profile">
+            <BaseToolbar title={profTitle}>
             <ToolbarLabeledIcon 
                     icon={Icons.add} 
                     label="Enter Vitals" 

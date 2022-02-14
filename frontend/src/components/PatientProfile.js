@@ -1,15 +1,10 @@
 import { Fragment, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-    FormControlLabel,
-    IconButton
-} from "@mui/material";
 import { UpdatePatient, DeletePatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
-import BaseToolbar from "./BaseToolbar";
+import BaseToolbar, {ToolbarLabeledIcon } from "./BaseToolbar";
 import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
-import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 import ProfileTable from "./ProfileTable";
 
@@ -32,7 +27,11 @@ export default function PatientProfile() {
         }
     }
 
-    const handleDelete = async() => {
+    const onEnterVitals = () => {
+        return navigate("/enterVitals", {state: {patient: patient}});
+    }
+
+    const onDelete = async() => {
         try {
             await DeletePatient(state.token, patient.pid);
             AlertSuccess(dispatch, "Patient deleted");
@@ -48,13 +47,15 @@ export default function PatientProfile() {
 
     return (
         <Fragment>
-            <BaseToolbar title={profTitle}>
-            <FormControlLabel 
-                control={<IconButton 
-                    children={Icons.delete} 
-                    style={{color: Colors.primary}} />} 
-                label="Delete Patient"
-                onClick={() => setOpenDialog(true)} />
+            <BaseToolbar title="Patient Profile">
+            <ToolbarLabeledIcon 
+                    icon={Icons.add} 
+                    label="Enter Vitals" 
+                    onClick={onEnterVitals} />
+                <ToolbarLabeledIcon 
+                    icon={Icons.delete} 
+                    label="Delete Patient" 
+                    onClick={() => setOpenDialog(true)} />
             </BaseToolbar>
             <ProfileTable />
             <h4>Vitals Table Toolbar w/ Add Button Goes Here.</h4>
@@ -62,7 +63,7 @@ export default function PatientProfile() {
             <ConfirmDialog
                 open={openDialog}
                 setOpen={setOpenDialog}
-                onConfirm={handleDelete}
+                onConfirm={onDelete}
                 title="Confirmation Required"
                 content={content}
             />

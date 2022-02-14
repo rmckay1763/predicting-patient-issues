@@ -59,7 +59,7 @@ export default function PatientTable() {
     // click handler for table rows
     const onRowClicked = (row) => {
         let selected = state.patients.find((patient) => patient.pid === row.pid);
-        return navigate('/patientProfile', {state: {patient: selected}})
+        return navigate('/patientProfile', {state: {patient: selected}});
     }
 
     // component for expanded rows

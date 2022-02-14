@@ -11,6 +11,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
+import ProfileTable from "./ProfileTable";
 
 export default function PatientProfile() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function PatientProfile() {
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        document.title = "PPCD - Patient Profile";
+        document.title = ("PPCD - " + patient.firstname + " " + patient.lastname);
     }, []);
 
     const handleUpdate = async () => {
@@ -42,9 +43,12 @@ export default function PatientProfile() {
         }
     }
 
+    const profTitle = "Patient Profile: " + patient.firstname + " " + patient.lastname;
+    const content= "Are you sure you want to remove the patient " + patient.firstname + " " + patient.lastname + " and their associated vitals records? This action cannot be undone.";
+
     return (
         <Fragment>
-            <BaseToolbar title="Patient Profile">
+            <BaseToolbar title={profTitle}>
             <FormControlLabel 
                 control={<IconButton 
                     children={Icons.delete} 
@@ -52,13 +56,15 @@ export default function PatientProfile() {
                 label="Delete Patient"
                 onClick={() => setOpenDialog(true)} />
             </BaseToolbar>
-            <h4>{patient.firstname} {patient.lastname}</h4>
+            <ProfileTable />
+            <h4>Vitals Table Toolbar w/ Add Button Goes Here.</h4>
+            <h4>Vitals Table Goes Here.</h4>
             <ConfirmDialog
                 open={openDialog}
                 setOpen={setOpenDialog}
                 onConfirm={handleDelete}
                 title="Confirmation Required"
-                content="Remove patient and associated vital records?"
+                content={content}
             />
         </Fragment>
     )

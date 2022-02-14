@@ -41,11 +41,14 @@ export default function AddPatientForm() {
             age: age
         }
         try {
-            await AddPatient(state.token, patient);
+            let response = await AddPatient(state.token, patient);
+            if (!response.data) {
+                throw new Error("Empty reponse");
+            }
             AlertSuccess(dispatch, "Patient successfully added!");
             return navigate("/");
         } catch (error) {
-            AlertError(dispatch, "Failed to add patient!");
+            AlertError(dispatch, "Failed to add patient");
             clearInput();
         }
     }

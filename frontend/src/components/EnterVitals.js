@@ -43,14 +43,13 @@ export default function EnterVitals() {
         try {
             let response  = await AddVital(state.token, vital);
             if(response.data) {
-                throw new Error("Failed to enter vitals")
+                throw new Error("Empty response");
             }
-            
             AlertSuccess(dispatch, "Vitals successfully entered!");
             return navigate('/patientProfile', {state: {patient: location.state.patient}});
         } catch (error) {
             console.log(error);
-            AlertError(dispatch, error.message);
+            AlertError(dispatch, "Failed to insert vitals");
             clearInput();
         }
     }

@@ -7,6 +7,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Icons } from "../resources/Icons";
 import ProfileTable from "./ProfileTable";
+import VitalsTable from "./VitalsTable";
 
 export default function PatientProfile() {
     const navigate = useNavigate();
@@ -14,9 +15,16 @@ export default function PatientProfile() {
     const location = useLocation();
     const [patient, setPatient] = useState(location.state.patient);
     const [openDialog, setOpenDialog] = useState(false);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         document.title = ("PPCD - " + patient.firstname + " " + patient.lastname);
+
+        let rows = state.vitals
+        rows = rows.filter((vital) => {
+            return vital.pid === patient.pid;
+        });
+        setData(rows);
     }, []);
 
     const handleUpdate = async () => {
@@ -58,8 +66,7 @@ export default function PatientProfile() {
                     onClick={() => setOpenDialog(true)} />
             </BaseToolbar>
             <ProfileTable />
-            <h4>Vitals Table Toolbar w/ Add Button Goes Here.</h4>
-            <h4>Vitals Table Goes Here.</h4>
+            <VitalsTable data={data}/>
             <ConfirmDialog
                 open={openDialog}
                 setOpen={setOpenDialog}

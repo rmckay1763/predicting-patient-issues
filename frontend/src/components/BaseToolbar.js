@@ -5,15 +5,15 @@ import {
     useState, 
     forwardRef
 } from 'react';
-import { 
-    Switch,  
+import {  
+    Box,
+    Toolbar,
+    Typography,
+    IconButton,
+    Switch, 
     FormControlLabel, 
     InputAdornment,
-    IconButton,
     TextField,
-    Toolbar, 
-    Typography,
-    Box,
 } from '@mui/material';
 import { Colors } from '../resources/Colors';
 import { Icons } from '../resources/Icons';
@@ -92,14 +92,14 @@ export const ToolbarSwitch = (props) => (
             '& .MuiSwitch-switchBase': {
                 color: Colors.focus,
             },
-            '& .Mui-checked': {
-                color: Colors.primary,
+            '& .MuiSwitch-track': {
+                backgroundColor: Colors.primary,
             },
             '& .Mui-checked + .MuiSwitch-track': {
                 backgroundColor: Colors.primary,
             },
-            '& .MuiSwitch-track': {
-                backgroundColor: Colors.primary,
+            '& .Mui-checked': {
+                color: Colors.primary,
             },
         }}
     />

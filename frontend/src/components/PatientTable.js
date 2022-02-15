@@ -40,6 +40,7 @@ export default function PatientTable() {
         }
         let temp = state.patients;
         temp.sort((a, b) => a.status - b.status);
+        temp.map(mapStatus);
         temp = temp.filter((patient) => {
             return (
                 patient.lastname.toLowerCase().includes(query.toLowerCase()) ||
@@ -52,7 +53,6 @@ export default function PatientTable() {
                 return patient.status === 'Critical';
             });
         }
-        temp.map(mapStatus);
         setData(temp);
     }, [state.patients, query, criticalOnly]);
 

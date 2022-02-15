@@ -35,7 +35,7 @@ export default function PatientProfile() {
             return vital.pid === patient.pid;
         });
         setVitals(rows);
-    }, [location.state.patient, state.vitals]);
+    }, [location.state.patient, state.vitals, patient]);
 
     const onDelete = async() => {
         try {

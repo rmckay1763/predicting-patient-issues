@@ -42,7 +42,7 @@ export default function PatientProfile() {
             return vital.pid === patient.pid;
         });
         setData(rows);
-    }, []);
+    }, [state.vitals]);
 
     const handleUpdate = async () => {
         try {
@@ -70,20 +70,20 @@ export default function PatientProfile() {
     return (
         <Fragment>
             <PatientProfileToolbar patient={patient} onDelete={setDeletePatient} />
-            <Stack 
+            {/* <Stack 
                 direction="row" 
                 spacing={5}
                 sx={{
-                    backgroundColor: Colors.backgroundLight,
-                    justifyContent: "center"
+                    backgroundColor: Colors.backgroundLighter,
+                    //justifyContent: "center"
                 }}
             >
                 <HeaderItem label="Patient ID" value={patient.pid} />
                 <HeaderItem label="Age" value={patient.age} />
                 <HeaderItem label="Gender" value={patient.gender} />
                 <HeaderItem label="Status" value={patient.status} />
-            </Stack>
-            <VitalsTable data={data}/>
+            </Stack> */}
+            <VitalsTable data={data} patient={patient}/>
             <ConfirmDialog
                 open={deletePatient}
                 setOpen={setDeletePatient}

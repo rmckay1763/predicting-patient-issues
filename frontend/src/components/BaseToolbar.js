@@ -55,7 +55,7 @@ const BaseToolbar = (props, ref) => {
                 },
             }}
         >
-            <Typography variant="h6" children={props.title} />
+            <Typography variant="h6" >{props.title}</Typography>
             {children}
         </Toolbar>
     )

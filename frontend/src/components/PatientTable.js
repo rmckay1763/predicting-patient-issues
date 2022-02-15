@@ -135,6 +135,11 @@ export default function PatientTable() {
                 },
             },
         },
+        headRow: {
+            style: {
+                fontWeight: 600,
+            },
+        },
     }
 
     // conditional styling for critical status

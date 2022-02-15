@@ -9,10 +9,12 @@ import {
 import { UpdatePatient, DeletePatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import PatientProfileToolbar from "./PatientProfileToolbar";
-import ProfileTable from "./ProfileTable";
 import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
+import { Icons } from "../resources/Icons";
+import ProfileTable from "./ProfileTable";
+import VitalsTable from "./VitalsTable";
 
 export default function PatientProfile() {
     const navigate = useNavigate();
@@ -29,6 +31,18 @@ export default function PatientProfile() {
             " and their associated vitals records? This action cannot be undone.";
         setDeleteMessage(message);
     }, [patient]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        document.title = ("PPCD - " + patient.firstname + " " + patient.lastname);
+
+        let rows = state.vitals
+        rows = rows.filter((vital) => {
+            return vital.pid === patient.pid;
+        });
+        setData(rows);
+    }, []);
 
     const handleUpdate = async () => {
         try {
@@ -56,10 +70,6 @@ export default function PatientProfile() {
     return (
         <Fragment>
             <PatientProfileToolbar patient={patient} onDelete={setDeletePatient} />
-            {/* <ProfileTable />
-            <h4>Vitals Table Toolbar w/ Add Button Goes Here.</h4>
-            <h4>Vitals Table Goes Here.</h4> */}
-
             <Stack 
                 direction="row" 
                 spacing={5}
@@ -73,6 +83,7 @@ export default function PatientProfile() {
                 <HeaderItem label="Gender" value={patient.gender} />
                 <HeaderItem label="Status" value={patient.status} />
             </Stack>
+            <VitalsTable data={data}/>
             <ConfirmDialog
                 open={deletePatient}
                 setOpen={setDeletePatient}

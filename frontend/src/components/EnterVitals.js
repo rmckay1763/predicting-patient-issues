@@ -42,7 +42,7 @@ export default function EnterVitals() {
         }
         try {
             let response  = await AddVital(state.token, vital);
-            if(response.data) {
+            if(!response.data) {
                 throw new Error("Empty response");
             }
             AlertSuccess(dispatch, "Vitals successfully entered!");

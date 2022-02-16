@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import List
 from pydantic import BaseModel
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
-from api.userinfo.models import Vital
+from api.userinfo.models import Vital, VitalIn
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
@@ -70,12 +71,12 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return models 
 
-    async def insert(self, vital: Vital):
+    async def insert(self, vital: VitalIn):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
                 vital.pid, 
-                vital.timestamp, 
+                datetime.now(), 
                 vital.heart_rate, 
                 vital.sao2, 
                 vital.respiration,))

@@ -1,7 +1,9 @@
-from fastapi import FastAPI, APIRouter
+import string
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from api.utils.loginhandler import LoginHandler
 from api.userinfo.models import LoginAttempt
+from api.dependencies import auth
 
 class MainAPI:
     '''
@@ -24,6 +26,7 @@ class MainAPI:
             allow_headers = ['*']
         )
         self.app.post("/api/login/")(self.login)
+        self.app.get("/api/validate/")(self.validate)
 
     def addRouter(self, router: APIRouter):
         '''
@@ -51,3 +54,17 @@ class MainAPI:
             return await self.loginHandler.login(attempt)
         except BaseException as err:
             raise err
+
+    async def validate(self, uid=Depends(auth.auth_wrapper)):
+        """
+        Route to check bearer token.
+
+        Raises:
+            HTTPException: Status 401 if authentication fails.
+
+        Returns:
+            uid (int): uid of the current user.
+        """
+        return uid
+
+

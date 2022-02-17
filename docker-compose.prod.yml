@@ -8,7 +8,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.prod
-    image: rmckay1763/backend-prod
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-prod
     container_name: backend-prod
 
   # frontend node js container
@@ -16,7 +16,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
-    image: rmckay1763/frontend-prod
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/frontend-prod
     container_name: frontend-prod
     ports:
       - "80:80"

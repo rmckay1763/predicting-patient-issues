@@ -19,20 +19,20 @@ services:
 
   # database migration container
   migration:
-    image: rmckay1763/migration:iteration-2
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/migration:iteration-2
     container_name: dbmate
     depends_on:
       - "postgres"
 
   # backend fastapi container
   backend:
-    image: rmckay1763/backend-prod:iteration-2
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-prod:iteration-2
     container_name: app-backend
     restart: always
 
   # frontend node js container
   frontend:
-    image: rmckay1763/frontend-prod:iteration-2
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/frontend-prod:iteration-2
     container_name: app-frontend
     restart: always
     ports:

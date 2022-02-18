@@ -1,3 +1,4 @@
+from cgitb import handler
 from api import dependencies
 dependencies.init()
 from api.dependencies import auth, config
@@ -13,7 +14,9 @@ from api.userinfo.router.rolerouter import RoleRouter
 from api.userinfo.router.loginrouter import LoginRouter
 from api.userinfo.router.patientrouter import PatientRouter
 from api.userinfo.router.vitalrouter import VitalRouter
+from api.userinfo.router.mlrouter import MLRouter
 from api.utils.loginhandler import LoginHandler
+from api.utils.mlhandler import MLHandler
 import uvicorn
 import subprocess
 import shlex
@@ -38,17 +41,20 @@ class APIDriver:
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
+        mlHandler = MLHandler()                                 ###############################
         usersRouter = UserRouter(users)
         rolesRouter = RoleRouter(roles)
         loginRouter = LoginRouter(logins, users)
         patientRouter = PatientRouter(patients)
         vitalRouter = VitalRouter(vitals)
+        mlRouter = MLRouter(patients, mlHandler)
         api = MainAPI(loginHandler)
         api.addRouter(usersRouter.router)
         api.addRouter(rolesRouter.router)
         api.addRouter(loginRouter.router)
         api.addRouter(patientRouter.router)
         api.addRouter(vitalRouter.router)
+        api.addRouter(mlRouter.router)
         return api.app
 
     @staticmethod

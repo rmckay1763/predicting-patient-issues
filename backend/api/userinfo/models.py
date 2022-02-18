@@ -1,6 +1,8 @@
 from datetime import datetime
+from time import time
 from pydantic import BaseModel
 from typing import Optional
+from typing import List
 
 class User(BaseModel):
     '''
@@ -92,3 +94,18 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
+
+class MLVitals(BaseModel):
+    timestamp: datetime
+    heart_rate: int
+    sao2: int
+    respiration: int
+
+class MLModelIn(BaseModel):
+    pid: int
+    vitals: List[MLVitals]
+
+class MLModelOut(BaseModel):
+    pid: int
+    status: str
+    vitals: MLVitals

@@ -5,7 +5,7 @@ import {
   TextField, 
   Typography, 
   Button, 
-  Box 
+  Box,
 } from "@mui/material";
 import { Login } from "../controllers/APIController";
 import { Actions, useGlobal } from "../contexts/GlobalContext";
@@ -45,9 +45,51 @@ export default function LoginForm() {
     return navigate("/");
   };
 
+  const boxStyle = {
+    mt: 8, 
+    display: "flex", 
+    flexDirection: "column", 
+    alignItems: "center", 
+    '& .MuiAvatar-root': {
+      color: Colors.secondary,
+      backgroundColor: Colors.primary,
+      alignItems: "center", 
+    },
+    '& .MuiTypography-h5': {
+      color: Colors.primary,
+      textAlign: "center",
+    },
+    '& .MuiOutlinedInput-root': {
+      color: Colors.primary, 
+      input: {color: Colors.primary},
+      '& fieldset': {
+        borderColor: Colors.primary,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: Colors.primary
+      },
+      '&:hover fieldset': {
+        borderColor: Colors.primary,
+      },
+    },
+    '& .MuiInputLabel-outlined': {
+      color: Colors.primary + '90',
+    },
+    '& label.Mui-focused': {
+      color: Colors.primary,
+    },
+    '& .MuiButton-contained': {
+      color: Colors.backgroundLighter,
+      backgroundColor: Colors.primary,
+      '&:hover': {
+        color: Colors.primary,
+        backgroundColor: Colors.secondary,
+      }
+    },
+  }
 
   return (
-    <Box sx={{ mt: 8, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <Box sx={boxStyle}>
       <Avatar />
       <Typography variant="h5">Associate Login</Typography>
       <Box component="form" onSubmit={handleSubmit} method="post" >

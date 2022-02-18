@@ -84,6 +84,8 @@ To add elements such a as buttons, icons, etc, list them as children. The elemen
 
 will produce a toolbar titled "Some Title" with a `Input` element and a `Button` element
 
+`BaseToolbar.js` includes functions to return common toolbar items that are already styled. Refer to the documentation for each function for usage.
+
 #### Alert Messages
 The file `/components/AlertMessage.js` provides functions to render alert messages with the mui `Alert` and `Snackbar` components. There are 4 available alert types:
 

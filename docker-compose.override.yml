@@ -6,7 +6,7 @@ services:
   # backend fastapi container
   backend:
     build: ./backend
-    image: rmckay1763/backend-dev
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-dev
     container_name: backend-dev
     ports:
       - "8000:8000"
@@ -16,7 +16,7 @@ services:
   # frontend node js container
   frontend:
     build: ./frontend
-    image: rmckay1763/frontend-dev
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/frontend-dev
     container_name: frontend-dev
     environment:
       - CHOKIDAR_USEPOLLING=true

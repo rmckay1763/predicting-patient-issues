@@ -1,15 +1,13 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { 
-    Switch,  
-    FormControlLabel, 
-    Input, 
-    InputAdornment,
-    IconButton,
-} from '@mui/material'
-import BaseToolbar from './BaseToolbar';
+import BaseToolbar, {
+    ToolbarIcon,
+    ToolbarLabeledIcon,
+    ToolbarSwitch,
+    ToolbarLabeledSwitch,
+    ToolbarSearch
+} from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
-import { Colors } from "../resources/Colors"
 import { Icons } from '../resources/Icons';
 
 /**
@@ -50,51 +48,27 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
     // Reduced toolbar for small screen sized
     if (width < breakpoint) return (
         <BaseToolbar title="Patients" ref={toolbar}>
-            <IconButton 
-                children={Icons.add}
-                style={{color: Colors.primary}}
-                onChange={onAddPatient}
-            />
-            <Switch 
-                onChange = {onCriticalOnlyChanged} 
-                style={{color: Colors.primary}}/>
-            <Input 
-                id="filter"
-                placeholder="Search"
-                startAdornment={
-                    <InputAdornment position="start" style={{color: Colors.primary}} >
-                        {Icons.search}
-                    </InputAdornment>
-                }
-                onChange={onSearchChanged}
-            />
+            <ToolbarIcon 
+                onClick={onAddPatient} 
+                icon={Icons.add} />
+            <ToolbarSwitch onChange={onCriticalOnlyChanged} />
+            <ToolbarSearch onChange={onSearchChanged} />
         </BaseToolbar> 
     )
 
     // Toolbar for standard screen size
     return (
-        <BaseToolbar title="Patients" ref={toolbar}>
-            <FormControlLabel 
-                control={<IconButton 
-                    children={Icons.add} 
-                    style={{color: Colors.primary}} />} 
-                label="Add Patient"
-                onClick={onAddPatient} />
-            <FormControlLabel 
-                control={<Switch  
-                    style={{color: Colors.primary}} />} 
+        <BaseToolbar title="Patients" ref={toolbar} >
+            <ToolbarLabeledIcon 
+                icon={Icons.add}
+                onClick={onAddPatient} 
+                label="Add Patient" />
+            <ToolbarLabeledSwitch 
+                onClick={onCriticalOnlyChanged}
                 label="Critical Only"
-                onChange = {onCriticalOnlyChanged} />
-            <Input 
-                id="filter"
-                placeholder="Search"
-                startAdornment={
-                    <InputAdornment position="start" style={{color: Colors.primary}} >
-                        {Icons.search}
-                    </InputAdornment>
-                }
-                onChange={onSearchChanged}
             />
+            <ToolbarSearch onChange={onSearchChanged} />
         </BaseToolbar>
     )
 }
+

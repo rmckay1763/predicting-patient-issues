@@ -20,7 +20,7 @@ services:
   # database migration container
   migration:
     build: ./postgres
-    image: rmckay1763/migration
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/migration
     container_name: migration
     depends_on:
       - "postgres"

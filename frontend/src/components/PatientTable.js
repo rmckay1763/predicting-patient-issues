@@ -40,6 +40,7 @@ export default function PatientTable() {
         }
         let temp = state.patients;
         temp.sort((a, b) => a.status - b.status);
+        temp.map(mapStatus);
         temp = temp.filter((patient) => {
             return (
                 patient.lastname.toLowerCase().includes(query.toLowerCase()) ||
@@ -52,14 +53,13 @@ export default function PatientTable() {
                 return patient.status === 'Critical';
             });
         }
-        temp.map(mapStatus);
         setData(temp);
     }, [state.patients, query, criticalOnly]);
 
     // click handler for table rows
     const onRowClicked = (row) => {
         let selected = state.patients.find((patient) => patient.pid === row.pid);
-        return navigate('/patientProfile', {state: {patient: selected}})
+        return navigate('/patientProfile', {state: {patient: selected}});
     }
 
     // component for expanded rows
@@ -133,6 +133,11 @@ export default function PatientTable() {
                     outline: 'none',
                     backgroundColor: Colors.backgroundLight,
                 },
+            },
+        },
+        headRow: {
+            style: {
+                fontWeight: 600,
             },
         },
     }

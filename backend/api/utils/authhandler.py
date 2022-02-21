@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
     
 class AuthHandler:
     security = HTTPBearer()
-    context = CryptContext(schemes=['bcrypt'])
+    context = CryptContext(schemes=['bcrypt'], bcrypt__rounds=12)
         
     def __init__(self, config):
         self.secret = config['AuthSettings']['Secret']

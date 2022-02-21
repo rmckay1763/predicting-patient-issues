@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   AppBar, 
@@ -10,10 +10,10 @@ import {
   Divider, 
   MenuItem, 
   Menu,
-  Avatar 
+  Avatar,
+  IconButton 
 } from "@mui/material";
-import { styled, alpha } from '@mui/material/styles';
-import DrawerComponent from "./Drawer"
+import { styled } from '@mui/material/styles';
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
 import { useGlobal, Actions } from "../contexts/GlobalContext"
@@ -36,35 +36,37 @@ const StyledMenu = styled((props) => (
     borderRadius: 6,
     marginTop: theme.spacing(1),
     minWidth: 180,
+    backgroundColor: Colors.backgroundLighter,
     color:
       theme.palette.mode === 'light' ? Colors.primary : theme.palette.grey[300],
-    boxShadow:
-      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-    '& .MuiMenu-list': {
-      padding: '4px 0',
-    },
     '& .MuiMenuItem-root': {
       '& .MuiSvgIcon-root': {
         fontSize: 18,
-        color: Colors.secondary,
+        color: Colors.primary,
         marginRight: theme.spacing(1.5),
       },
       '&:active': {
-        backgroundColor: alpha(
-          Colors.primary,
-          theme.palette.action.selectedOpacity,
-        ),
+        backgroundColor: Colors.secondary
       },
+      '&.Mui-disabled': {
+        color: Colors.primary,
+        opacity: 1
+      }
     },
   },
 }));
 
-function Navbar() {
+function Navbar(props) {
   const navigate = useNavigate();
-  const [, dispatch] = useGlobal();
-
+  const [state, dispatch] = useGlobal();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+      setUser(state.user);
+  }, [state.user])
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -74,28 +76,55 @@ function Navbar() {
     setAnchorEl(null);
   };
 
+  const handleRefresh = () => {
+    props.refresh();
+  }
+
+  const home = () => {
+    return navigate("/");
+  }
+
   const editProfile = () => {
     handleClose();
     return navigate("/editProfile");
+    
   }
 
   const logout = () => {
     localStorage.removeItem("uid");
-    dispatch({type: Actions.clearToken})
-    dispatch({type: Actions.clearUser})
+    localStorage.removeItem("user");
+    dispatch({type: Actions.clearToken});
+    dispatch({type: Actions.clearUser});
     return navigate("/login");
   };
 
+  const NavButton = (props) => {
+    return (
+      <Box sx={{flexGrow: 1}} >
+      <IconButton
+        sx={{
+          color: Colors.backgroundLighter, 
+          '&:hover': { color: Colors.primary, background: Colors.secondary}
+        }}
+        onClick={props.handler}
+      >
+        {props.icon}
+      </IconButton>
+      </Box>
+    )
+  }
+
   return (
-    <AppBar position="static" style={{ background: Colors.primary }}s>
+    <AppBar position="static" >
       <CssBaseline />
-      <Toolbar>
-        <DrawerComponent />
-        <Box sx={{flexGrow: 1, cursor: 'pointer'}}>
-        <Typography variant="h6">
+      <Toolbar style={{ background: Colors.primary, color: Colors.backgroundLighter }}>
+        <Box sx={{flexGrow: 10 }}>
+        <Typography variant="h5">
           Predicting Patient Conditions Database
         </Typography>
         </Box>
+        <NavButton icon={Icons.home} handler={home} />
+        <NavButton icon={Icons.refresh} handler={handleRefresh} />
         <Button
           id="account-button"
           aria-controls={open ? 'account-menu' : undefined}
@@ -104,21 +133,22 @@ function Navbar() {
           variant="contained"
           disableElevation
           onClick={handleClick}
-          style={{ background: Colors.primary }}
+          style={{ background: Colors.primary, flexGrow: 1 }}
         >
           <Avatar src="/broken-image.jpg" />
         </Button>
         <StyledMenu
-        id="account-menu"
-        MenuListProps={{
-          'aria-labelledby': 'account-button',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem disableRipple disabled={true}>
+          id="account-menu"
+          MenuListProps={{
+            'aria-labelledby': 'account-button',
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+        >
+        <MenuItem disableRipple disabled>
           {Icons.verifiedUser}
+          {user.username}
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={editProfile} disableRipple>

@@ -2,17 +2,21 @@ from pydantic.tools import parse_obj_as
 from fastapi import HTTPException
 from psycopg2 import sql, DatabaseError
 from api.userinfo.crud.basecrud import BaseCRUD
-from api.userinfo.models import Login
+from api.userinfo.crud.usercrud import UserCRUD
+from api.userinfo.models import Login, LoginUpdated
 from api.utils.postgresconnector import PostgresConnector
+from api.utils.authhandler import AuthHandler
 
 class LoginCRUD(BaseCRUD):
     """
     Abstracts interacting with the login table from the userinfo database.
     """
 
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector, users: UserCRUD, auth: AuthHandler):
         super().__init__(conn)
-
+        self.auth = auth
+        self.users = users
+        
         # table dependent sql query strings
         self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
             "VALUES (%s, %s) RETURNING {key};")
@@ -65,26 +69,29 @@ class LoginCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def insert(self, login: Login):
+    async def insert(self, updated: Login):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
-                login.uid, 
-                login.password))
+                updated.uid, 
+                self.auth.get_hashed_password(updated.password)))
+            key = cursor.fetchone()
+            if (key == None):
+                cursor.close()
+                raise HTTPException(status_code=404, detail='Failed to insert password')
+            cursor.close()
+            return key
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)
-        key = cursor.fetchone()
-        if (key == None):
-            cursor.close()
-            raise HTTPException(status_code=404, detail='Failed to insert password')
-        cursor.close()
-        return key
     
-    async def update(self, updated: Login):
+    async def update(self, updated: LoginUpdated):
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.updateSQL, (updated.password, updated.uid,))
+            actual = await self.fetchOne(updated.uid)
+            if (not self.auth.verify_password(updated.old_password, actual.password)):
+                raise HTTPException(status_code=401, detail='Old password is incorrect!')
+            cursor.execute(self.updateSQL, (self.auth.get_hashed_password(updated.new_password), updated.uid,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

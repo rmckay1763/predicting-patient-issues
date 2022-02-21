@@ -20,7 +20,7 @@ class UserCRUD(BaseCRUD):
             "VALUES (%s, %s, %s, %s,%s) RETURNING {key};")
 
         self.updateQuery = ("UPDATE public.{table} SET "
-            "{firstname}=%s, {lastname}=%s, {username}=%s, {rank}=%s, {role}=%s "
+            "{firstname}=%s, {lastname}=%s, {username}=%s, {rank}=%s, {role}=%s, {admin}=%s "
             "WHERE {key} = %s RETURNING *;")
 
         # sql statement objects
@@ -53,7 +53,8 @@ class UserCRUD(BaseCRUD):
             lastname = sql.Identifier('lastname'),
             username = sql.Identifier('username'),
             rank = sql.Identifier('rank'),
-            role = sql.Identifier('role'))
+            role = sql.Identifier('role'),
+            admin = sql.Identifier('admin'))
             
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
             table = sql.Identifier('user'),
@@ -130,7 +131,8 @@ class UserCRUD(BaseCRUD):
                 updated.lastname, 
                 updated.username, 
                 updated.rank, 
-                updated.role, 
+                updated.role,
+                updated.admin, 
                 updated.uid, ))
         except DatabaseError as err:
             cursor.close()

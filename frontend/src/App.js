@@ -1,9 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./routes/Login";
-import Navbar from "./components/NavBar";
-import { AuthRoute, GenericRoute } from "./routes/BaseRoutes";
-import HomePatients from "./routes/HomePatients";
-import EditProfile from "./routes/EditProfile";
+import { 
+  LoginRoute, 
+  PatientTableRoute, 
+  EditProfileRoute, 
+  PatientProfileRoute, 
+  AddPatientRoute,
+  EnterVitalsRoute
+} from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
 let token = localStorage.getItem("uid");
@@ -19,37 +22,27 @@ export default function App() {
           <Route
             exact
             path="/login"
-            element={
-              <GenericRoute>
-                <Login />
-              </GenericRoute>
-            }
-          />
+            element={<LoginRoute />} />
           <Route
             exact
             path="/"
-            element={
-              <AuthRoute>
-                <Navbar />
-                <div>
-                  <HomePatients/>
-                </div>
-
-              </AuthRoute>
-            }
-          />
+            element={<PatientTableRoute />} />
           <Route
             exact
             path="/editProfile"
-            element={
-              <AuthRoute>
-                <Navbar />
-                <div>
-                  <EditProfile/>
-                </div>
-              </AuthRoute>
-            }
-          />
+            element={<EditProfileRoute />} />
+          <Route
+            exact
+            path="/patientProfile"
+            element={<PatientProfileRoute />} />
+          <Route
+            exact
+            path="/newPatient"
+            element={<AddPatientRoute />} />
+          <Route 
+            exact
+            path="/enterVitals"
+            element={<EnterVitalsRoute />} />
         </Routes>
       </Router>
     </GlobalProvider>

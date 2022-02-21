@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import List
 from pydantic import BaseModel
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
-from api.userinfo.models import Vital
+from api.userinfo.models import Vital, VitalIn
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
@@ -15,12 +16,27 @@ class VitalCRUD(BaseCRUD):
     def __init__(self, conn: PostgresConnector):
         super().__init__(conn)
 
+        # table dependent sql query strings.
+        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
+            "VALUES (%s, %s, %s, %s, %s) RETURNING {key};")
+        
+        # sequel statment objects
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('vital'),
             key = sql.Identifier('pid'))
 
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
             table = sql.Identifier('vital'))
+
+        self.insertSQL = sql.SQL(self.insertQuery).format(
+            table = sql.Identifier('vital'),
+            key = sql.Identifier('pid'),
+            columns = sql.SQL(',').join([
+                sql.Identifier('pid'),
+                sql.Identifier('timestamp'),
+                sql.Identifier('heart_rate'),
+                sql.Identifier('sao2'),
+                sql.Identifier('respiration')]))
 
     async def fetchKey(self, value: str):
         pass
@@ -55,8 +71,24 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return models 
 
-    async def insert(self, vital: BaseModel):
-        pass
+    async def insert(self, vital: VitalIn):
+        cursor = self.connector.getCursor()
+        try:
+            cursor.execute(self.insertSQL, (
+                vital.pid, 
+                datetime.now(), 
+                vital.heart_rate, 
+                vital.sao2, 
+                vital.respiration,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        key = cursor.fetchone()
+        if (key == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to insert patient')
+        cursor.close()
+        return key
 
     async def update(self, vital: BaseModel):
         pass

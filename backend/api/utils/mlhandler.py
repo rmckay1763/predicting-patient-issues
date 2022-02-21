@@ -8,9 +8,9 @@ class MLHandler:
 
     def __init__(self):
         try:
-            self.hr_model = load_model('/app/backend/api/utils/mlmodels/hr_model.pb')
-            self.respiration_model = load_model('/app/backend/api/utils/mlmodels/respiration_model.pb')
-            self.sao2_model = load_model('/app/backend/api/utils/mlmodels/sao2_model.pb')
+            self.hr_model = load_model('/app/backend/api/utils/mlmodels/hr_model/')
+            self.respiration_model = load_model('/app/backend/api/utils/mlmodels/respiration_model/')
+            self.sao2_model = load_model('/app/backend/api/utils/mlmodels/sao2_model/')
         except:
             pass
 

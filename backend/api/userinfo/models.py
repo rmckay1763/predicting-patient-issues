@@ -109,3 +109,13 @@ class MLModelOut(BaseModel):
     pid: int
     status: str
     vitals: MLVitals
+
+class VitalIn(BaseModel):
+    '''
+    Represents a new entry in the vitals table
+    '''
+    pid: int
+    heart_rate: int
+    sao2: int
+    respiration: int
+

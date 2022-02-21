@@ -17,8 +17,9 @@ COPY . .
 
 # install dependencies
 RUN \
-    pip3 install pipreqs \
-    pipreqs . \
+    pip3 install --upgrade pip && \
+    pip3 install pipreqs && \
+    pipreqs --force . && \
     pip3 install --no-cache-dir --upgrade -r requirements.txt
 
 # expose port for api

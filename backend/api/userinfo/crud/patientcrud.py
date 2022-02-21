@@ -25,6 +25,12 @@ class PatientCRUD(BaseCRUD):
             "SET {firstname}=%s, {lastname}=%s, {age}=%s, {gender}=%s "
             "WHERE {key} = %s RETURNING *;")
 
+        self.updateStatus = (
+            "UPDATE public.{table} "
+            "SET {status}=%s "
+            "WHERE {key}=%s RETURNING {key};"
+        )
+
         # sequel statment objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
             table = sql.Identifier('patient'),
@@ -55,6 +61,12 @@ class PatientCRUD(BaseCRUD):
             age = sql.Identifier('age'),
             gender = sql.Identifier('gender'),
             key = sql.Identifier('pid'))
+
+        self.updateStatusSQL = sql.SQL(self.updateStatus).format(
+            key = sql.Identifier('pid'),
+            table = sql.Identifier('patient'),
+            status = sql.Identifier('status')
+        )
 
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
             table = sql.Identifier('patient'),
@@ -142,6 +154,23 @@ class PatientCRUD(BaseCRUD):
         model = parse_obj_as(Patient, result)
         cursor.close()
         return model
+
+    async def updateStatus(self, pid: int, status: int):
+        cursor = self.connector.getCursor()
+        try:
+            cursor.execute(self.updateStatusSQL, (
+                status,
+                pid,
+            ))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        result = cursor.fetchone()
+        if (result == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to update patient status')
+        cursor.close()
+        return True
 
     async def delete(self, key: int):
         cursor = self.connector.getCursor()

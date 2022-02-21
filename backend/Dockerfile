@@ -16,9 +16,10 @@ WORKDIR /app/backend
 COPY . .
 
 # install dependencies
-RUN pip3 install pipreqs
-RUN pipreqs .
-RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
+RUN \
+    pip3 install pipreqs \
+    pipreqs . \
+    pip3 install --no-cache-dir --upgrade -r requirements.txt
 
 # expose port for api
 EXPOSE 8000

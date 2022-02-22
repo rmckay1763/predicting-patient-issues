@@ -1,10 +1,10 @@
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TextField, MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import BaseToolbar, { ToolbarLabeledIcon } from "./BaseToolbar";
-import BaseForm from "./BaseForm";
+import { BaseForm, StyledTextField } from "./BaseForm";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
@@ -66,20 +66,20 @@ export default function AddPatientForm() {
                 onSubmit={handleSubmit}
                 submitLabel="Add Patient"
             >
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     required
                     autoFocus
                     label="First name"
                     value={firstname}
                     onChange={(e) => setFirstname(e.target.value)} />
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     required
                     label="Last name"
                     value={lastname}
                     onChange={(e) => setLastname(e.target.value)} />
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     type="number"
                     InputProps={{ inputProps: { min: 0 } }}
@@ -92,7 +92,7 @@ export default function AddPatientForm() {
                         setAgeError(e.target.value < 0);
                         setAge(e.target.value);
                     }} />
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     required
                     select
@@ -106,7 +106,7 @@ export default function AddPatientForm() {
                     <MenuItem value={"m"} style={{color: Colors.primary}}>
                         Male
                     </MenuItem>
-                </TextField>
+                </StyledTextField>
             </BaseForm>
         </Fragment>
     )

@@ -1,10 +1,9 @@
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { TextField } from "@mui/material";
 import { AddVital } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import BaseToolbar, { ToolbarLabeledIcon } from "./BaseToolbar";
-import BaseForm from "./BaseForm";
+import { BaseForm, StyledTextField } from "./BaseForm";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Icons } from "../resources/Icons";
 
@@ -71,7 +70,7 @@ export default function EnterVitals() {
                 title="Vital Information"
                 submitLabel="Submit"
             >
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     type="number"
                     InputProps={{ inputProps: { min: 0 } }}
@@ -85,7 +84,7 @@ export default function EnterVitals() {
                         setHeartRateError(e.target.value < 0);
                         setHeartRate(e.target.value);
                     }} />
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     type="number"
                     InputProps={{ inputProps: { min: 0 } }}
@@ -97,7 +96,7 @@ export default function EnterVitals() {
                         setSao2Error(e.target.value < 0);
                         setSao2(e.target.value);
                     }} />
-                <TextField
+                <StyledTextField
                     id="outlined-basic"
                     type="number"
                     InputProps={{ inputProps: { min: 0 } }}

@@ -165,10 +165,10 @@ export const ToolbarSearch = (props) => (
             '& .MuiInput-underline': {
                 color: Colors.primary,
             },
-            '&& .MuiInput-underline:before': {
+            '& .MuiInput-underline:before': {
                 borderColor: Colors.primary
             },
-            '&& .MuiInput-underline:after': {
+            '& .MuiInput-underline:after': {
                 borderColor: Colors.primary
             },
             '&& .MuiInput-underline:hover::before': {

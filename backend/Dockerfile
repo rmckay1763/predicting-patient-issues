@@ -4,7 +4,7 @@
 FROM python:3.9
 
 # set backend directory
-WORKDIR /app/backend
+WORKDIR /app
 
 # add source code
 COPY . .

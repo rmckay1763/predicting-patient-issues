@@ -7,7 +7,7 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 COPY requirements.prod.txt /app/requirements.txt
 
 # install dependencies
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
 
 # add source code
 COPY . /app

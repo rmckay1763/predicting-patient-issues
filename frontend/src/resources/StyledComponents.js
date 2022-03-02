@@ -1,45 +1,51 @@
 import {
-    Box,
-    Typography,
     Button,
-    Stack,
-    TextField
+    TextField,
+    Typography,
+    IconButton,
+    Switch, 
+    FormControlLabel, 
 } from "@mui/material";
 import { styled } from "@mui/system"
 import { Colors } from "../resources/Colors";
 
-/**
- * @props {function} onSubmit -- Callback for submit button
- * @props {string} title -- Title at top of form
- * @props {string} submitLabel -- Label for submit button
- * @returns Component to add a patient.
- */
-export const BaseForm = (props) => (
-    <Box
-        component="form"
-        onSubmit={props.onSubmit}
-        sx={{
-            mt: 5,
-            display: "flex",
-            justifyContent: "center",
-        }}
-    >
-        <Stack spacing={2} >
-            <Typography variant="subtitle1" color={Colors.primary} textAlign="center">
-                {props.title}
-            </Typography>
-            {props.children}
-            <StyledButton type="submit" variant="contained">
-                {props.submitLabel}
-            </StyledButton>
-        </Stack>
-    </Box>
-)
+export const StyledTypography = styled(Typography)({
+    color: Colors.primary,
+});
 
-/**
- * @returns TextField component with theme applied.
- */
-export const StyledTextField = styled(TextField)({
+export const StyledIconButton = styled(IconButton)({
+    color: Colors.primary,
+    '&:hover': {
+        backgroundColor: Colors.primary,
+        color: Colors.secondary,
+    }
+});
+
+export const StyledFormControlLabel = styled(FormControlLabel)({
+    '& .MuiIconButton-root': {
+        color: Colors.primary,
+    },
+    '&:hover .MuiFormControlLabel-label': {
+        fontWeight: 600
+    },
+})
+
+export const StyledSwitch = styled(Switch)({
+    '& .MuiSwitch-switchBase': {
+        color: Colors.focus,
+    },
+    '& .MuiSwitch-track': {
+        backgroundColor: Colors.primary,
+    },
+    '& .Mui-checked + .MuiSwitch-track': {
+        backgroundColor: Colors.primary,
+    },
+    '& .Mui-checked': {
+        color: Colors.primary,
+    },
+})
+
+ export const StyledTextField = styled(TextField)({
     '& .MuiInput-root': {
         color: Colors.primary
     },
@@ -59,7 +65,6 @@ export const StyledTextField = styled(TextField)({
         color: Colors.primary,
     },
     '& .MuiOutlinedInput-root': {
-        align: "center",
         color: Colors.primary, 
         input: {color: Colors.primary},
         '& fieldset': {
@@ -83,9 +88,6 @@ export const StyledTextField = styled(TextField)({
     },
 })
 
-/**
- * @returns Button with theme applied
- */
 export const StyledButton = styled(Button)({
     color: Colors.backgroundLighter,
         backgroundColor: Colors.primary,

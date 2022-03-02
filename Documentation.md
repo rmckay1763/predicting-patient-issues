@@ -66,43 +66,6 @@ The `BaseRoute` component provides a convenient wrapper element to render compon
     />
     ```
 
-#### Base Form and Components
-`BaseForm.js` provides a function for a styled form with a title and a submit button, as well as functions to return common form components already styled. Children inside a `BaseForm` component will render from top to bottom, in order of first to last child. `BaseForm` expects the following props:
-- title - Displayed above the form
-- onSubmit - Handler for the submit button
-- submitLabel - Label for the submit button
-
-Example of `BaseForm` with a child of `StyledTextField`. Include the imports:
-
-    import { BaseForm, StyledTextField } from './BaseForm';
-
-Pass in the expected props:
-
-    <BaseForm
-        title="Patient Information"
-        onSubmit={handleSubmit}
-        submitLabel="Add Patient"
-    >
-    </BaseForm>
-
-Add children (should be a styled component for consistency)
-
-    <BaseForm
-        title="Patient Information"
-        onSubmit={handleSubmit}
-        submitLabel="Add Patient"
-    >
-        <StyledTextField
-            id="outlined-basic"
-            label="First name"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)} />
-    </BaseForm>
-
-Refer to the documentation in `BaseForm` for futher information.
-
-
-
 #### Toolbar for Components
 To maintain consistency, each component that renders as the right pane should include a `BaseToolbar` element. First add the import:
 
@@ -115,13 +78,12 @@ To maintain consistency, each component that renders as the right pane should in
 To add elements such a as buttons, icons, etc, list them as children. The elements will display in left-to-right order, beginning with the first child
 
     <BaseToolbar title="Some Title">
-        <Input />
-        <Button />
+        <StyledTextInput />
+        <StyledButton />
     </BaseToolbar>
 
-will produce a toolbar titled "Some Title" with a `Input` element and a `Button` element
+will produce a toolbar titled "Some Title" with a `StyledTextInput` element and a `StyledButton` element
 
-`BaseToolbar.js` includes functions to return common toolbar items that are already styled. Refer to the documentation for each function for usage.
 
 #### Alert Messages
 The file `/components/AlertMessage.js` provides functions to render alert messages with the mui `Alert` and `Snackbar` components. There are 4 available alert types:

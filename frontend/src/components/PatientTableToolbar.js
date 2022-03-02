@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import BaseToolbar, {
-    ToolbarIcon,
-    ToolbarLabeledIcon,
-    ToolbarSwitch,
-    ToolbarLabeledSwitch,
-    ToolbarSearch
-} from './BaseToolbar';
+import { InputAdornment, IconButton } from '@mui/material'
+import BaseToolbar from './BaseToolbar';
+import { 
+    StyledTextField, 
+    StyledIconButton, 
+    StyledSwitch, 
+    StyledFormControlLabel, 
+ } from '../resources/StyledComponents'
 import { useComponentWidth } from "../contexts/Dimensions";
 import { Icons } from '../resources/Icons';
 
@@ -20,7 +21,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
     const navigate = useNavigate();
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
-    const breakpoint = 700; 
+    const breakpoint = 700;
 
     /**
      * Handler for critical only toggle button.
@@ -45,30 +46,53 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
         return navigate("/newPatient");
     }
 
-    // Reduced toolbar for small screen sized
-    if (width < breakpoint) return (
-        <BaseToolbar title="Patients" ref={toolbar}>
-            <ToolbarIcon 
-                onClick={onAddPatient} 
-                icon={Icons.add} />
-            <ToolbarSwitch onChange={onCriticalOnlyChanged} />
-            <ToolbarSearch onChange={onSearchChanged} />
-        </BaseToolbar> 
-    )
+    /**
+     * @returns Search box component for toolbar.
+     */
+    const SearchBox = () => (
+        <StyledTextField 
+            variant="standard"
+            onChange={onSearchChanged}
+            placeholder="Search"
+            InputProps={{
+                startAdornment: (
+                    <InputAdornment position="start">
+                        {Icons.search}
+                    </InputAdornment>
+                )
+            }} />
+    );
 
-    // Toolbar for standard screen size
-    return (
-        <BaseToolbar title="Patients" ref={toolbar} >
-            <ToolbarLabeledIcon 
-                icon={Icons.add}
-                onClick={onAddPatient} 
-                label="Add Patient" />
-            <ToolbarLabeledSwitch 
-                onClick={onCriticalOnlyChanged}
-                label="Critical Only"
-            />
-            <ToolbarSearch onChange={onSearchChanged} />
+    /**
+     * @returns Reduced toolbar for small screen size.
+     */
+    const reduced = () => (
+        <BaseToolbar title="Patients" ref={toolbar}>
+            <StyledIconButton onClick={onAddPatient} >
+                {Icons.add}
+            </StyledIconButton>
+            <StyledSwitch onChange={onCriticalOnlyChanged} />
+            {SearchBox()}
         </BaseToolbar>
-    )
+    );
+
+    /**
+     * @returns Full toolbar for regular size screen.
+     */
+    const full = () => (
+        <BaseToolbar title="Patients" ref={toolbar} >
+            <StyledFormControlLabel 
+                control={<IconButton children={Icons.add} />}
+                label={"Add Patient"}
+                onClick={onAddPatient} />
+            <StyledFormControlLabel 
+                control={<StyledSwitch />}
+                label={"Critical Only"}
+                onClick={onCriticalOnlyChanged} />
+            {SearchBox()}
+        </BaseToolbar>
+    );
+
+    return width < breakpoint ? reduced() : full();
 }
 

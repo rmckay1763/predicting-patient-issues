@@ -1,9 +1,15 @@
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Box, Stack, IconButton } from "@mui/material"
 import { AddVital } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
-import BaseToolbar, { ToolbarLabeledIcon } from "./BaseToolbar";
-import { BaseForm, StyledTextField } from "./BaseForm";
+import BaseToolbar from "./BaseToolbar";
+import { 
+    StyledFormControlLabel, 
+    StyledTextField, 
+    StyledButton, 
+    StyledTypography 
+} from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Icons } from "../resources/Icons";
 
@@ -60,55 +66,64 @@ export default function EnterVitals() {
     return (
         <Fragment>
             <BaseToolbar title="Enter Vitals">
-                <ToolbarLabeledIcon 
-                icon={Icons.close}
-                label="Cancel"
-                onClick={handleCancel} />
+            <StyledFormControlLabel 
+                    control={<IconButton children={Icons.close} />}
+                    label="Cancel"
+                    onClick={handleCancel} />
             </BaseToolbar>
-            <BaseForm 
+            <Box
+                component="form"
                 onSubmit={handleSubmit}
-                title="Vital Information"
-                submitLabel="Submit"
-            >
-                <StyledTextField
-                    id="outlined-basic"
-                    type="number"
-                    InputProps={{ inputProps: { min: 0 } }}
-                    required
-                    autoFocus
-                    label="Heart rate"
-                    value={heartRate}
-                    error={heartRateError}
-                    helperText={heartRateError ? "Heart rate must be positive." : ""}
-                    onChange={(e) => {
-                        setHeartRateError(e.target.value < 0);
-                        setHeartRate(e.target.value);
-                    }} />
-                <StyledTextField
-                    id="outlined-basic"
-                    type="number"
-                    InputProps={{ inputProps: { min: 0 } }}
-                    label="SaO2"
-                    value={sao2}
-                    error={sao2Error}
-                    helperText={sao2Error ? "SaO2 must be positive." : ""}
-                    onChange={(e) => {
-                        setSao2Error(e.target.value < 0);
-                        setSao2(e.target.value);
-                    }} />
-                <StyledTextField
-                    id="outlined-basic"
-                    type="number"
-                    InputProps={{ inputProps: { min: 0 } }}
-                    label="Respiration"
-                    value={respiration}
-                    error={respirationError}
-                    helperText={respirationError ? "Respiration must be positive." : ""}
-                    onChange={(e) => {
-                        setRespirationError(e.target.value < 0);
-                        setRespiration(e.target.value);
-                    }} />
-            </BaseForm>
+                sx={{
+                    mt: 5,
+                    display: "flex",
+                    justifyContent: "center",
+                }}>
+                <Stack spacing={2} >
+                    <StyledTypography variant="subtitle1" textAlign="center">
+                        Vital Information
+                    </StyledTypography>
+                    <StyledTextField
+                        id="outlined-basic"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        autoFocus
+                        label="Heart rate"
+                        value={heartRate}
+                        error={heartRateError}
+                        helperText={heartRateError ? "Heart rate must be positive." : ""}
+                        onChange={(e) => {
+                            setHeartRateError(e.target.value < 0);
+                            setHeartRate(e.target.value);
+                        }} />
+                    <StyledTextField
+                        id="outlined-basic"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        label="SaO2"
+                        value={sao2}
+                        error={sao2Error}
+                        helperText={sao2Error ? "SaO2 must be positive." : ""}
+                        onChange={(e) => {
+                            setSao2Error(e.target.value < 0);
+                            setSao2(e.target.value);
+                        }} />
+                    <StyledTextField
+                        id="outlined-basic"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        label="Respiration"
+                        value={respiration}
+                        error={respirationError}
+                        helperText={respirationError ? "Respiration must be positive." : ""}
+                        onChange={(e) => {
+                            setRespirationError(e.target.value < 0);
+                            setRespiration(e.target.value);
+                        }} />
+                    <StyledButton type="submit">Submit</StyledButton>
+                </Stack>
+            </Box>
         </Fragment>
     )
 }

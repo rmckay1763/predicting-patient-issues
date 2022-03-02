@@ -1,10 +1,20 @@
 import { Fragment, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MenuItem } from "@mui/material";
+import { 
+    MenuItem, 
+    Box, 
+    Stack, 
+    IconButton 
+} from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
-import BaseToolbar, { ToolbarLabeledIcon } from "./BaseToolbar";
-import { BaseForm, StyledTextField } from "./BaseForm";
+import BaseToolbar from "./BaseToolbar";
+import { 
+    StyledFormControlLabel, 
+    StyledTextField, 
+    StyledButton, 
+    StyledTypography,
+ } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
@@ -56,58 +66,64 @@ export default function AddPatientForm() {
     return (
         <Fragment>
             <BaseToolbar title="Add New Patient">
-                <ToolbarLabeledIcon
+                <StyledFormControlLabel 
+                    control={<IconButton children={Icons.close} />}
                     label="Cancel"
-                    icon={Icons.close}
                     onClick={() => navigate("/")} />
             </BaseToolbar>
-            <BaseForm 
-                title="Patient Information"
+            <Box
+                component="form"
                 onSubmit={handleSubmit}
-                submitLabel="Add Patient"
+                sx={{
+                    mt: 5,
+                    display: "flex",
+                    justifyContent: "center",
+                }}
             >
-                <StyledTextField
-                    id="outlined-basic"
-                    required
-                    autoFocus
-                    label="First name"
-                    value={firstname}
-                    onChange={(e) => setFirstname(e.target.value)} />
-                <StyledTextField
-                    id="outlined-basic"
-                    required
-                    label="Last name"
-                    value={lastname}
-                    onChange={(e) => setLastname(e.target.value)} />
-                <StyledTextField
-                    id="outlined-basic"
-                    type="number"
-                    InputProps={{ inputProps: { min: 0 } }}
-                    required
-                    label="Age"
-                    value={age}
-                    error={ageError}
-                    helperText={ageError ? "Age must be positive." : ""}
-                    onChange={(e) => {
-                        setAgeError(e.target.value < 0);
-                        setAge(e.target.value);
-                    }} />
-                <StyledTextField
-                    id="outlined-basic"
-                    required
-                    select
-                    label="Gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                >
-                    <MenuItem value={"f"} style={{color: Colors.primary}}>
-                        Female
-                    </MenuItem>
-                    <MenuItem value={"m"} style={{color: Colors.primary}}>
-                        Male
-                    </MenuItem>
-                </StyledTextField>
-            </BaseForm>
+                <Stack spacing={2} >
+                    <StyledTypography variant="subtitle1" textAlign="center">
+                        Patient Information
+                    </StyledTypography>
+                    <StyledTextField
+                        required
+                        autoFocus
+                        label="First name"
+                        value={firstname}
+                        onChange={(e) => setFirstname(e.target.value)} />
+                    <StyledTextField
+                        required
+                        label="Last name"
+                        value={lastname}
+                        onChange={(e) => setLastname(e.target.value)} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="Age"
+                        value={age}
+                        error={ageError}
+                        helperText={ageError ? "Age must be positive." : ""}
+                        onChange={(e) => {
+                            setAgeError(e.target.value < 0);
+                            setAge(e.target.value);
+                        }} />
+                    <StyledTextField
+                        required
+                        select
+                        label="Gender"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                    >
+                        <MenuItem value={"f"} style={{color: Colors.primary}}>
+                            Female
+                        </MenuItem>
+                        <MenuItem value={"m"} style={{color: Colors.primary}}>
+                            Male
+                        </MenuItem>
+                    </StyledTextField>
+                    <StyledButton type="submit">Add Patient</StyledButton>
+                </Stack>
+            </Box>
         </Fragment>
     )
 }

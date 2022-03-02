@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import BaseToolbar, { ToolbarIcon, ToolbarLabeledIcon } from './BaseToolbar';
+import { IconButton } from "@mui/material"
+import { StyledIconButton, StyledFormControlLabel } from '../resources/StyledComponents';
+import BaseToolbar from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
 import { Icons } from '../resources/Icons';
 
@@ -24,29 +26,35 @@ export default function PatientProfileToolbar(props) {
         props.onDelete(true);
     }
 
-    // Reduced toolbar for small screen sized
-    if (width < breakpoint) return (
+    /**
+     * @returns Reduced toolbar for small screen size.
+     */
+    const reduced = () => (
         <BaseToolbar title={title} ref={toolbar}>
-            <ToolbarIcon 
-                onClick={onEnterVitals} 
-                icon={Icons.add} />
-            <ToolbarIcon 
-                onClick={onDelete} 
-                icon={Icons.delete} />
+            <StyledIconButton onClick={onEnterVitals} >
+                {Icons.add}
+            </StyledIconButton>
+            <StyledIconButton onClick={onDelete} >
+                {Icons.delete}
+            </StyledIconButton>
         </BaseToolbar> 
     )
 
-    // Toolbar for standard screen size
-    return (
+    /**
+     * @returns Full toolbar for regular screen size.
+     */
+    const full = () => (
         <BaseToolbar title={title} ref={toolbar}>
-            <ToolbarLabeledIcon 
-                onClick={onEnterVitals} 
-                icon={Icons.add}
-                label="Enter Vitals" />
-            <ToolbarLabeledIcon 
-                onClick={onDelete} 
-                icon={Icons.delete}
-                label="Delete Patient" />
+            <StyledFormControlLabel 
+                control={<IconButton children={Icons.add} />}
+                label={"Enter Vitals"}
+                onClick={onEnterVitals} />
+            <StyledFormControlLabel 
+                control={<IconButton children={Icons.delete} />}
+                label={"Delete Patient"}
+                onClick={onDelete} />
         </BaseToolbar> 
     )
+
+    return width < breakpoint ? reduced() : full()
 }

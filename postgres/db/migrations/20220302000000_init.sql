@@ -1,7 +1,30 @@
 -- migrate:up
 
+DROP TABLE IF EXISTS public.login;
+DROP TABLE IF EXISTS public.user;
+DROP TABLE IF EXISTS public.role;
 DROP TABLE IF EXISTS public.vital;
 DROP TABLE IF EXISTS public.patient;
+
+CREATE TABLE IF NOT EXISTS public.role (
+	id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	name VARCHAR(32) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.user (
+	uid INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	firstname VARCHAR(64) NOT NULL,
+	lastname VARCHAR(64) NOT NULL,
+	username VARCHAR(64) UNIQUE NOT NULL,
+	rank VARCHAR(4),
+	role INT REFERENCES public.role(id),
+    admin BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS public.login (
+	uid INT PRIMARY KEY REFERENCES public.user(uid),
+	password VARCHAR(255) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS public.patient (
 	pid INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -22,6 +45,43 @@ CREATE TABLE IF NOT EXISTS public.vital (
 	respiration INT
 );
 
+CREATE TABLE IF NOT EXISTS public.patient_archive (
+	pid INT PRIMARY KEY,
+	admit_time TIMESTAMP,
+	firstname VARCHAR(64) NOT NULL,
+	lastname VARCHAR(64) NOT NULL,
+	age INT CONSTRAINT age_check CHECK (age > 0),
+	gender CHAR(1) CONSTRAINT gender_check CHECK (gender IN ('m', 'f')),
+	status INT NOT NULL DEFAULT 10
+		CONSTRAINT status_check CHECK (status IN (0, 9, 10))
+);
+
+CREATE TABLE IF NOT EXISTS public.vital_archive (
+	pid INT REFERENCES public.patient_archive(pid) ON DELETE CASCADE,
+	timestamp TIMESTAMP,
+	heart_rate INT,
+	sao2 INT,
+	respiration INT
+);
+
+INSERT INTO 
+	public.role (name)
+VALUES
+	('surgery'),
+	('nurse');
+
+INSERT INTO
+	public.user (firstname, lastname, username, rank, role, admin)
+VALUES
+	('john', 'smith', 'admin', 'LT', 1, TRUE),
+    ('jane', 'doe', 'jdoe', 'LT', 1, FALSE);
+
+INSERT INTO
+	public.login (uid, password)
+VALUES
+	(1, '$2b$12$45/YP2Jh5ItgCyySRVy4fu3J1NoOX/8BXIq/h6/JR1YA7MIsa3tLy'),
+    (2, '$2b$12$45/YP2Jh5ItgCyySRVy4fu3J1NoOX/8BXIq/h6/JR1YA7MIsa3tLy');
+
 INSERT INTO 
 	public.patient (firstname, lastname, age, gender, status)
 VALUES 
@@ -30,7 +90,7 @@ VALUES
 	('Pam', 'Beesly', 32, 'f', 9),
 	('Jim', 'Halpert', 27, 'm', 9),
 	('Angela', 'Martin', 19, 'f', 9);
-	
+
 INSERT INTO
 	public.vital (pid, timestamp, heart_rate, sao2, respiration)
 VALUES
@@ -57,6 +117,5 @@ VALUES
 	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18),
 	(4, NOW() + INTERVAL '15 minutes', 73, 99, 20),
 	(5, NOW() + INTERVAL '15 minutes', 72, 96, 19);
-
 -- migrate:down
-DROP TABLE IF EXISTS public.vital;
+

@@ -1,16 +1,15 @@
-from datetime import datetime
 from typing import List
 from pydantic import BaseModel
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
-from api.userinfo.models import Vital, VitalIn
+from api.userinfo.models import Vital
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
-class VitalCRUD(BaseCRUD):
+class VitalArchiveCRUD(BaseCRUD):
     """
-    Abstracts interacting with the vital table from the userinfo database.
+    Abstracts interacting with the vital_archive table from the userinfo database.
     """
 
     def __init__(self, conn: PostgresConnector):
@@ -22,14 +21,14 @@ class VitalCRUD(BaseCRUD):
         
         # sequel statment objects
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
-            table = sql.Identifier('vital'),
+            table = sql.Identifier('vital_archive'),
             key = sql.Identifier('pid'))
 
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
-            table = sql.Identifier('vital'))
+            table = sql.Identifier('vital_archive'))
 
         self.insertSQL = sql.SQL(self.insertQuery).format(
-            table = sql.Identifier('vital'),
+            table = sql.Identifier('vital_archive'),
             key = sql.Identifier('pid'),
             columns = sql.SQL(',').join([
                 sql.Identifier('pid'),
@@ -71,12 +70,12 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return models 
 
-    async def insert(self, vital: VitalIn):
+    async def insert(self, vital: Vital):
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
                 vital.pid, 
-                datetime.now(), 
+                vital.timestamp, 
                 vital.heart_rate, 
                 vital.sao2, 
                 vital.respiration,))
@@ -86,7 +85,7 @@ class VitalCRUD(BaseCRUD):
         key = cursor.fetchone()
         if (key == None):
             cursor.close()
-            raise HTTPException(status_code=404, detail='Failed to insert record')
+            raise HTTPException(status_code=404, detail='Failed to insert records')
         cursor.close()
         return key
 

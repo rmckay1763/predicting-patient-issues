@@ -1,10 +1,18 @@
 -- migrate:up
 
+--
+-- Initialization script.
+-- Contains on delete triggers for patient and vital tables.
+-- IMPORTANT! archive table columns must match primary table columns.
+--
+
 DROP TABLE IF EXISTS public.login;
 DROP TABLE IF EXISTS public.user;
 DROP TABLE IF EXISTS public.role;
 DROP TABLE IF EXISTS public.vital;
 DROP TABLE IF EXISTS public.patient;
+DROP TABLE IF EXISTS public.vital_archive;
+DROP TABLE IF EXISTS public.patient_archive;
 
 CREATE TABLE IF NOT EXISTS public.role (
 	id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -63,6 +71,38 @@ CREATE TABLE IF NOT EXISTS public.vital_archive (
 	sao2 INT,
 	respiration INT
 );
+
+CREATE OR REPLACE FUNCTION archive_patient() RETURNS TRIGGER AS $archive_patient$
+	BEGIN
+		--
+		-- Stores deleted row from patient into patient_archive
+		--
+		INSERT INTO 
+			public.patient_archive(pid, admit_time, firstname, lastname, age, gender, status) 
+		VALUES 
+			(OLD.pid, OLD.admit_time, OLD.firstname, OLD.lastname, OLD.age, OLD.gender, OLD.status);
+		RETURN NULL;
+	END;
+$archive_patient$ LANGUAGE plpgsql;
+
+CREATE TRIGGER del_patient_trigger AFTER DELETE ON public.patient
+FOR EACH ROW EXECUTE PROCEDURE archive_patient();
+
+CREATE OR REPLACE FUNCTION archive_vital() RETURNS TRIGGER AS $archive_vital$
+	BEGIN
+	--
+	-- Stores deleted row from vital into vital_archive
+	--
+		INSERT INTO
+			public.vital_archive(pid, timestamp, heart_rate, sao2, respiration)
+		VALUES
+			(OLD.pid, OLD.timestamp, OLD.heart_rate, OLD.sao2, OLD.respiration);
+		RETURN NULL;
+	END;
+$archive_vital$ LANGUAGE plpgsql;
+
+CREATE TRIGGER del_vital_trigger AFTER DELETE ON public.vital
+FOR EACH ROW EXECUTE PROCEDURE archive_vital();
 
 INSERT INTO 
 	public.role (name)

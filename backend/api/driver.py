@@ -9,8 +9,7 @@ from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
-from api.userinfo.crud.patientarchivecrud import PatientArchiveCRUD
-from api.userinfo.crud.vitalarchivecrud import VitalArchiveCRUD
+from api.userinfo.crud.archivecrud import ArchiveCRUD
 from api.userinfo.router.userrouter import UserRouter
 from api.userinfo.router.rolerouter import RoleRouter
 from api.userinfo.router.loginrouter import LoginRouter
@@ -20,7 +19,6 @@ from api.userinfo.router.mlrouter import MLRouter
 from api.userinfo.router.archiverouter import ArchiveRouter
 from api.utils.loginhandler import LoginHandler
 from api.utils.mlhandler import MLHandler
-from api.utils.archivehandler import ArchiveHandler
 import uvicorn
 import subprocess
 import shlex
@@ -44,17 +42,15 @@ class APIDriver:
         logins = LoginCRUD(connector, users, auth)
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
-        archivePatients = PatientArchiveCRUD(connector)
-        archiveVitals = VitalArchiveCRUD(connector)
-        archive = ArchiveHandler(patients, vitals, archivePatients, archiveVitals)
+        archive = ArchiveCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
         mlHandler = MLHandler()
         usersRouter = UserRouter(users)
         rolesRouter = RoleRouter(roles)
         loginRouter = LoginRouter(logins, users)
-        patientRouter = PatientRouter(patients, archive)
+        patientRouter = PatientRouter(patients)
         vitalRouter = VitalRouter(vitals)
-        archiveRouter = ArchiveRouter(archivePatients, archiveVitals)
+        archiveRouter = ArchiveRouter(archive)
         mlRouter = MLRouter(patients, mlHandler)
         api = MainAPI(loginHandler)
         api.addRouter(usersRouter.router)

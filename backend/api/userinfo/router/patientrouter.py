@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-from api.utils.archivehandler import ArchiveHandler
 from api.userinfo.models import Patient, PatientIn
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.dependencies import auth
@@ -9,16 +8,14 @@ class PatientRouter:
     Implements routes for the patient table using an APIRouter
     '''
 
-    def __init__(self, patients: PatientCRUD, archive: ArchiveHandler):
+    def __init__(self, patients: PatientCRUD):
         '''
         Constructor.
 
         Parameters:
             patients (PatientCRUD): The crud to interact with the table.
-            archive (ArchiveHandler): Handler for archiving patients.
         '''
         self.patients = patients
-        self.archive = archive
         self.router = APIRouter(
             prefix="/api/patient",
             dependencies=[Depends(auth.auth_wrapper)]
@@ -119,7 +116,6 @@ class PatientRouter:
             bool: True if successful, false otherwise.
         """
         try:
-            await self.archive.archive(key)
             return await self.patients.delete(key)
         except BaseException as err:
             raise err

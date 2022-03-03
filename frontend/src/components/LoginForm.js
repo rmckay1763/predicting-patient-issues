@@ -42,7 +42,11 @@ export default function LoginForm() {
     dispatch({type: Actions.setUser, payload: user})
     localStorage.setItem("uid", token);
     localStorage.setItem("user", JSON.stringify(user));
-    return navigate("/");
+
+    if(user.admin)
+      return navigate("/users");
+    else
+      return navigate("/");
   };
 
   const boxStyle = {

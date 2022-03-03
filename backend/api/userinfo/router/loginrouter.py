@@ -99,7 +99,7 @@ class LoginRouter():
 
     async def authenticate(self, actual: int, candidate: int):
         """
-        Athenticate the user for the request. 
+        Authenticate the user for the request. 
         Checks if uid of current user matches uid of request or if current user is an admin.
         For admin only authentication, pass in 'None' for candidate
 
@@ -115,4 +115,4 @@ class LoginRouter():
         user = await self.users.fetchOne(actual)
         if (user.admin):
             return
-        raise HTTPException(status_code=401, detail='Unathenticated user id')
+        raise HTTPException(status_code=401, detail='Unauthenticated user id')

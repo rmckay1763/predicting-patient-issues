@@ -42,7 +42,7 @@ class APIDriver:
         vitals = VitalCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
         mlHandler = MLHandler()
-        usersRouter = UserRouter(users)
+        usersRouter = UserRouter(users, logins)
         rolesRouter = RoleRouter(roles)
         loginRouter = LoginRouter(logins, users)
         patientRouter = PatientRouter(patients)

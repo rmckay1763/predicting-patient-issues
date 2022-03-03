@@ -1,3 +1,6 @@
+from hashlib import new
+from http.client import HTTPException
+from lib2to3.pytree import Base
 import string
 from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +30,7 @@ class MainAPI:
         )
         self.app.post("/api/login/")(self.login)
         self.app.get("/api/validate/")(self.validate)
+        self.app.get("/api/validateAdmin/")(self.validateAdmin)
 
     def addRouter(self, router: APIRouter):
         '''
@@ -67,4 +71,25 @@ class MainAPI:
         """
         return uid
 
+    async def validateAdmin(self, uid=Depends(auth.auth_wrapper)):
+        """
+        Route to check bearer token for admin authentication.
+
+        Raises:
+            HTTPException: Status 401 if authentication fails.
+            HTTPException: Status 404 if uid doesn't exist.
+
+        Returns:
+            uid (int): uid of the current user.
+        """
+        try:
+            user = await self.loginHandler.users.fetchOne(uid)
+
+            if (user.admin):
+                return user.uid
+            else:
+                raise HTTPException(status_code=401, detail='User is unauthenticated')
+
+        except BaseException as err:
+            raise err
 

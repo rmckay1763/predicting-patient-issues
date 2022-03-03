@@ -12,7 +12,7 @@ class ArchiveRouter:
         Constructor.
 
         Parameters:
-            patients (PatientCRUD): The crud to interact with the table.
+            archive (ArchiveCRUD): The crud to interact with the archive tables.
         '''
         self.archive = archive
         self.router = APIRouter(
@@ -33,7 +33,7 @@ class ArchiveRouter:
 
     async def fetchAllPatients(self):
         """
-        Route to fetch all rows from the patient table.
+        Route to fetch all rows from the patient_archive table.
 
         Returns:
             list: A list of Patient objects.
@@ -60,7 +60,7 @@ class ArchiveRouter:
 
     async def deletePatient(self, key: int):
         """
-        Route to delete a patient from the patient table.
+        Route to delete a patient from the patient_archive table.
 
         Parameters:
             key (int): The primary key (pid) of the patient.

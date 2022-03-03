@@ -9,7 +9,7 @@ from api.utils.postgresconnector import PostgresConnector
 
 class ArchiveCRUD(BaseCRUD):
     """
-    Abstracts interacting with the patient_archive table from the userinfo database.
+    Abstracts interacting with the archive tables from the userinfo database.
     """
 
     def __init__(self, conn: PostgresConnector):

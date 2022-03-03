@@ -17,6 +17,7 @@ import { styled } from '@mui/material/styles';
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
 import { useGlobal, Actions } from "../contexts/GlobalContext"
+import DrawerComponent from "./Drawer";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -87,7 +88,6 @@ function Navbar(props) {
   const editProfile = () => {
     handleClose();
     return navigate("/editProfile");
-    
   }
 
   const logout = () => {
@@ -118,6 +118,7 @@ function Navbar(props) {
     <AppBar position="static" >
       <CssBaseline />
       <Toolbar style={{ background: Colors.primary, color: Colors.backgroundLighter }}>
+      <DrawerComponent />
         <Box sx={{flexGrow: 10 }}>
         <Typography variant="h5">
           Predicting Patient Conditions Database

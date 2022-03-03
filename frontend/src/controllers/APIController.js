@@ -4,12 +4,32 @@ export const CheckToken = async (token) => {
   return axios.get("api/validate/", { headers: { Authorization: `Bearer ${token}` } });
 }
 
-export const Login = (username, password) => {
+export const CheckAdminToken = async (token) => {
+  return axios.get("api/validateAdmin/", { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export const Login = async (username, password) => {
   return axios.post("api/login/", { username: username, password: password });
 };
 
-export const ChangePassword = (token, uid, old_password, new_password) => {
+export const ChangePassword = async (token, uid, old_password, new_password) => {
   return axios.put("api/login/update", {uid: uid, old_password: old_password, new_password: new_password}, { headers: { Authorization: `Bearer ${token}` }});
+}
+
+export const GetUsers = async (token) => {
+  return axios.get("api/user/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
+}
+
+export const AddUser = async (token, firstname, lastname, username, rank, role, admin) => {
+  return axios.post("api/user/insert/", { firstname: firstname, lastname: lastname, username: username, rank: rank, role: role, admin: admin}, { headers: { Authorization: `Bearer ${token}`}});
+}
+
+export const DeleteUser = async (token, uid) => {
+  return axios.delete(`api/user/delete/${uid}`, { headers: { Authorization: `Bearer ${token}`}});
+}
+
+export const AddLogin = async (token, uid, password) => {
+  return axios.post("api/login/insert/", { uid: uid, password: password }, { headers: { Authorization: `Bearer ${token}`}});
 }
 
 export const GetAllPatients = async (token) => {

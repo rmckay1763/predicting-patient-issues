@@ -9,6 +9,27 @@ import {
 import { Link } from "react-router-dom";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
+import { useGlobal } from "../contexts/GlobalContext";
+
+function AdminListItem() {
+    const [state,] = useGlobal();
+
+    if (state.user.admin) {
+        return (
+            <ListItem>
+                <ListItemText>
+                    <Link style={{ color: Colors.primary }} to="/users">Users</Link>
+                </ListItemText>
+            </ListItem>
+        )
+    }
+    else {
+        return (
+            <div>
+            </div>
+        )
+    }
+}
 
 function DrawerComponent() {
 const [openDrawer, setOpenDrawer] = useState(false);
@@ -26,6 +47,7 @@ const [openDrawer, setOpenDrawer] = useState(false);
                             <Link style={{ color: Colors.primary }} to="/">Patients</Link>
                         </ListItemText>
                     </ListItem>
+                    <AdminListItem />
                 </List>
             </Drawer>
             <IconButton onClick={() => setOpenDrawer(!openDrawer)}>

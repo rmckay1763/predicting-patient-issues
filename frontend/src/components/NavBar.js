@@ -106,7 +106,7 @@ function Navbar(props) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose} >
-        <MenuItem>
+        <MenuItem disabled >
             <ListItemIcon>{Icons.verifiedUser}</ListItemIcon>
             <ListItemText>{user.username}</ListItemText>
         </MenuItem>

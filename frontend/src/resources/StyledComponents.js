@@ -111,4 +111,7 @@ export const StyledMenu = styled(Menu)({
             backgroundColor: Colors.secondary
         }
     },
+    '& .Mui-disabled': {
+        opacity: 1,
+    },
 });

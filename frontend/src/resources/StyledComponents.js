@@ -5,6 +5,7 @@ import {
     IconButton,
     Switch, 
     FormControlLabel, 
+    Menu, 
 } from "@mui/material";
 import { styled } from "@mui/system"
 import { Colors } from "../resources/Colors";
@@ -95,4 +96,19 @@ export const StyledButton = styled(Button)({
             color: Colors.primary,
             backgroundColor: Colors.secondary,
         }
-})
+});
+
+export const StyledMenu = styled(Menu)({
+    '& .MuiPaper-root': {
+        backgroundColor: Colors.backgroundLighter,
+        color: Colors.primary
+    },
+    '& .MuiListItemIcon-root': {
+        color: Colors.primary,
+    },
+    '& .MuiMenuItem-root': {
+        '&:hover': {
+            backgroundColor: Colors.secondary
+        }
+    },
+});

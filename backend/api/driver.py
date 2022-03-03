@@ -9,12 +9,14 @@ from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
+from api.userinfo.crud.archivecrud import ArchiveCRUD
 from api.userinfo.router.userrouter import UserRouter
 from api.userinfo.router.rolerouter import RoleRouter
 from api.userinfo.router.loginrouter import LoginRouter
 from api.userinfo.router.patientrouter import PatientRouter
 from api.userinfo.router.vitalrouter import VitalRouter
 from api.userinfo.router.mlrouter import MLRouter
+from api.userinfo.router.archiverouter import ArchiveRouter
 from api.utils.loginhandler import LoginHandler
 from api.utils.mlhandler import MLHandler
 import uvicorn
@@ -40,6 +42,7 @@ class APIDriver:
         logins = LoginCRUD(connector, users, auth)
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
+        archive = ArchiveCRUD(connector)
         loginHandler = LoginHandler(users, logins, auth)
         mlHandler = MLHandler()
         usersRouter = UserRouter(users, logins)
@@ -47,6 +50,7 @@ class APIDriver:
         loginRouter = LoginRouter(logins, users)
         patientRouter = PatientRouter(patients)
         vitalRouter = VitalRouter(vitals)
+        archiveRouter = ArchiveRouter(archive)
         mlRouter = MLRouter(patients, mlHandler)
         api = MainAPI(loginHandler)
         api.addRouter(usersRouter.router)
@@ -55,6 +59,7 @@ class APIDriver:
         api.addRouter(patientRouter.router)
         api.addRouter(vitalRouter.router)
         api.addRouter(mlRouter.router)
+        api.addRouter(archiveRouter.router)
         return api.app
 
     @staticmethod

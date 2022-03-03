@@ -10,52 +10,55 @@ import {
   Divider, 
   MenuItem, 
   Menu,
+  ListItemIcon,
+  ListItemText,
   Avatar,
   IconButton 
 } from "@mui/material";
 import { styled } from '@mui/material/styles';
+import { StyledMenu } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors"
 import { Icons } from "../resources/Icons"
 import { useGlobal, Actions } from "../contexts/GlobalContext"
 import DrawerComponent from "./Drawer";
 
-const StyledMenu = styled((props) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  '& .MuiPaper-root': {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    backgroundColor: Colors.backgroundLighter,
-    color:
-      theme.palette.mode === 'light' ? Colors.primary : theme.palette.grey[300],
-    '& .MuiMenuItem-root': {
-      '& .MuiSvgIcon-root': {
-        fontSize: 18,
-        color: Colors.primary,
-        marginRight: theme.spacing(1.5),
-      },
-      '&:active': {
-        backgroundColor: Colors.secondary
-      },
-      '&.Mui-disabled': {
-        color: Colors.primary,
-        opacity: 1
-      }
-    },
-  },
-}));
+// const StyledMenu = styled((props) => (
+//   <Menu
+//     elevation={0}
+//     anchorOrigin={{
+//       vertical: 'bottom',
+//       horizontal: 'right',
+//     }}
+//     transformOrigin={{
+//       vertical: 'top',
+//       horizontal: 'right',
+//     }}
+//     {...props}
+//   />
+// ))(({ theme }) => ({
+//   '& .MuiPaper-root': {
+//     borderRadius: 6,
+//     marginTop: theme.spacing(1),
+//     minWidth: 180,
+//     backgroundColor: Colors.backgroundLighter,
+//     color:
+//       theme.palette.mode === 'light' ? Colors.primary : theme.palette.grey[300],
+//     '& .MuiMenuItem-root': {
+//       '& .MuiSvgIcon-root': {
+//         fontSize: 18,
+//         color: Colors.primary,
+//         marginRight: theme.spacing(1.5),
+//       },
+//       '&:active': {
+//         backgroundColor: Colors.secondary
+//       },
+//       '&.Mui-disabled': {
+//         color: Colors.primary,
+//         opacity: 1
+//       }
+//     },
+//   },
+// }));
 
 function Navbar(props) {
   const navigate = useNavigate();
@@ -98,6 +101,27 @@ function Navbar(props) {
     return navigate("/login");
   };
 
+  const ProfileMenu = () => (
+    <StyledMenu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose} >
+        <MenuItem>
+            <ListItemIcon>{Icons.verifiedUser}</ListItemIcon>
+            <ListItemText>{user.username}</ListItemText>
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={editProfile}>
+            <ListItemIcon>{Icons.settings}</ListItemIcon>
+            <ListItemText>Edit Profile</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={logout}>
+            <ListItemIcon>{Icons.logout}</ListItemIcon>
+            <ListItemText>Logout</ListItemText>
+        </MenuItem>
+    </StyledMenu>
+  )
+
   const NavButton = (props) => {
     return (
       <Box sx={{flexGrow: 1}} >
@@ -138,29 +162,7 @@ function Navbar(props) {
         >
           <Avatar src="/broken-image.jpg" />
         </Button>
-        <StyledMenu
-          id="account-menu"
-          MenuListProps={{
-            'aria-labelledby': 'account-button',
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-        <MenuItem disableRipple disabled>
-          {Icons.verifiedUser}
-          {user.username}
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={editProfile} disableRipple>
-          {Icons.settings}
-          Edit Profile
-        </MenuItem>
-        <MenuItem onClick={logout} disableRipple>
-          {Icons.logout}
-          Logout
-        </MenuItem>
-      </StyledMenu>
+        <ProfileMenu />
       </Toolbar>
     </AppBar>
   );

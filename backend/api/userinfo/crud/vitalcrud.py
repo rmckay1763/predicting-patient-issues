@@ -86,7 +86,7 @@ class VitalCRUD(BaseCRUD):
         key = cursor.fetchone()
         if (key == None):
             cursor.close()
-            raise HTTPException(status_code=404, detail='Failed to insert patient')
+            raise HTTPException(status_code=404, detail='Failed to insert record')
         cursor.close()
         return key
 

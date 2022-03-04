@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import { Actions, useGlobal } from "../contexts/GlobalContext";
+import BaseAdminRoute from "./BaseAdminRoute";
 import BaseRoute from "./BaseRoute";
 import PatientTable from "../components/PatientTable";
 import EditProfileForm from "../components/EditProfileForm";
@@ -8,7 +9,9 @@ import PatientProfile from "../components/PatientProfile";
 import AddPatientForm from "../components/AddPatientForm";
 import EnterVitals from "../components/EnterVitals";
 import EditPatientForm from "../components/EditPatientForm";
-import { CheckToken } from "../controllers/APIController";
+import { CheckAdminToken, CheckToken } from "../controllers/APIController";
+import UserTable from "../components/UserTable";
+import AddUserForm from "../components/AddUserForm";
 
 /**
  * Wrapper for authentication routes
@@ -18,6 +21,18 @@ import { CheckToken } from "../controllers/APIController";
 const AuthRoute = ({ children }) => {
   const [state, dispatch] = useGlobal();
   CheckToken(state.token)
+    .catch(() => dispatch({type: Actions.clearToken}));
+  return state.token ? children : <Navigate to="/login" />;
+};
+
+/**
+ * Wrapper for administrator authentication routes
+ * @param {*} param0 The route to wrap
+ * @returns Route to child if authenticated, login route otherwise
+ */
+ const AdminAuthRoute = ({ children }) => {
+  const [state, dispatch] = useGlobal();
+  CheckAdminToken(state.token)
     .catch(() => dispatch({type: Actions.clearToken}));
   return state.token ? children : <Navigate to="/login" />;
 };
@@ -40,6 +55,38 @@ export const LoginRoute = () => (
     <LoginForm />
   </GenericRoute>
 )
+
+/**
+ * @returns Component for test admin route
+ */
+ export const TestAdminRoute = () => (
+  <AdminAuthRoute>
+    This is an admin page.
+  </AdminAuthRoute>
+ )
+
+ /**
+ * @returns Component for patient table route
+ */
+  export const UserTableRoute = () => (
+    <AdminAuthRoute>
+      <BaseAdminRoute>
+        <UserTable />
+      </BaseAdminRoute>
+    </AdminAuthRoute>
+   )
+
+
+ /**
+ * @returns Component for new user route
+ */
+  export const AddUserRoute = () => (
+    <AdminAuthRoute>
+      <BaseAdminRoute>
+        <AddUserForm />
+      </BaseAdminRoute>
+    </AdminAuthRoute>
+   )
 
 /**
  * @returns Component for patient table route

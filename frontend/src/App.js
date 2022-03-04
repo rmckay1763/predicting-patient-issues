@@ -6,7 +6,10 @@ import {
   PatientProfileRoute, 
   AddPatientRoute,
   EnterVitalsRoute,
-  EditPatientRoute
+  EditPatientRoute,
+  TestAdminRoute,
+  UserTableRoute,
+  AddUserRoute
 } from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
@@ -48,6 +51,14 @@ export default function App() {
             exact
             path="/editPatient"
             element={<EditPatientRoute />} />
+          <Route
+            exact
+            path="/users"
+            element={<UserTableRoute />} />
+          <Route 
+            exact
+            path="/newUser"
+            element={<AddUserRoute />} />
         </Routes>
       </Router>
     </GlobalProvider>

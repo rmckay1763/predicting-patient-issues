@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from api.userinfo.models import User, UserIn
 from api.userinfo.crud.usercrud import UserCRUD
+from api.userinfo.crud.logincrud import LoginCRUD
 from api.dependencies import auth
 
 class UserRouter:
@@ -8,7 +9,7 @@ class UserRouter:
     Implements routes for the user table using an APIRouter
     '''
 
-    def __init__(self, users: UserCRUD):
+    def __init__(self, users: UserCRUD, logins: LoginCRUD):
         '''
         Constructor.
 
@@ -16,6 +17,7 @@ class UserRouter:
             users (UserCRUD): The crud to interact with the table.
         '''
         self.users = users
+        self.logins = logins
         self.router = APIRouter(
             prefix="/api/user",
             dependencies=[Depends(auth.auth_wrapper)]
@@ -120,6 +122,7 @@ class UserRouter:
         """
         try:
             await self.authenticate(uid, None)
+            await self.logins.delete(key)
             return await self.users.delete(key)
         except BaseException as err:
             raise err

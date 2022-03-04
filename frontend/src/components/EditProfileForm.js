@@ -13,7 +13,7 @@ import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
 
 export default function EditProfileForm() {
-  const [state, dispatch] = useGlobal();
+  const [state,] = useGlobal();
   const [user, setUser] = useState([]);
   const [token, setToken] = useState([]);
 
@@ -34,10 +34,7 @@ export default function EditProfileForm() {
     if (newPassword === confirmedPassword)
     {
       try {
-        console.log(oldPassword);
-        console.log(newPassword);
-        console.log(user.uid)
-        const response = await ChangePassword(token, user.uid, oldPassword, newPassword);
+        await ChangePassword(token, user.uid, oldPassword, newPassword);
         window.alert("Password has been changed!");
       } 
       catch (error) {
@@ -46,7 +43,7 @@ export default function EditProfileForm() {
     }
     else
     {
-      window.alert("Password do not match!");
+      window.alert("Passwords do not match!");
     }
   };
 

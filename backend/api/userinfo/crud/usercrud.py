@@ -17,7 +17,7 @@ class UserCRUD(BaseCRUD):
 
         # table dependent sql query strings
         self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
-            "VALUES (%s, %s, %s, %s,%s) RETURNING {key};")
+            "VALUES (%s, %s, %s, %s, %s, %s) RETURNING {key};")
 
         self.updateQuery = ("UPDATE public.{table} SET "
             "{firstname}=%s, {lastname}=%s, {username}=%s, {rank}=%s, {role}=%s, {admin}=%s "
@@ -44,7 +44,9 @@ class UserCRUD(BaseCRUD):
                 sql.Identifier('lastname'),
                 sql.Identifier('username'),
                 sql.Identifier('rank'),
-                sql.Identifier('role')]))
+                sql.Identifier('role'),
+                sql.Identifier('admin')
+            ]))
 
         self.updateSQL = sql.SQL(self.updateQuery).format(
             table = sql.Identifier('user'),
@@ -112,7 +114,9 @@ class UserCRUD(BaseCRUD):
                 user.lastname, 
                 user.username, 
                 user.rank, 
-                user.role,))
+                user.role,
+                user.admin
+            ))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

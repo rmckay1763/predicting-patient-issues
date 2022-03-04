@@ -6,9 +6,10 @@ import {
     Switch, 
     FormControlLabel, 
     Menu, 
+    List,
 } from "@mui/material";
-import { styled } from "@mui/system"
 import { Colors } from "../resources/Colors";
+import { styled } from "@mui/system"
 
 export const StyledTypography = styled(Typography)({
     color: Colors.primary,
@@ -32,18 +33,20 @@ export const StyledFormControlLabel = styled(FormControlLabel)({
 })
 
 export const StyledSwitch = styled(Switch)({
-    '& .MuiSwitch-switchBase': {
-        color: Colors.focus,
-    },
-    '& .MuiSwitch-track': {
-        backgroundColor: Colors.primary,
-    },
-    '& .Mui-checked + .MuiSwitch-track': {
-        backgroundColor: Colors.primary,
-    },
-    '& .Mui-checked': {
-        color: Colors.primary,
-    },
+    '&.CustomSwitch': {
+        '& .MuiSwitch-switchBase': {
+            color: Colors.focus,
+        },
+        '& .MuiSwitch-track': {
+            backgroundColor: Colors.primary,
+        },
+        '& .Mui-checked': {
+            color: Colors.primary,
+        },
+        '& .Mui-checked + .MuiSwitch-track': {
+            backgroundColor: Colors.primary,
+        },
+    }
 })
 
  export const StyledTextField = styled(TextField)({
@@ -111,7 +114,22 @@ export const StyledMenu = styled(Menu)({
             backgroundColor: Colors.secondary
         }
     },
-    '& .Mui-disabled': {
-        opacity: 1,
-    },
+    '& .NotClickable:hover': {
+        backgroundColor: Colors.backgroundLighter,
+        cursor: 'auto'
+    }
 });
+
+export const StyledList = styled(List)({
+    '& .MuiListItem-root': {
+        '&:hover': {
+            backgroundColor: Colors.secondary,
+        }
+    },
+    '& .MuiListItemIcon-root': {
+        color: Colors.primary,
+    },
+    '& .MuiListItemText-root': {
+        color: Colors.primary,
+    }
+})

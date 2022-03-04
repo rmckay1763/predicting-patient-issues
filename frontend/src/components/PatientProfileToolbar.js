@@ -22,6 +22,10 @@ export default function PatientProfileToolbar(props) {
         return navigate("/enterVitals", {state: {patient: props.patient}});
     }
 
+    const onUpdate = () => {
+        return navigate("/editPatient", {state: {patient: props.patient}});
+    }
+
     const onDelete = () => {
         props.onDelete(true);
     }
@@ -33,6 +37,9 @@ export default function PatientProfileToolbar(props) {
         <BaseToolbar title={title} ref={toolbar}>
             <StyledIconButton onClick={onEnterVitals} >
                 {Icons.add}
+            </StyledIconButton>
+            <StyledIconButton onClick={onUpdate} >
+                {Icons.edit}
             </StyledIconButton>
             <StyledIconButton onClick={onDelete} >
                 {Icons.delete}
@@ -49,6 +56,10 @@ export default function PatientProfileToolbar(props) {
                 control={<IconButton children={Icons.add} />}
                 label={"Enter Vitals"}
                 onClick={onEnterVitals} />
+            <StyledFormControlLabel 
+                control={<IconButton children={Icons.edit} />}
+                label={"Edit Patient"}
+                onClick={onUpdate} />
             <StyledFormControlLabel 
                 control={<IconButton children={Icons.delete} />}
                 label={"Delete Patient"}

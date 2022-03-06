@@ -51,6 +51,6 @@ export const Icons = {
     unknown: <HelpIcon />,
 }
 
-export const NotificationIcon = (props) => (
-    <NotificationImportantIcon {...props} />
-)
+export const IconsLarge = {
+    notification: <NotificationImportantIcon fontSize='large' />,
+}

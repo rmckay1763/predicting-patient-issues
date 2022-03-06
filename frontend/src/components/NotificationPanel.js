@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import BaseToolbar from "./BaseToolbar";
 import { Colors } from "../resources/Colors";
-import { Icons, NotificationIcon } from "../resources/Icons";
+import { Icons, IconsLarge } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
 import { useComponentWidth } from "../contexts/Dimensions";
 import { StyledFormControlLabel, StyledSwitch } from "../resources/StyledComponents";
@@ -61,8 +61,6 @@ export default function NotificationPage() {
     const NotificationToolbar = () => {
         const ref = useRef(null);
         const { width } = useComponentWidth(ref);
-        const iconProps = {fontSize: 'large'}
-        const notificationIcon = NotificationIcon(iconProps)
         const unlabeledSwitch = (
             <StyledSwitch 
                 className='CustomSwitch' 
@@ -75,11 +73,11 @@ export default function NotificationPage() {
                 label={"Critical Only"}
                 onChange={onCriticalOnlyChanged} />
         )
-        const title = width < 500 ? notificationIcon : 'Notifications'
+        const title = width < 500 ? IconsLarge.notification : 'Notifications'
         const criticalOnlySwitch = width < 250 ? unlabeledSwitch : labeledSwitch
 
         return (
-            <BaseToolbar title={title} ref={ref}>
+            <BaseToolbar title={title} ref={ref} >
                 {criticalOnlySwitch}
             </BaseToolbar>
         )

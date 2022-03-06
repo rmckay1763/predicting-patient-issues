@@ -1,20 +1,22 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Stack, IconButton } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { AddVital } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useComponentWidth } from "../contexts/Dimensions";
 import BaseToolbar from "./BaseToolbar";
-import { 
-    StyledFormControlLabel, 
+import {  
     StyledTextField, 
-    StyledButton, 
-    StyledTypography 
+    StyledButtonPrimary,
+    StyledButtonSecondary, 
+    StyledTypography, 
+    StyledIconButton
 } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
 import { Icons } from "../resources/Icons";
 
 /**
- * @returns Component to enter vitals
+ * @returns Component to enter vitals.
  */
 export default function EnterVitals() {
     const navigate = useNavigate();
@@ -63,14 +65,36 @@ export default function EnterVitals() {
         return navigate('/patientProfile', {state: {patient: location.state.patient}});
     }
 
+    const EnterVitalsToolbar = () => {
+        const ref = useRef(null);
+        const { width } = useComponentWidth(ref);
+        const breakpoint = 600;
+        
+        const full = () => (
+            <BaseToolbar title="Enter Vitals" ref={ref} >
+                <StyledButtonSecondary
+                        startIcon={Icons.close}
+                        onClick={handleCancel} 
+                >
+                    Cancel
+                </StyledButtonSecondary>
+            </BaseToolbar>
+        )
+    
+        const reduced = () => (
+            <BaseToolbar title="Enter Vitals" ref={ref} >
+                <StyledIconButton onClick={handleCancel}>
+                    {Icons.close}
+                </StyledIconButton>
+            </BaseToolbar>
+        )
+    
+        return width < breakpoint ? reduced() : full()
+    }
+
     return (
         <Fragment>
-            <BaseToolbar title="Enter Vitals">
-            <StyledFormControlLabel 
-                    control={<IconButton children={Icons.close} />}
-                    label="Cancel"
-                    onClick={handleCancel} />
-            </BaseToolbar>
+            <EnterVitalsToolbar />
             <Box
                 component="form"
                 onSubmit={handleSubmit}
@@ -121,7 +145,7 @@ export default function EnterVitals() {
                             setRespirationError(e.target.value < 0);
                             setRespiration(e.target.value);
                         }} />
-                    <StyledButton type="submit">Submit</StyledButton>
+                    <StyledButtonPrimary type="submit">Submit</StyledButtonPrimary>
                 </Stack>
             </Box>
         </Fragment>

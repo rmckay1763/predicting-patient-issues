@@ -21,6 +21,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import GroupIcon from '@mui/icons-material/Group';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HelpIcon from '@mui/icons-material/Help';
 
 
 export const Icons = {
@@ -43,4 +46,11 @@ export const Icons = {
     group: <GroupIcon />,
     admin: <AdminPanelSettingsIcon />,
     addPerson: <PersonAddIcon />,
+    notification: <NotificationImportantIcon />,
+    stable: <CheckCircleIcon />,
+    unknown: <HelpIcon />,
 }
+
+export const NotificationIcon = (props) => (
+    <NotificationImportantIcon {...props} />
+)

@@ -1,12 +1,11 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { InputAdornment, IconButton } from '@mui/material'
+import { InputAdornment } from '@mui/material'
 import BaseToolbar from './BaseToolbar';
 import { 
     StyledTextField, 
-    StyledIconButton, 
-    StyledSwitch, 
-    StyledFormControlLabel, 
+    StyledIconButton,
+    StyledButtonSecondary, 
  } from '../resources/StyledComponents'
 import { useComponentWidth } from "../contexts/Dimensions";
 import { Icons } from '../resources/Icons';
@@ -16,7 +15,7 @@ import { Icons } from '../resources/Icons';
  * @param {*} param0 Event handlers for toolbar actions.
  * @returns A toolbar for the user table.
  */
-export default function UserTableToolbar({ setCriticalOnly, setQuery }) {
+export default function UserTableToolbar({ setQuery }) {
 
     const navigate = useNavigate();
     const toolbar = useRef(null);
@@ -72,11 +71,12 @@ export default function UserTableToolbar({ setCriticalOnly, setQuery }) {
      */
     const full = () => (
         <BaseToolbar title="Users" ref={toolbar} >
-            <StyledFormControlLabel 
-                control={<IconButton children={Icons.add} />}
-                label={"Add User"}
+            <StyledButtonSecondary 
+                startIcon={Icons.add}
                 onClick={onAddUser} 
-            />
+            >
+                Add User
+            </StyledButtonSecondary>
             {SearchBox()}
         </BaseToolbar>
     );

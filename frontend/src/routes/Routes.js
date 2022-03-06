@@ -11,6 +11,7 @@ import EnterVitals from "../components/EnterVitals";
 import { CheckAdminToken, CheckToken } from "../controllers/APIController";
 import UserTable from "../components/UserTable";
 import AddUserForm from "../components/AddUserForm";
+import NotificationPage from "../components/NotificationPage";
 
 /**
  * Wrapper for authentication routes
@@ -138,6 +139,14 @@ export const EnterVitalsRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <EnterVitals />
+    </BaseRoute>
+  </AuthRoute>
+)
+
+export const NotificationRoute = () =>(
+  <AuthRoute>
+    <BaseRoute>
+      <NotificationPage />
     </BaseRoute>
   </AuthRoute>
 )

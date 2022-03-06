@@ -11,35 +11,16 @@ import { StyledList } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useViewport } from "../contexts/Dimensions"
 
-function DrawerComponent() {
-const [openDrawer, setOpenDrawer] = useState(false);
+export default function DrawerComponent() {
+    
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const { width } = useViewport();
+    const breakpoint = 900;
+    const [state,] = useGlobal();
 
-    const AdminListItem = () => {
-        const [state,] = useGlobal();
-
-        if (state.user.admin) {
-            return (
-                <ListItem 
-                    button 
-                    onClick={() => setOpenDrawer(false)}
-                    component={Link} 
-                    to="/users"
-                >
-                    <ListItemIcon>{Icons.admin}</ListItemIcon>
-                    <ListItemText>Manage Users</ListItemText>
-                </ListItem>
-            )
-        }
-        else {
-            return (
-                <div>
-                </div>
-            )
-        }
-    }
-
-    const GenericListItem = (props) => (
+    const DrawerListItem = (props) => (
         <ListItem
             button 
             onClick={() => setOpenDrawer(false)}
@@ -56,7 +37,6 @@ const [openDrawer, setOpenDrawer] = useState(false);
             <Drawer
                 open={openDrawer}
                 onClose={() => setOpenDrawer(false)}
-                classes = {{ paper: {overflowX: "hidden"} }}
                 sx={{
                     '& .MuiDrawer-paper': {
                         backgroundColor: Colors.backgroundLighter
@@ -64,21 +44,39 @@ const [openDrawer, setOpenDrawer] = useState(false);
                 }}
             >
                 <StyledList>
-                    <GenericListItem 
+                    <DrawerListItem 
                         to='/'
                         icon={Icons.home}
                         text='Patient Home' />
-                    <GenericListItem 
+                    <DrawerListItem 
                         to='/newPatient'
                         icon={Icons.addPerson}
                         text='Add Patient' />
-                    <AdminListItem />
+                    {width < breakpoint && 
+                        <DrawerListItem 
+                            to='/notifications' 
+                            icon={Icons.notification} 
+                            text='Notifications' />
+                    }
+                    {state.user.admin && 
+                        <DrawerListItem 
+                            to="/users"
+                            icon={Icons.admin} 
+                            text='Manage Users' />
+                    }
                 </StyledList>
             </Drawer>
-            <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
+            <IconButton 
+                onClick={() => setOpenDrawer(!openDrawer)}
+                sx={{
+                    color: Colors.backgroundLighter,
+                    '& :hover': {
+                        backgroundColor: Colors.secondary,
+                        color: Colors.primary
+                    }
+                }} >
                 {Icons.menu}
             </IconButton>
         </>
     );
 }
-export default DrawerComponent;

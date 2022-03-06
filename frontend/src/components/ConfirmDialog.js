@@ -7,6 +7,12 @@ import {
 } from "@mui/material";
 import { Colors } from "../resources/Colors";
 
+/**
+ * 
+ * @props {function} setOpen - callback to set the open flag from the calling component.
+ * @props {function} onConfirm - callback to execute if confirm button selected.
+ * @returns Confirmation dialog with cancel and confirm buttons.
+ */
 export default function ConfirmDialog(props) {
 
     return (

@@ -26,6 +26,8 @@ export default function AddPatientForm() {
     const navigate = useNavigate();
     const location = useLocation();
     const [state, dispatch] = useGlobal();
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
     const [age, setAge] = useState("");
     const [gender, setGender] = useState("");
     const [ageError, setAgeError] = useState(false);
@@ -48,6 +50,8 @@ export default function AddPatientForm() {
     }
 
     const clearInput = () => {
+        setFirstname("");
+        setLastname("");
         setAge("");
         setGender("");
     }
@@ -56,6 +60,8 @@ export default function AddPatientForm() {
         e.preventDefault();
         let patient = location.state.patient;
         patient.age = age;
+        patient.firstname = firstname;
+        patient.lastname = lastname;
         patient.gender = gender;
         patient.status = mapStatus(patient.status);
 
@@ -93,6 +99,17 @@ export default function AddPatientForm() {
                     <StyledTypography variant="subtitle1" textAlign="center">
                         Updated Patient Information
                     </StyledTypography>
+                    <StyledTextField
+                        required
+                        autoFocus
+                        label="First name"
+                        value={firstname}
+                        onChange={(e) => setFirstname(e.target.value)} />
+                    <StyledTextField
+                        required
+                        label="Last name"
+                        value={lastname}
+                        onChange={(e) => setLastname(e.target.value)} />
                     <StyledTextField
                         type="number"
                         InputProps={{ inputProps: { min: 0 } }}

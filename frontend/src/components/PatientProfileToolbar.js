@@ -17,7 +17,7 @@ export default function PatientProfileToolbar(props) {
     const navigate = useNavigate();
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
-    const breakpoint = 700; 
+    const breakpoint = 750; 
     const title = "Patient Profile: " + props.patient.firstname + " " + props.patient.lastname;
 
     const onEnterVitals = () => {

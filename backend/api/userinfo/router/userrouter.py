@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from api.dependencies import auth
-from api.userinfo.models import User, UserIn
+from api.userinfo.models import RoleIn, User, UserIn
 from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 
@@ -37,6 +37,9 @@ class UserRouter:
         self.router.post("/insert/")(self.insert)
         self.router.put("/update")(self.update)
         self.router.delete("/delete/{key}")(self.delete)
+        self.router.get("/fetchAllRoles")(self.fetchAllRoles)
+        self.router.post("/addRole")(self.addRole)
+        self.router.delete("/deleteRole/{key}")(self.deleteRole)
 
     async def fetchKey(self, username: str):
         """
@@ -126,6 +129,27 @@ class UserRouter:
         try:
             await self.authenticate(uid, None)
             return await self.service.deleteUser(key)
+        except BaseException as err:
+            raise err
+
+    async def fetchAllRoles(self, uid=Depends(auth.auth_wrapper)):
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.fetchAllRoles()
+        except BaseException as err:
+            raise err
+
+    async def addRole(self, role: RoleIn, uid=Depends(auth.auth_wrapper)):
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.addRole(role)
+        except BaseException as err:
+            raise err
+
+    async def deleteRole(self, key: int, uid=Depends(auth.auth_wrapper)):
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.deleteRole(key)
         except BaseException as err:
             raise err
 

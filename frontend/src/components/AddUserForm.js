@@ -39,7 +39,7 @@ export default function AddUserForm() {
                 username: username,
                 rank: rank,
                 role: role,
-                isAdmin: isAdmin,
+                admin: isAdmin,
                 password: password
             }
             try {

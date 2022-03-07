@@ -5,6 +5,8 @@ from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
 
 class UserService:
+    '''
+    '''
 
     def __init__(self, users: UserCRUD, logins: LoginCRUD, roles: RoleCRUD):
         self.users = users
@@ -24,6 +26,12 @@ class UserService:
                 admin = user.admin
             )
             return out
+        except BaseException as err:
+            raise err
+
+    async def fetchUid(self, username: str):
+        try:
+            return await self.users.fetchKey(username)
         except BaseException as err:
             raise err
 
@@ -48,7 +56,7 @@ class UserService:
     async def addUser(self, userInfo: UserIn):
         try:
             newid = await self.users.insert(userInfo)
-            login = Login(uid = newid["uid"], password = userInfo.password)
+            login = Login(uid = newid['uid'], password = userInfo.password)
             return await self.logins.insert(login)
         except BaseException as err:
             raise err
@@ -63,5 +71,29 @@ class UserService:
     async def deleteUser(self, uid):
         try:
             return await self.users.delete(uid)
+        except BaseException as err:
+            raise err
+    
+    async def fetchAllRoles(self):
+        try:
+            return await self.roles.fetchAll()
+        except BaseException as err:
+            raise err
+
+    async def addRole(self, role: RoleIn):
+        try:
+            return await self.roles.insert(role)
+        except BaseException as err:
+            raise err
+
+    async def deleteRole(self, id: int):
+        try:
+            return await self.roles.delete(id)
+        except BaseException as err:
+            raise err
+
+    async def fetchPassword(self, uid: int):
+        try:
+            return await self.logins.fetchOne(uid)
         except BaseException as err:
             raise err

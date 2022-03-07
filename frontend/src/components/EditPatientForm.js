@@ -13,6 +13,7 @@ import {
     StyledFormControlLabel, 
     StyledTextField, 
     StyledButtonPrimary, 
+    StyledButtonSecondary,
     StyledTypography,
  } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
@@ -81,10 +82,12 @@ export default function AddPatientForm() {
     return (
         <Fragment>
             <BaseToolbar title="Edit Patient Records">
-                <StyledFormControlLabel 
-                    control={<IconButton children={Icons.close} />}
-                    label="Cancel"
-                    onClick={() => navigate('/patientProfile', {state: {patient: location.state.patient}})} />
+                <StyledButtonSecondary
+                    startIcon={Icons.close}
+                    onClick={() => navigate('/patientProfile', {state: {patient: location.state.patient}})}
+                >
+                    Cancel
+                </StyledButtonSecondary>
             </BaseToolbar>
             <Box
                 component="form"

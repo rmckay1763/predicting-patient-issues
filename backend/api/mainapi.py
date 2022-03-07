@@ -1,7 +1,4 @@
-from hashlib import new
 from http.client import HTTPException
-from lib2to3.pytree import Base
-import string
 from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from api.utils.loginhandler import LoginHandler
@@ -83,7 +80,7 @@ class MainAPI:
             uid (int): uid of the current user.
         """
         try:
-            user = await self.loginHandler.users.fetchOne(uid)
+            user = await self.loginHandler.service.fetchUser(uid)
 
             if (user.admin):
                 return user.uid

@@ -45,7 +45,7 @@ class APIDriver:
         vitals = VitalCRUD(connector)
         archive = ArchiveCRUD(connector)
         userService = UserService(users, logins, roles)
-        loginHandler = LoginHandler(users, logins, auth)
+        loginHandler = LoginHandler(auth, userService)
         mlHandler = MLHandler()
         usersRouter = UserRouter(users, logins, userService)
         rolesRouter = RoleRouter(roles)

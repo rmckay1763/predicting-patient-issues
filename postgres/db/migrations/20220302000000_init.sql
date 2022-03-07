@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.user (
 	lastname VARCHAR(64) NOT NULL,
 	username VARCHAR(64) UNIQUE NOT NULL,
 	rank VARCHAR(4),
-	role INT REFERENCES public.role(id),
+	role INT REFERENCES public.role(id) ON DELETE SET NULL,
     admin BOOLEAN DEFAULT FALSE
 );
 

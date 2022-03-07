@@ -6,6 +6,8 @@ import {
   PatientProfileRoute, 
   AddPatientRoute,
   EnterVitalsRoute,
+  EditPatientRoute,
+  TestAdminRoute,
   UserTableRoute,
   AddUserRoute,
   NotificationRoute
@@ -46,6 +48,10 @@ export default function App() {
             path="/enterVitals"
             element={<EnterVitalsRoute />} />
           <Route 
+            exact
+            path="/editPatient"
+            element={<EditPatientRoute />} />
+          <Route
             exact
             path="/users"
             element={<UserTableRoute />} />

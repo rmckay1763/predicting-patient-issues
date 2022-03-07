@@ -17,11 +17,15 @@ export default function PatientProfileToolbar(props) {
     const navigate = useNavigate();
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
-    const breakpoint = 700; 
+    const breakpoint = 750; 
     const title = "Patient Profile: " + props.patient.firstname + " " + props.patient.lastname;
 
     const onEnterVitals = () => {
         return navigate("/enterVitals", {state: {patient: props.patient}});
+    }
+
+    const onUpdate = () => {
+        return navigate("/editPatient", {state: {patient: props.patient}});
     }
 
     const onDelete = () => {
@@ -35,6 +39,9 @@ export default function PatientProfileToolbar(props) {
         <BaseToolbar title={title} ref={toolbar}>
             <StyledIconButton onClick={onEnterVitals} >
                 {Icons.add}
+            </StyledIconButton>
+            <StyledIconButton onClick={onUpdate} >
+                {Icons.edit}
             </StyledIconButton>
             <StyledIconButton onClick={onDelete} >
                 {Icons.delete}
@@ -52,6 +59,12 @@ export default function PatientProfileToolbar(props) {
                 onClick={onEnterVitals}
             >
                 Enter Vitals
+            </StyledButtonSecondary>
+            <StyledButtonSecondary 
+                startIcon={Icons.edit}
+                onClick={onUpdate}
+            >
+                Edit Patient
             </StyledButtonSecondary>
             <StyledButtonSecondary 
                 startIcon={Icons.delete}

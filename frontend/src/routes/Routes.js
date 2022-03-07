@@ -8,6 +8,7 @@ import EditProfileForm from "../components/EditProfileForm";
 import PatientProfile from "../components/PatientProfile";
 import AddPatientForm from "../components/AddPatientForm";
 import EnterVitals from "../components/EnterVitals";
+import EditPatientForm from "../components/EditPatientForm";
 import { CheckAdminToken, CheckToken } from "../controllers/APIController";
 import UserTable from "../components/UserTable";
 import AddUserForm from "../components/AddUserForm";
@@ -139,6 +140,17 @@ export const EnterVitalsRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <EnterVitals />
+    </BaseRoute>
+  </AuthRoute>
+)
+
+/**
+ * @returns Component to edit patient records
+ */
+ export const EditPatientRoute = () =>(
+  <AuthRoute>
+    <BaseRoute>
+      <EditPatientForm />
     </BaseRoute>
   </AuthRoute>
 )

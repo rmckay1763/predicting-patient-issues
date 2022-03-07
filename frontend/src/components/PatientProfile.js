@@ -14,6 +14,9 @@ import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import VitalsTable from "./VitalsTable";
 
+/**
+ * @returns Component for the patient profile page.
+ */
 export default function PatientProfile() {
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();

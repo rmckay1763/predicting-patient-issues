@@ -1,12 +1,11 @@
 import { useCallback, useEffect, Fragment } from "react";
-import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
+import { ReflexContainer, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
 import { GetUsers } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
-import NotificationPanel from "../components/NotificationPanel";
 import AlertMessage from "../components/AlertMessage";
 
 /**
@@ -42,7 +41,6 @@ import AlertMessage from "../components/AlertMessage";
 
     // return single pane if narrow screen size
     if (width < breakpoint) {
-        document.body.style.overflow = 'scroll';
         return (
             <Fragment>
                 <AlertMessage />

@@ -9,7 +9,8 @@ import {
   EditPatientRoute,
   TestAdminRoute,
   UserTableRoute,
-  AddUserRoute
+  AddUserRoute,
+  NotificationRoute
 } from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
@@ -17,7 +18,6 @@ let token = localStorage.getItem("uid");
 let user = JSON.parse(localStorage.getItem("user"));
 
 export default function App() {
-  document.body.style.overflow = 'hidden';
 
   return (
     <GlobalProvider token={token} user={user}>
@@ -59,6 +59,10 @@ export default function App() {
             exact
             path="/newUser"
             element={<AddUserRoute />} />
+          <Route
+            exact
+            path="/notifications"
+            element={<NotificationRoute/>} />
         </Routes>
       </Router>
     </GlobalProvider>

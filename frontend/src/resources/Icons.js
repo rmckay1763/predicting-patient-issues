@@ -19,6 +19,12 @@ import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import GroupIcon from '@mui/icons-material/Group';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HelpIcon from '@mui/icons-material/Help';
 
 
 export const Icons = {
@@ -38,5 +44,15 @@ export const Icons = {
     error: <ErrorIcon />,
     patientProfile: <FolderSharedIcon />,
     delete: <DeleteIcon />,
-    edit: <EditIcon />
+    edit: <EditIcon />,
+    group: <GroupIcon />,
+    admin: <AdminPanelSettingsIcon />,
+    addPerson: <PersonAddIcon />,
+    notification: <NotificationImportantIcon />,
+    stable: <CheckCircleIcon />,
+    unknown: <HelpIcon />,
+}
+
+export const IconsLarge = {
+    notification: <NotificationImportantIcon fontSize='large' />,
 }

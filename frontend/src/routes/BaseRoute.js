@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetAllPatients, GetAllVitals, GetUsers } from "../controllers/APIController";
+import { GetAllPatients, GetAllVitals } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -48,7 +48,6 @@ export default function BaseRoute(props) {
 
     // return single pane if narrow screen size
     if (width < breakpoint) {
-        document.body.style.overflow = 'scroll';
         return (
             <Fragment>
                 <AlertMessage />

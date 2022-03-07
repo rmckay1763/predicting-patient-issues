@@ -6,14 +6,21 @@ import {
     Switch, 
     FormControlLabel, 
     Menu, 
+    List,
 } from "@mui/material";
-import { styled } from "@mui/system"
 import { Colors } from "../resources/Colors";
+import { styled } from "@mui/system"
 
+/**
+ * Typography with primary colored text.
+ */
 export const StyledTypography = styled(Typography)({
     color: Colors.primary,
 });
 
+/**
+ * IconButton with primary colored icon and hover effect.
+ */
 export const StyledIconButton = styled(IconButton)({
     color: Colors.primary,
     '&:hover': {
@@ -22,31 +29,43 @@ export const StyledIconButton = styled(IconButton)({
     }
 });
 
+/**
+ * FormControlLabel with primary color applied. 
+ */
 export const StyledFormControlLabel = styled(FormControlLabel)({
-    '& .MuiIconButton-root': {
+    color: Colors.primary,
+    '& .MuiCheckbox-root': {
         color: Colors.primary,
-    },
-    '&:hover .MuiFormControlLabel-label': {
-        fontWeight: 600
-    },
-})
-
-export const StyledSwitch = styled(Switch)({
-    '& .MuiSwitch-switchBase': {
-        color: Colors.focus,
-    },
-    '& .MuiSwitch-track': {
-        backgroundColor: Colors.primary,
-    },
-    '& .Mui-checked + .MuiSwitch-track': {
-        backgroundColor: Colors.primary,
     },
     '& .Mui-checked': {
         color: Colors.primary,
     },
 })
 
- export const StyledTextField = styled(TextField)({
+/**
+ * Switch with primary color applied.
+ */
+export const StyledSwitch = styled(Switch)({
+    '&.CustomSwitch': {
+        '& .MuiSwitch-switchBase': {
+            color: Colors.focus,
+        },
+        '& .MuiSwitch-track': {
+            backgroundColor: Colors.primary,
+        },
+        '& .Mui-checked': {
+            color: Colors.primary,
+        },
+        '& .Mui-checked + .MuiSwitch-track': {
+            backgroundColor: Colors.primary,
+        },
+    }
+})
+
+/**
+ * Applies primary color theme to TextField elements of various types. 
+ */
+export const StyledTextField = styled(TextField)({
     '& .MuiInput-root': {
         color: Colors.primary
     },
@@ -89,15 +108,33 @@ export const StyledSwitch = styled(Switch)({
     },
 })
 
-export const StyledButton = styled(Button)({
+/**
+ * Button filled with primary color and secondary color on hover.
+ */
+export const StyledButtonPrimary = styled(Button)({
     color: Colors.backgroundLighter,
-        backgroundColor: Colors.primary,
-        '&:hover': {
-            color: Colors.primary,
-            backgroundColor: Colors.secondary,
-        }
+    backgroundColor: Colors.primary,
+    '&:hover': {
+        color: Colors.primary,
+        backgroundColor: Colors.secondary,
+    }
 });
 
+/**
+ * Button filled with secondary color and primary color on hover.
+ */
+export const StyledButtonSecondary = styled(Button)({
+    color: Colors.primary,
+    backgroundColor: Colors.secondary,
+    '&:hover': {
+        color: Colors.backgroundLighter,
+        backgroundColor: Colors.primary,
+    }
+});
+
+/**
+ * Applies primary color theme to Menu and child MenuItems.
+ */
 export const StyledMenu = styled(Menu)({
     '& .MuiPaper-root': {
         backgroundColor: Colors.backgroundLighter,
@@ -111,7 +148,25 @@ export const StyledMenu = styled(Menu)({
             backgroundColor: Colors.secondary
         }
     },
-    '& .Mui-disabled': {
-        opacity: 1,
-    },
+    '& .NotClickable:hover': {
+        backgroundColor: Colors.backgroundLighter,
+        cursor: 'auto'
+    }
 });
+
+/**
+ * Applies primary color theme to List and child ListItem elements.
+ */
+export const StyledList = styled(List)({
+    '& .MuiListItem-root': {
+        '&:hover': {
+            backgroundColor: Colors.secondary,
+        }
+    },
+    '& .MuiListItemIcon-root': {
+        color: Colors.primary,
+    },
+    '& .MuiListItemText-root': {
+        color: Colors.primary,
+    }
+})

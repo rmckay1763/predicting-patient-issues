@@ -1,10 +1,8 @@
 import { useRef } from 'react';
-import { useNavigate } from "react-router-dom";
-import { InputAdornment, IconButton } from '@mui/material'
+import { InputAdornment } from '@mui/material'
 import BaseToolbar from './BaseToolbar';
 import { 
     StyledTextField, 
-    StyledIconButton, 
     StyledSwitch, 
     StyledFormControlLabel, 
  } from '../resources/StyledComponents'
@@ -18,10 +16,9 @@ import { Icons } from '../resources/Icons';
  */
 export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
 
-    const navigate = useNavigate();
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
-    const breakpoint = 700;
+    const breakpoint = 600;
 
     /**
      * Handler for critical only toggle button.
@@ -40,13 +37,6 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
     }
 
     /**
-     * Handler for add patient button.
-     */
-    const onAddPatient = () => {
-        return navigate("/newPatient");
-    }
-
-    /**
      * @returns Search box component for toolbar.
      */
     const SearchBox = () => (
@@ -60,7 +50,8 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
                         {Icons.search}
                     </InputAdornment>
                 )
-            }} />
+            }} 
+        />
     );
 
     /**
@@ -68,10 +59,9 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
      */
     const reduced = () => (
         <BaseToolbar title="Patients" ref={toolbar}>
-            <StyledIconButton onClick={onAddPatient} >
-                {Icons.add}
-            </StyledIconButton>
-            <StyledSwitch onChange={onCriticalOnlyChanged} />
+            <StyledSwitch 
+                onChange={onCriticalOnlyChanged} 
+                className='CustomSwitch' />
             {SearchBox()}
         </BaseToolbar>
     );
@@ -82,13 +72,9 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
     const full = () => (
         <BaseToolbar title="Patients" ref={toolbar} >
             <StyledFormControlLabel 
-                control={<IconButton children={Icons.add} />}
-                label={"Add Patient"}
-                onClick={onAddPatient} />
-            <StyledFormControlLabel 
-                control={<StyledSwitch />}
+                control={<StyledSwitch className='CustomSwitch'/>}
                 label={"Critical Only"}
-                onClick={onCriticalOnlyChanged} />
+                onChange={onCriticalOnlyChanged} />
             {SearchBox()}
         </BaseToolbar>
     );

@@ -12,7 +12,7 @@ import BaseToolbar from "./BaseToolbar";
 import { 
     StyledFormControlLabel, 
     StyledTextField, 
-    StyledButton, 
+    StyledButtonPrimary, 
     StyledTypography,
  } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
@@ -26,10 +26,10 @@ export default function AddPatientForm() {
     const navigate = useNavigate();
     const location = useLocation();
     const [state, dispatch] = useGlobal();
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
+    const [firstname, setFirstname] = useState(location.state.patient.firstname);
+    const [lastname, setLastname] = useState(location.state.patient.lastname);
+    const [age, setAge] = useState(location.state.patient.age);
+    const [gender, setGender] = useState(location.state.patient.gender);
     const [ageError, setAgeError] = useState(false);
 
     useEffect(() => {
@@ -136,7 +136,7 @@ export default function AddPatientForm() {
                             Male
                         </MenuItem>
                     </StyledTextField>
-                    <StyledButton type="submit">Update Patient</StyledButton>
+                    <StyledButtonPrimary type="submit">Update Patient</StyledButtonPrimary>
                 </Stack>
             </Box>
         </Fragment>

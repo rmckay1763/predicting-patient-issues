@@ -1,32 +1,33 @@
-import React, {
-    useEffect,
-    useState,
-} from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
-    FormControl, 
-    InputLabel, 
-    Select, 
-    MenuItem, 
     Box, 
     Card,
+    Stack,
     CardActions, 
     CardContent,
-    Grid, 
-    Button, 
-    IconButton, 
+    Button,  
     Typography, 
     Divider, 
 } from "@mui/material";
 import BaseToolbar from "./BaseToolbar";
 import { Colors } from "../resources/Colors";
-import { Icons } from "../resources/Icons";
+import { Icons, IconsLarge } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useComponentWidth } from "../contexts/Dimensions";
+import { StyledFormControlLabel, StyledSwitch } from "../resources/StyledComponents";
 
-export default function NotificationPanel() {
-    const [patients, setPatients] = useState([]);
+/**
+ * @returns Notification panel for split pane view.
+ */
+export default function NotificationPage() {
     const [state, ] = useGlobal();
+    const navigate = useNavigate();
+    const [patients, setPatients] = useState([]);
+    const [criticalOnly, setCriticalOnly] = useState(false);
 
     useEffect(() => {
+        document.body.style.backgroundColor = Colors.backgroundLight
         function mapStatus(patient) {
             switch (patient.status) {
                 case 0:
@@ -45,68 +46,114 @@ export default function NotificationPanel() {
         let temp = state.patients;
         temp.sort((a, b) => a.status - b.status);
         temp.map(mapStatus);
+        if (criticalOnly) {
+            temp = temp.filter((patient) => {
+                return patient.status === 'Critical';
+            });
+        }
         setPatients(temp);
-    }, [state.patients])
+    }, [state.patients, criticalOnly]);
+
+    const onCriticalOnlyChanged = (event) => {
+        setCriticalOnly(event.target.checked);
+    }
+
+    const NotificationToolbar = () => {
+        const ref = useRef(null);
+        const { width } = useComponentWidth(ref);
+        const unlabeledSwitch = (
+            <StyledSwitch 
+                className='CustomSwitch' 
+                checked={criticalOnly} 
+                onChange={onCriticalOnlyChanged} />
+        )
+        const labeledSwitch = (
+            <StyledFormControlLabel 
+                control={unlabeledSwitch}
+                label={"Critical Only"}
+                onChange={onCriticalOnlyChanged} />
+        )
+        const title = width < 500 ? IconsLarge.notification : 'Notifications'
+        const criticalOnlySwitch = width < 250 ? unlabeledSwitch : labeledSwitch
+
+        return (
+            <BaseToolbar title={title} ref={ref} >
+                {criticalOnlySwitch}
+            </BaseToolbar>
+        )
+    }
+
+    const NotificationButton = ({patient}) => (
+        <Button
+            onClick={() => navigate('/patientProfile', {state: {patient: patient}})}
+            size='small'
+            sx={{
+                color: Colors.primary,
+                backgroundColor: Colors.backgroundLighter,
+                '&:hover': {
+                    color: Colors.primary,
+                    backgroundColor: Colors.secondary
+                }
+            }}
+        >
+            View Profile
+        </Button>
+    )
+
+    const NotificationStatus = ({patient}) => {
+        let critical = patient.status === 'Critical';
+        return (
+            <Stack 
+                direction='row' 
+                spacing={2} 
+                sx={{color: critical ? Colors.alert : Colors.primary}} 
+            >
+                <Box sx={{flexGrow: 1 }}>
+                    {critical ? Icons.warning : Icons.stable}
+                </Box>
+                <Typography sx={{fontWeight: 600}}>
+                    Status: {patient.status}
+                </Typography>
+            </Stack>
+        )
+    }
+
+    const NotificationCard = (patient, index) => (
+        <Card 
+            key={index}
+            sx={{
+                backgroundColor: Colors.backgroundLighter, 
+                color: Colors.primary,
+            }}
+        >
+            <CardContent>
+                <Stack spacing={1} divider={<Divider flexItem />} >
+                    <NotificationStatus patient={patient} />
+                    <Typography align='right'>
+                        Patient Name: {patient.firstname} {patient.lastname}
+                    </Typography>
+                </Stack>
+            </CardContent>
+            <CardActions style={{ float: "right" }}>
+                <NotificationButton patient={patient}/>
+            </CardActions>
+        </Card>
+    )
 
     return (
-        <div style={{backgroundColor: Colors.backgroundLight, color: Colors.primary }}>
-            <BaseToolbar title="Notifications">
-                <FormControl variant="filled" size="small" sx={{ width: 200 }}>
-                    <InputLabel 
-                        sx={{color: Colors.primary}}
-                        id="filter-notification-label">
-                            Filter By
-                    </InputLabel>
-                    <Select
-                        labelId="filter-notification-label"
-                        id="filter-notifcation-select"
-                        label="Filter By"
-                        defaultValue=""
-                        //onChange={handleChange}
-                    >
-                        <MenuItem value={"Condition Shift"}>Condition Shift</MenuItem>
-                        <MenuItem value={"Vital Activity"}>Vital Activity</MenuItem>
-                    </Select>
-                </FormControl>
-            </BaseToolbar>
-            
-    
-            <div style={{ maxHeight: "100vh", overflowX: "visible", overflowY: "scroll" }}>
-                <Grid paddingLeft="45px" container spacing={4} justify="center" sx={{ maxWidth: 400 }} >
-                    {patients.map((el, i) => {
-                        return (
-                            <Grid key={i} item xs="auto" marginTop="20px">
-                                <Card sx={{ minWidth: 275, maxWidth: 275}}>
-                                    <CardContent>
-                                        <Typography sx={{ fontSize: 14 }} color={Colors.primary} gutterBottom>
-                                            {Icons.warning}
-                                            <u>
-                                                <strong>
-                                                    Condition Shift: {el.status}
-                                                </strong>
-                                            </u>
-                                            <IconButton>
-                                                {Icons.close}
-                                            </IconButton>
-                                        </Typography>
-                                        <Divider />
-                                        <Typography sx={{ mb: 1.5 }} color={Colors.primary}>
-                                            Patient Name: {el.firstname} {el.lastname}
-                                        </Typography>
-                                    </CardContent>
-                                    <Divider />
-                                    <CardActions style={{ float: "right" }}>
-                                        <Button size="small" style={{ color: Colors.primary}}>Patient Profile</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        );
-                    })}
-                    <Grid item xs={12}>
-                        <Box sx={{ width: 275, height: 200 }}></Box>
-                    </Grid>
-                </Grid>
-            </div>
-        </div>
+        <Fragment>
+            <NotificationToolbar />
+            <Box 
+                sx={{
+                    mt: 5,
+                    display: "flex",
+                    justifyContent: "center",
+                }}
+            >
+                <Stack spacing={4} >
+                    {patients.map(NotificationCard)}
+                </Stack>
+            </Box>
+        </Fragment>
     )
 }

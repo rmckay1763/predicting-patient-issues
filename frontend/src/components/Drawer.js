@@ -1,59 +1,82 @@
 import React, { useState } from "react";
 import { 
     Drawer, 
-    List, 
     ListItem, 
     ListItemText, 
-    IconButton 
+    ListItemIcon,
+    IconButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { StyledList } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useViewport } from "../contexts/Dimensions"
 
-function AdminListItem() {
+export default function DrawerComponent() {
+    
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const { width } = useViewport();
+    const breakpoint = 900;
     const [state,] = useGlobal();
 
-    if (state.user.admin) {
-        return (
-            <ListItem>
-                <ListItemText>
-                    <Link style={{ color: Colors.primary }} to="/users">Users</Link>
-                </ListItemText>
-            </ListItem>
-        )
-    }
-    else {
-        return (
-            <div>
-            </div>
-        )
-    }
-}
-
-function DrawerComponent() {
-const [openDrawer, setOpenDrawer] = useState(false);
+    const DrawerListItem = (props) => (
+        <ListItem
+            button 
+            onClick={() => setOpenDrawer(false)}
+            component={Link}
+            to={props.to}
+        >
+            <ListItemIcon>{props.icon}</ListItemIcon>
+            <ListItemText>{props.text}</ListItemText>
+        </ListItem>
+    )
 
     return (
         <>
             <Drawer
                 open={openDrawer}
                 onClose={() => setOpenDrawer(false)}
-                classes = {{ paper: {overflowX: "hidden" }}}
+                sx={{
+                    '& .MuiDrawer-paper': {
+                        backgroundColor: Colors.backgroundLighter
+                    }
+                }}
             >
-                <List>
-                    <ListItem onClick={() => setOpenDrawer(false)}>
-                        <ListItemText>
-                            <Link style={{ color: Colors.primary }} to="/">Patients</Link>
-                        </ListItemText>
-                    </ListItem>
-                    <AdminListItem />
-                </List>
+                <StyledList>
+                    <DrawerListItem 
+                        to='/'
+                        icon={Icons.home}
+                        text='Patient Home' />
+                    <DrawerListItem 
+                        to='/newPatient'
+                        icon={Icons.addPerson}
+                        text='Add Patient' />
+                    {width < breakpoint && 
+                        <DrawerListItem 
+                            to='/notifications' 
+                            icon={Icons.notification} 
+                            text='Notifications' />
+                    }
+                    {state.user.admin && 
+                        <DrawerListItem 
+                            to="/users"
+                            icon={Icons.admin} 
+                            text='Manage Users' />
+                    }
+                </StyledList>
             </Drawer>
-            <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
+            <IconButton 
+                onClick={() => setOpenDrawer(!openDrawer)}
+                sx={{
+                    color: Colors.backgroundLighter,
+                    '& :hover': {
+                        backgroundColor: Colors.secondary,
+                        color: Colors.primary
+                    }
+                }} >
                 {Icons.menu}
             </IconButton>
         </>
     );
 }
-export default DrawerComponent;

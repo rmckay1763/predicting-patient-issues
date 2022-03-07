@@ -18,7 +18,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
 
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
-    const breakpoint = 700;
+    const breakpoint = 600;
 
     /**
      * Handler for critical only toggle button.
@@ -74,7 +74,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
             <StyledFormControlLabel 
                 control={<StyledSwitch className='CustomSwitch'/>}
                 label={"Critical Only"}
-                onClick={onCriticalOnlyChanged} />
+                onChange={onCriticalOnlyChanged} />
             {SearchBox()}
         </BaseToolbar>
     );

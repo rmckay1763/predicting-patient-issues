@@ -101,7 +101,7 @@ function Navbar(props) {
   return (
     <AppBar position="static" >
       
-      <Toolbar style={{ background: Colors.primary, color: Colors.backgroundLighter }}>
+      <Toolbar sx={{ background: Colors.primary, color: Colors.backgroundLighter }}>
       <DrawerComponent />
         <Box sx={{flexGrow: 1 }}>
         <Typography variant="h5">

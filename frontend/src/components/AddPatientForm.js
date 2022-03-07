@@ -1,18 +1,15 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-    MenuItem, 
-    Box, 
-    Stack, 
-    IconButton 
-} from "@mui/material";
+import { MenuItem, Box, Stack } from "@mui/material";
 import { AddPatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useComponentWidth } from "../contexts/Dimensions";
 import BaseToolbar from "./BaseToolbar";
 import { 
-    StyledFormControlLabel, 
-    StyledTextField, 
-    StyledButton, 
+    StyledButtonPrimary,
+    StyledButtonSecondary,
+    StyledIconButton,
+    StyledTextField,
     StyledTypography,
  } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
@@ -63,14 +60,36 @@ export default function AddPatientForm() {
         }
     }
 
+    const AddPatientToolbar = () => {
+        const ref = useRef(null);
+        const { width } = useComponentWidth(ref);
+        const breakpoint = 600;
+
+        const full = () => (
+            <BaseToolbar title="Add New Patient" ref={ref}>
+                <StyledButtonSecondary
+                        startIcon={Icons.close}
+                        onClick={() => navigate("/")} 
+                >
+                    Cancel
+                </StyledButtonSecondary>
+            </BaseToolbar>
+        )
+
+        const reduced = () => (
+            <BaseToolbar title="Enter Vitals" ref={ref} >
+                <StyledIconButton onClick={() => navigate("/")}>
+                    {Icons.close}
+                </StyledIconButton>
+            </BaseToolbar>
+        )
+
+        return width < breakpoint ? reduced() : full()
+    }
+
     return (
         <Fragment>
-            <BaseToolbar title="Add New Patient">
-                <StyledFormControlLabel 
-                    control={<IconButton children={Icons.close} />}
-                    label="Cancel"
-                    onClick={() => navigate("/")} />
-            </BaseToolbar>
+            <AddPatientToolbar />
             <Box
                 component="form"
                 onSubmit={handleSubmit}
@@ -121,7 +140,7 @@ export default function AddPatientForm() {
                             Male
                         </MenuItem>
                     </StyledTextField>
-                    <StyledButton type="submit">Add Patient</StyledButton>
+                    <StyledButtonPrimary type="submit">Add Patient</StyledButtonPrimary>
                 </Stack>
             </Box>
         </Fragment>

@@ -11,8 +11,8 @@ export const Colors = {
     secondary: '#d6f2ff',
     white: '#fff',
     alert: red[500],
-    backgroundLight: grey[300],
+    backgroundLight: grey[200],
     backgroundLighter: grey[100],
-    focus: grey[400],
+    focus: grey[300],
     warning: orange[800]
 }

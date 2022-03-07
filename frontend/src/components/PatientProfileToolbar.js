@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
-import { IconButton } from "@mui/material"
-import { StyledIconButton, StyledFormControlLabel } from '../resources/StyledComponents';
+import { 
+    StyledButtonSecondary,
+    StyledIconButton, 
+ } from '../resources/StyledComponents';
 import BaseToolbar from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
 import { Icons } from '../resources/Icons';
@@ -52,18 +54,24 @@ export default function PatientProfileToolbar(props) {
      */
     const full = () => (
         <BaseToolbar title={title} ref={toolbar}>
-            <StyledFormControlLabel 
-                control={<IconButton children={Icons.add} />}
-                label={"Enter Vitals"}
-                onClick={onEnterVitals} />
-            <StyledFormControlLabel 
-                control={<IconButton children={Icons.edit} />}
-                label={"Edit Patient"}
-                onClick={onUpdate} />
-            <StyledFormControlLabel 
-                control={<IconButton children={Icons.delete} />}
-                label={"Delete Patient"}
-                onClick={onDelete} />
+            <StyledButtonSecondary 
+                startIcon={Icons.add}
+                onClick={onEnterVitals}
+            >
+                Enter Vitals
+            </StyledButtonSecondary>
+            <StyledButtonSecondary 
+                startIcon={Icons.edit}
+                onClick={onUpdate}
+            >
+                Edit Patient
+            </StyledButtonSecondary>
+            <StyledButtonSecondary 
+                startIcon={Icons.delete}
+                onClick={onDelete}
+            >
+                Delete Patient
+            </StyledButtonSecondary>
         </BaseToolbar> 
     )
 

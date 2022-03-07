@@ -1,54 +1,79 @@
 import React, { useState } from "react";
 import { 
     Drawer, 
-    List, 
     ListItem, 
     ListItemText, 
-    IconButton 
+    ListItemIcon,
+    IconButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { StyledList } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
 
-function AdminListItem() {
-    const [state,] = useGlobal();
-
-    if (state.user.admin) {
-        return (
-            <ListItem>
-                <ListItemText>
-                    <Link style={{ color: Colors.primary }} to="/users">Users</Link>
-                </ListItemText>
-            </ListItem>
-        )
-    }
-    else {
-        return (
-            <div>
-            </div>
-        )
-    }
-}
-
 function DrawerComponent() {
 const [openDrawer, setOpenDrawer] = useState(false);
+
+    const AdminListItem = () => {
+        const [state,] = useGlobal();
+
+        if (state.user.admin) {
+            return (
+                <ListItem 
+                    button 
+                    onClick={() => setOpenDrawer(false)}
+                    component={Link} 
+                    to="/users"
+                >
+                    <ListItemIcon>{Icons.admin}</ListItemIcon>
+                    <ListItemText>Manage Users</ListItemText>
+                </ListItem>
+            )
+        }
+        else {
+            return (
+                <div>
+                </div>
+            )
+        }
+    }
+
+    const GenericListItem = (props) => (
+        <ListItem
+            button 
+            onClick={() => setOpenDrawer(false)}
+            component={Link}
+            to={props.to}
+        >
+            <ListItemIcon>{props.icon}</ListItemIcon>
+            <ListItemText>{props.text}</ListItemText>
+        </ListItem>
+    )
 
     return (
         <>
             <Drawer
                 open={openDrawer}
                 onClose={() => setOpenDrawer(false)}
-                classes = {{ paper: {overflowX: "hidden" }}}
+                classes = {{ paper: {overflowX: "hidden"} }}
+                sx={{
+                    '& .MuiDrawer-paper': {
+                        backgroundColor: Colors.backgroundLighter
+                    }
+                }}
             >
-                <List>
-                    <ListItem onClick={() => setOpenDrawer(false)}>
-                        <ListItemText>
-                            <Link style={{ color: Colors.primary }} to="/">Patients</Link>
-                        </ListItemText>
-                    </ListItem>
+                <StyledList>
+                    <GenericListItem 
+                        to='/'
+                        icon={Icons.home}
+                        text='Patient Home' />
+                    <GenericListItem 
+                        to='/newPatient'
+                        icon={Icons.addPerson}
+                        text='Add Patient' />
                     <AdminListItem />
-                </List>
+                </StyledList>
             </Drawer>
             <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
                 {Icons.menu}

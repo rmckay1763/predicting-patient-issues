@@ -19,6 +19,9 @@ import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import GroupIcon from '@mui/icons-material/Group';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 
 export const Icons = {
@@ -38,5 +41,8 @@ export const Icons = {
     error: <ErrorIcon />,
     patientProfile: <FolderSharedIcon />,
     delete: <DeleteIcon />,
-    edit: <EditIcon />
+    edit: <EditIcon />,
+    group: <GroupIcon />,
+    admin: <AdminPanelSettingsIcon />,
+    addPerson: <PersonAddIcon />,
 }

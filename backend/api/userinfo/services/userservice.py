@@ -47,8 +47,9 @@ class UserService:
 
     async def addUser(self, userInfo: UserIn):
         try:
-            newUser = await self.users.insert(userInfo)
-            return await self.__hydrateUser(newUser)
+            newid = await self.users.insert(userInfo)
+            login = Login(uid = newid["uid"], password = userInfo.password)
+            return await self.logins.insert(login)
         except BaseException as err:
             raise err
 
@@ -56,7 +57,8 @@ class UserService:
         try:
             updatedUser = await self.users.update(updated)
             return await self.__hydrateUser(updatedUser)
-            
+        except BaseException as err:
+            raise err    
 
     async def deleteUser(self, uid):
         try:

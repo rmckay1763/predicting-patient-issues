@@ -1,21 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException
+from api.dependencies import auth
 from api.userinfo.models import User, UserIn
 from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
-from api.dependencies import auth
+
+from api.userinfo.services.userservice import UserService
 
 class UserRouter:
     '''
     Implements routes for the user table using an APIRouter
     '''
 
-    def __init__(self, users: UserCRUD, logins: LoginCRUD):
+    def __init__(self, users: UserCRUD, logins: LoginCRUD, service: UserService):
         '''
         Constructor.
 
         Parameters:
             users (UserCRUD): The crud to interact with the table.
         '''
+        self.service = service
         self.users = users
         self.logins = logins
         self.router = APIRouter(
@@ -59,7 +62,7 @@ class UserRouter:
         """
         try:
             await self.authenticate(uid, None)
-            return await self.users.fetchAll()
+            return await self.service.fetchAllUsers()
         except BaseException as err:
             raise err
 
@@ -74,7 +77,7 @@ class UserRouter:
             User: The user as a user model.
         """
         try:
-            return await self.users.fetchOne(key)
+            return await self.service.fetchUser(key)
         except BaseException as err:
             raise err
 
@@ -90,7 +93,7 @@ class UserRouter:
         """
         try:
             await self.authenticate(uid, None)
-            return await self.users.insert(userinfo)
+            return await self.service.addUser(userinfo)
         except BaseException as err:
             raise err
 
@@ -106,7 +109,7 @@ class UserRouter:
         """
         try:
             await self.authenticate(uid, updated.uid)
-            return await self.users.update(updated)
+            return await self.service.updateUser(updated)
         except BaseException as err:
             raise err
 
@@ -122,8 +125,7 @@ class UserRouter:
         """
         try:
             await self.authenticate(uid, None)
-            await self.logins.delete(key)
-            return await self.users.delete(key)
+            return await self.service.deleteUser(key)
         except BaseException as err:
             raise err
 

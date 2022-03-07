@@ -20,17 +20,17 @@ export const GetUsers = async (token) => {
   return axios.get("api/user/fetchAll", { headers: { Authorization: `Bearer ${token}` } });
 }
 
-export const AddUser = async (token, firstname, lastname, username, rank, role, admin) => {
-  return axios.post("api/user/insert/", { firstname: firstname, lastname: lastname, username: username, rank: rank, role: role, admin: admin}, { headers: { Authorization: `Bearer ${token}`}});
+export const AddUser = async (token, userInfo) => {
+  return axios.post("api/user/insert/", userInfo, { headers: { Authorization: `Bearer ${token}`}});
 }
 
 export const DeleteUser = async (token, uid) => {
   return axios.delete(`api/user/delete/${uid}`, { headers: { Authorization: `Bearer ${token}`}});
 }
 
-export const AddLogin = async (token, uid, password) => {
-  return axios.post("api/login/insert/", { uid: uid, password: password }, { headers: { Authorization: `Bearer ${token}`}});
-}
+// export const AddLogin = async (token, uid, password) => {
+//   return axios.post("api/login/insert/", { uid: uid, password: password }, { headers: { Authorization: `Bearer ${token}`}});
+// }
 
 export const GetAllPatients = async (token) => {
   return axios.get("api/patient/fetchAll", { headers: { Authorization: `Bearer ${token}` } });

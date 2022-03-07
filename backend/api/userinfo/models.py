@@ -1,8 +1,20 @@
 from datetime import datetime
-from time import time
 from pydantic import BaseModel
 from typing import Optional
 from typing import List
+
+class Role(BaseModel):
+    '''
+    Represents an entry in the role table.
+    '''
+    id: int
+    name: str
+
+class RoleIn(BaseModel):
+    '''
+    Represents a new role to insert into the table.
+    '''
+    name: str
 
 class User(BaseModel):
     '''
@@ -26,19 +38,16 @@ class UserIn(BaseModel):
     rank: Optional[str] = ""
     role: Optional[int] = 0
     admin = False
+    password: str
 
-class Role(BaseModel):
-    '''
-    Represents an entry in the role table.
-    '''
-    id: int
-    name: str
-
-class RoleIn(BaseModel):
-    '''
-    Represents a new role to insert into the table.
-    '''
-    name: str
+class UserOut(BaseModel):
+    uid: int
+    firstname: str
+    lastname: str
+    username: str
+    rank: Optional[str] = ""
+    role: Optional[str] = ""
+    admin: bool
 
 class Login(BaseModel):
     '''

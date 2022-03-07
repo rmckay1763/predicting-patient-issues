@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.user (
 );
 
 CREATE TABLE IF NOT EXISTS public.login (
-	uid INT PRIMARY KEY REFERENCES public.user(uid),
+	uid INT PRIMARY KEY REFERENCES public.user(uid) ON DELETE CASCADE,
 	password VARCHAR(255) NOT NULL
 );
 

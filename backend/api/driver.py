@@ -10,6 +10,7 @@ from api.userinfo.crud.rolecrud import RoleCRUD
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
 from api.userinfo.crud.archivecrud import ArchiveCRUD
+from api.userinfo.services.userservice import UserService
 from api.userinfo.router.userrouter import UserRouter
 from api.userinfo.router.rolerouter import RoleRouter
 from api.userinfo.router.loginrouter import LoginRouter
@@ -43,9 +44,10 @@ class APIDriver:
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
         archive = ArchiveCRUD(connector)
+        userService = UserService(users, logins, roles)
         loginHandler = LoginHandler(users, logins, auth)
         mlHandler = MLHandler()
-        usersRouter = UserRouter(users, logins)
+        usersRouter = UserRouter(users, logins, userService)
         rolesRouter = RoleRouter(roles)
         loginRouter = LoginRouter(logins, users)
         patientRouter = PatientRouter(patients)

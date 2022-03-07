@@ -33,14 +33,31 @@ export default function AddUserForm() {
 
         if (password === confirmedPassword)
         {
+            let userInfo = {
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                rank: rank,
+                role: role,
+                isAdmin: isAdmin,
+                password: password
+            }
             try {
-                var response = await AddUser(state.token, firstname, lastname, username, rank, role, isAdmin);                
-                if (response)
-                {
-                    await AddLogin(state.token, response.data.uid, password);
-                    window.alert(`User '${username}' has been created!`);
-                    return navigate("/users")
-                }
+                //var response = await AddUser(state.token, firstname, lastname, username, rank, role, isAdmin);
+                
+                var response = await AddUser(state.token, userInfo);
+                if (!response.data) {
+                    throw new Error("Empty reponse");
+                } 
+                window.alert(`User '${username}' has been created!`);
+                return navigate("/users")               
+                
+                // if (response)
+                // {
+                //     await AddLogin(state.token, response.data.uid, password);
+                //     window.alert(`User '${username}' has been created!`);
+                //     return navigate("/users")
+                // }
             }
             catch (error) {
                 window.alert("Creation of user failed!")

@@ -28,27 +28,11 @@ export default function NotificationPage() {
 
     useEffect(() => {
         document.body.style.backgroundColor = Colors.backgroundLight
-        function mapStatus(patient) {
-            switch (patient.status) {
-                case 0:
-                    patient.status = 'Critical';
-                    break;
-                case 9:
-                    patient.status = 'Stable';
-                    break;
-                case 10:
-                    patient.status = 'Unobserved';
-                    break;
-                default:
-                    break;
-            }
-        }
         let temp = state.patients;
-        temp.sort((a, b) => a.status - b.status);
-        temp.map(mapStatus);
+        temp.sort((a, b) => a.status.id - b.status.id);
         if (criticalOnly) {
             temp = temp.filter((patient) => {
-                return patient.status === 'Critical';
+                return patient.status.text === 'Critical';
             });
         }
         setPatients(temp);
@@ -101,7 +85,7 @@ export default function NotificationPage() {
     )
 
     const NotificationStatus = ({patient}) => {
-        let critical = patient.status === 'Critical';
+        let critical = patient.status.text === 'Critical';
         return (
             <Stack 
                 direction='row' 
@@ -112,7 +96,7 @@ export default function NotificationPage() {
                     {critical ? Icons.warning : Icons.stable}
                 </Box>
                 <Typography sx={{fontWeight: 600}}>
-                    Status: {patient.status}
+                    Status: {patient.status.text}
                 </Typography>
             </Stack>
         )
@@ -150,7 +134,7 @@ export default function NotificationPage() {
                     justifyContent: "center",
                 }}
             >
-                <Stack spacing={4} >
+                <Stack spacing={4} padding={2}>
                     {patients.map(NotificationCard)}
                 </Stack>
             </Box>

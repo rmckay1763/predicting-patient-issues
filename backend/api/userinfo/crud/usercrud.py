@@ -12,7 +12,7 @@ class UserCRUD(BaseCRUD):
     Abstracts interacting with the user table from the userinfo database.
     """
 
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
 
         # table dependent sql query strings
@@ -62,7 +62,7 @@ class UserCRUD(BaseCRUD):
             table = sql.Identifier('user'),
             key = sql.Identifier('uid'))
 
-    async def fetchKey(self, value: str):
+    async def fetchKey(self, value: str) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchKeySQL, (value,))
@@ -76,7 +76,7 @@ class UserCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def fetchAll(self):
+    async def fetchAll(self) -> List[User]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllSQL)
@@ -91,7 +91,7 @@ class UserCRUD(BaseCRUD):
         cursor.close()
         return models 
 
-    async def fetchOne(self, key: int):
+    async def fetchOne(self, key: int) -> User:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -106,7 +106,7 @@ class UserCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def insert(self, user: UserIn):
+    async def insert(self, user: UserIn) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
@@ -127,7 +127,7 @@ class UserCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, updated: User):
+    async def update(self, updated: User) -> User:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.updateSQL, (
@@ -149,7 +149,7 @@ class UserCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def delete(self, key: int):
+    async def delete(self, key: int) -> bool:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.deleteSQL, (key,))

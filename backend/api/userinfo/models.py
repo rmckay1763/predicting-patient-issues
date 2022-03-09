@@ -41,12 +41,15 @@ class UserIn(BaseModel):
     password: str
 
 class UserOut(BaseModel):
+    '''
+    Represents a user model to send to the frontend.
+    '''
     uid: int
     firstname: str
     lastname: str
     username: str
     rank: Optional[str] = ""
-    role: Optional[str] = ""
+    role: Optional[Role] = None
     admin: bool
 
 class Login(BaseModel):
@@ -69,7 +72,21 @@ class LoginUpdated(BaseModel):
     '''
     uid: int
     old_password: str
-    new_password: str    
+    new_password: str
+
+class LoginSuccess(BaseModel):
+    '''
+    Response to fronted for successful login.
+    '''
+    token: str
+    user: UserOut
+
+class Status(BaseModel):
+    '''
+    Represents an entry in the status table.
+    '''
+    id: int
+    text: str 
 
 class Patient(BaseModel):
     '''
@@ -94,12 +111,33 @@ class PatientIn(BaseModel):
     gender: Optional[str] = None
     status = 10
 
+class PatientOut(BaseModel):
+    '''
+    Represents a pateint model to send to the frontend.
+    '''
+    pid: int
+    admit_time: datetime
+    firstname: str
+    lastname: str
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    status: Status
+
 class Vital(BaseModel):
     '''
     Represents an entry in the vitals table
     '''
     pid: int
     timestamp: datetime
+    heart_rate: int
+    sao2: int
+    respiration: int
+
+class VitalIn(BaseModel):
+    '''
+    Represents a new entry in the vitals table
+    '''
+    pid: int
     heart_rate: int
     sao2: int
     respiration: int
@@ -119,12 +157,7 @@ class MLModelOut(BaseModel):
     status: str
     vitals: MLVitals
 
-class VitalIn(BaseModel):
-    '''
-    Represents a new entry in the vitals table
-    '''
+class StatusUpdate(BaseModel):
     pid: int
-    heart_rate: int
-    sao2: int
-    respiration: int
+    status: int
 

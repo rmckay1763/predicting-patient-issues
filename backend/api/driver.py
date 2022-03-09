@@ -1,7 +1,7 @@
-from cgitb import handler
+from fastapi import FastAPI
 from api import dependencies
 dependencies.init()
-from api.dependencies import auth, config
+from api.dependencies import config
 from api.mainapi import MainAPI
 from api.utils.postgresconnector import PostgresConnector
 from api.userinfo.crud.usercrud import UserCRUD
@@ -11,14 +11,12 @@ from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
 from api.userinfo.crud.archivecrud import ArchiveCRUD
 from api.userinfo.services.userservice import UserService
+from api.userinfo.services.patientservice import PatientService
+from api.userinfo.services.archiveservice import ArchiveService
 from api.userinfo.router.userrouter import UserRouter
-from api.userinfo.router.rolerouter import RoleRouter
-from api.userinfo.router.loginrouter import LoginRouter
 from api.userinfo.router.patientrouter import PatientRouter
-from api.userinfo.router.vitalrouter import VitalRouter
 from api.userinfo.router.mlrouter import MLRouter
 from api.userinfo.router.archiverouter import ArchiveRouter
-from api.utils.loginhandler import LoginHandler
 from api.utils.mlhandler import MLHandler
 import uvicorn
 import subprocess
@@ -30,42 +28,46 @@ class APIDriver:
     '''
 
     @staticmethod
-    def getInstance():
+    def getInstance() -> FastAPI:
         '''
         Configures and instantiates the fastapi.
 
         Returns:
-            FastAPI: An instance of the the fastapi.
+            FastAPI: An instance of the the fastapi service.
         '''
+        # database connection
         connector = PostgresConnector(config)
+
+        # crud classes
         users = UserCRUD(connector)
         roles = RoleCRUD(connector)
-        logins = LoginCRUD(connector, users, auth)
+        logins = LoginCRUD(connector)
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
         archive = ArchiveCRUD(connector)
+
+        # service/handler classes
         userService = UserService(users, logins, roles)
-        loginHandler = LoginHandler(auth, userService)
+        patientService = PatientService(patients, vitals)
+        archiveService = ArchiveService(archive)
         mlHandler = MLHandler()
-        usersRouter = UserRouter(users, logins, userService)
-        rolesRouter = RoleRouter(roles)
-        loginRouter = LoginRouter(logins, users)
-        patientRouter = PatientRouter(patients)
-        vitalRouter = VitalRouter(vitals)
-        archiveRouter = ArchiveRouter(archive)
+
+        # router classes
+        userRouter = UserRouter(userService)
+        patientRouter = PatientRouter(patientService)
+        archiveRouter = ArchiveRouter(archiveService)
         mlRouter = MLRouter(patients, mlHandler)
-        api = MainAPI(loginHandler)
-        api.addRouter(usersRouter.router)
-        api.addRouter(rolesRouter.router)
-        api.addRouter(loginRouter.router)
+
+        # main api module
+        api = MainAPI(userService)
+        api.addRouter(userRouter.router)
         api.addRouter(patientRouter.router)
-        api.addRouter(vitalRouter.router)
         api.addRouter(mlRouter.router)
         api.addRouter(archiveRouter.router)
         return api.app
 
     @staticmethod
-    def start():
+    def start() -> None:
         '''
         Start the api in deployment mode.
         Note: the api will start as a separate process.
@@ -80,7 +82,7 @@ class APIDriver:
         subprocess.Popen(cmds, start_new_session=True)
 
     @staticmethod
-    def startDevMode():
+    def startDevMode() -> None:
         '''
         Start the service in development mode (reload mode)
         '''

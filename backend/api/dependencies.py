@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 from api.utils.authhandler import AuthHandler
 
-def init():
+def init() -> None:
     '''
     Initializes global variables needed for authenticating tokens.
     '''

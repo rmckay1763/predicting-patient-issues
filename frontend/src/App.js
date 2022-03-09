@@ -7,7 +7,6 @@ import {
   AddPatientRoute,
   EnterVitalsRoute,
   EditPatientRoute,
-  TestAdminRoute,
   UserTableRoute,
   AddUserRoute,
   NotificationRoute

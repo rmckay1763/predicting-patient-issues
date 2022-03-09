@@ -9,16 +9,16 @@ class AuthHandler:
     security = HTTPBearer()
     context = CryptContext(schemes=['bcrypt'], bcrypt__rounds=12)
         
-    def __init__(self, config):
+    def __init__(self, config) -> None:
         self.secret = config['AuthSettings']['Secret']
 
-    def verify_password(self, form_password, database_password):
+    def verify_password(self, form_password, database_password) -> bool:
         return self.context.verify(form_password, database_password)
 
-    def get_hashed_password(self, plain_password):
+    def get_hashed_password(self, plain_password) -> str:
         return self.context.hash(plain_password)
 
-    def encode_token(self, user_id):
+    def encode_token(self, user_id) -> str:
         payload = {
             'exp': datetime.utcnow() + timedelta(days=1, minutes=0),
             'iat': datetime.utcnow(),
@@ -30,7 +30,7 @@ class AuthHandler:
             algorithm='HS256'
         )
 
-    def decode_token(self, token):
+    def decode_token(self, token) -> int:
         try:
             payload = jwt.decode(token, self.secret, algorithms=['HS256'])
             return payload['sub']
@@ -39,5 +39,5 @@ class AuthHandler:
         except jwt.InvalidTokenError as e:
             raise HTTPException(status_code=401, detail='Invalid token')
 
-    def auth_wrapper(self, auth: HTTPAuthorizationCredentials = Security(security)):
+    def auth_wrapper(self, auth: HTTPAuthorizationCredentials = Security(security)) -> int:
         return self.decode_token(auth.credentials)

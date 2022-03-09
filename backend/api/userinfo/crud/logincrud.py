@@ -1,21 +1,17 @@
 from pydantic.tools import parse_obj_as
 from fastapi import HTTPException
 from psycopg2 import sql, DatabaseError
+from api.userinfo.models import Login
 from api.userinfo.crud.basecrud import BaseCRUD
-from api.userinfo.crud.usercrud import UserCRUD
-from api.userinfo.models import Login, LoginUpdated
 from api.utils.postgresconnector import PostgresConnector
-from api.utils.authhandler import AuthHandler
 
 class LoginCRUD(BaseCRUD):
     """
     Abstracts interacting with the login table from the userinfo database.
     """
 
-    def __init__(self, conn: PostgresConnector, users: UserCRUD, auth: AuthHandler):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
-        self.auth = auth
-        self.users = users
         
         # table dependent sql query strings
         self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
@@ -54,7 +50,7 @@ class LoginCRUD(BaseCRUD):
     def fetchAll(self):
         None
 
-    async def fetchOne(self, key: int):
+    async def fetchOne(self, key: int) -> Login:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -69,12 +65,10 @@ class LoginCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def insert(self, updated: Login):
+    async def insert(self, updated: Login) -> dict:
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.insertSQL, (
-                updated.uid, 
-                self.auth.get_hashed_password(updated.password)))
+            cursor.execute(self.insertSQL, (updated.uid, updated.password))
             key = cursor.fetchone()
             if (key == None):
                 cursor.close()
@@ -85,13 +79,10 @@ class LoginCRUD(BaseCRUD):
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)
     
-    async def update(self, updated: LoginUpdated):
+    async def update(self, updated: Login) -> Login:
         cursor = self.connector.getCursor()
         try:
-            actual = await self.fetchOne(updated.uid)
-            if (not self.auth.verify_password(updated.old_password, actual.password)):
-                raise HTTPException(status_code=401, detail='Old password is incorrect!')
-            cursor.execute(self.updateSQL, (self.auth.get_hashed_password(updated.new_password), updated.uid,))
+            cursor.execute(self.updateSQL, (updated.password, updated.uid))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)
@@ -103,7 +94,7 @@ class LoginCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def delete(self, key: int):
+    async def delete(self, key: int) -> bool:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.deleteSQL, (key,))

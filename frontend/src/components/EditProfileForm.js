@@ -11,11 +11,12 @@ import { Colors } from "../resources/Colors";
 import { ChangePassword } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
+import { AlertSuccess, AlertError } from "./AlertMessage";
 
 export default function EditProfileForm() {
-  const [state,] = useGlobal();
-  const [user, setUser] = useState([]);
-  const [token, setToken] = useState([]);
+  const [state, dispatch] = useGlobal();
+  const [user, setUser] = useState(state.user);
+  const [token, setToken] = useState(state.token);
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -29,22 +30,27 @@ export default function EditProfileForm() {
   }, [state.user, state.token])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (newPassword === confirmedPassword)
-    {
-      try {
-        await ChangePassword(token, user.uid, oldPassword, newPassword);
-        window.alert("Password has been changed!");
-      } 
-      catch (error) {
-        window.alert("The old password is incorrect!");
+      e.preventDefault();
+      if (newPassword !== confirmedPassword) {
+          AlertError(dispatch, "Passwords do not match!");
+          return;
       }
-    }
-    else
-    {
-      window.alert("Passwords do not match!");
-    }
+      let update = {
+          uid: user.uid, 
+          old_password: oldPassword, 
+          new_password: newPassword
+      };
+      try {
+          let response = await ChangePassword(token, update);
+          if (response.data) {
+              AlertSuccess(dispatch, "Password has been changed!");
+          } else {
+              AlertError(dispatch, "The old password is incorrect!");
+          }
+      } catch (error) {
+          AlertError(dispatch, "Failed to update password");
+          console.log(error.message);
+      }
   };
 
 
@@ -97,7 +103,7 @@ export default function EditProfileForm() {
           disabled
           id="outlined-disabled"
           label="Role"
-          value={user.role}
+          value={user.role.name}
         />
     </div>
 

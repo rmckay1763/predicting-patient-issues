@@ -12,7 +12,7 @@ class ArchiveCRUD(BaseCRUD):
     Abstracts interacting with the archive tables from the userinfo database.
     """
 
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
 
         # sequel statment objects
@@ -27,14 +27,14 @@ class ArchiveCRUD(BaseCRUD):
             table = sql.Identifier('patient_archive'),
             key = sql.Identifier('pid'))
 
-        self.fetchPatientVitalsSQL = sql.SQL(self.fetchOneQuery).format(
+        self.fetchVitalsSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('vital_archive'),
             key = sql.Identifier('pid'))
 
         self.fetchAllVitalsSQL = sql.SQL(self.fetchAllQuery).format(
             table = sql.Identifier('vital_archive'))
 
-    async def fetchPatient(self, key: int):
+    async def fetchPatient(self, key: int) -> Patient:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchPatientSQL, (key,))
@@ -49,7 +49,7 @@ class ArchiveCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def fetchAllPatients(self):
+    async def fetchAllPatients(self) -> List[Patient]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllPatientsSQL)
@@ -64,7 +64,7 @@ class ArchiveCRUD(BaseCRUD):
         cursor.close()
         return models
 
-    async def deletePatient(self, key: int):
+    async def deletePatient(self, key: int) -> bool:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.deleteSQL, (key,))
@@ -77,10 +77,10 @@ class ArchiveCRUD(BaseCRUD):
         cursor.close()
         return True
     
-    async def fetchPatientVitals(self, key: int):
+    async def fetchVitals(self, key: int) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.fetchPatientVitalsSQL, (key,))
+            cursor.execute(self.fetchVitalsSQL, (key,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)
@@ -92,7 +92,7 @@ class ArchiveCRUD(BaseCRUD):
         cursor.close()
         return models
 
-    async def fetchAllVitals(self):
+    async def fetchAllVitals(self) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllVitalsSQL)
@@ -107,6 +107,7 @@ class ArchiveCRUD(BaseCRUD):
         cursor.close()
         return models 
 
+    # not implemented abstract classes
     async def fetchKey(self, _: str):
         pass
 

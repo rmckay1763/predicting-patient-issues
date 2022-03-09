@@ -13,7 +13,7 @@ class VitalCRUD(BaseCRUD):
     Abstracts interacting with the vital table from the userinfo database.
     """
 
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
 
         # table dependent sql query strings.
@@ -38,10 +38,7 @@ class VitalCRUD(BaseCRUD):
                 sql.Identifier('sao2'),
                 sql.Identifier('respiration')]))
 
-    async def fetchKey(self, value: str):
-        pass
-
-    async def fetchOne(self, key: int):
+    async def fetchOne(self, key: int) -> Vital:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -56,7 +53,7 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return models
 
-    async def fetchAll(self):
+    async def fetchAll(self) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllSQL)
@@ -71,7 +68,7 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return models 
 
-    async def insert(self, vital: VitalIn):
+    async def insert(self, vital: VitalIn) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
@@ -90,9 +87,15 @@ class VitalCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, vital: BaseModel):
+    # use the primary key from the patient table
+    async def fetchKey(self, value: str) -> None:
         pass
 
-    async def delete(self, key: int):
+    # not updateable
+    async def update(self, vital: BaseModel) -> None:
+        pass
+
+    # trigger deletes vitals when the patient is deleted
+    async def delete(self, key: int) -> None:
         pass
 

@@ -21,6 +21,7 @@ import { Icons } from "../resources/Icons";
 export default function EnterVitals() {
     const navigate = useNavigate();
     const location = useLocation();
+    const patient = location.state.patient;
     const [state, dispatch] = useGlobal();
     const [heartRate, setHeartRate] = useState("");
     const [sao2, setSao2] = useState("");
@@ -42,7 +43,7 @@ export default function EnterVitals() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let vital = {
-            pid: location.state.patient.pid,
+            pid: patient.pid,
             heart_rate: heartRate,
             sao2: sao2,
             respiration: respiration
@@ -53,7 +54,7 @@ export default function EnterVitals() {
                 throw new Error("Empty response");
             }
             AlertSuccess(dispatch, "Vitals successfully entered!");
-            return navigate('/patientProfile', {state: {patient: location.state.patient}});
+            return navigate('/patientProfile', {state: {pid: patient.pid}});
         } catch (error) {
             console.log(error);
             AlertError(dispatch, "Failed to insert vitals");
@@ -62,16 +63,17 @@ export default function EnterVitals() {
     }
 
     const handleCancel = () => {
-        return navigate('/patientProfile', {state: {patient: location.state.patient}});
+        return navigate('/patientProfile', {state: {pid: patient.pid}});
     }
 
     const EnterVitalsToolbar = () => {
         const ref = useRef(null);
         const { width } = useComponentWidth(ref);
         const breakpoint = 600;
+        const title = 'Enter Vitals: ' + patient.firstname + ' ' + patient.lastname;
         
         const full = () => (
-            <BaseToolbar title="Enter Vitals" ref={ref} >
+            <BaseToolbar title={title} ref={ref} >
                 <StyledButtonSecondary
                         startIcon={Icons.close}
                         onClick={handleCancel} 
@@ -82,14 +84,14 @@ export default function EnterVitals() {
         )
     
         const reduced = () => (
-            <BaseToolbar title="Enter Vitals" ref={ref} >
+            <BaseToolbar title={title} ref={ref} >
                 <StyledIconButton onClick={handleCancel}>
                     {Icons.close}
                 </StyledIconButton>
             </BaseToolbar>
         )
     
-        return width < breakpoint ? reduced() : full()
+        return width < breakpoint ? reduced() : full();
     }
 
     return (

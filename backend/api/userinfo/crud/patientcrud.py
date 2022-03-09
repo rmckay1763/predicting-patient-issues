@@ -1,18 +1,17 @@
 from typing import List
-from xml.dom.minidom import Identified
 from pydantic.tools import parse_obj_as
 from psycopg2 import sql, DatabaseError
 from fastapi import HTTPException
-from api.userinfo.models import Patient, PatientIn
+from api.userinfo.models import Patient, PatientIn, Status
 from api.userinfo.crud.basecrud import BaseCRUD
 from api.utils.postgresconnector import PostgresConnector
 
 class PatientCRUD(BaseCRUD):
     """
-    Abstracts interacting with the patient table from the userinfo database.
+    Abstracts interacting with the patient table from the userinfo database. 
     """
 
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
 
         # table dependent sql query strings.
@@ -22,14 +21,8 @@ class PatientCRUD(BaseCRUD):
 
         self.updateQuery = (
             "UPDATE public.{table} "
-            "SET {firstname}=%s, {lastname}=%s, {age}=%s, {gender}=%s "
+            "SET {firstname}=%s, {lastname}=%s, {age}=%s, {gender}=%s, {status}=%s "
             "WHERE {key} = %s RETURNING *;")
-
-        self.updateStatus = (
-            "UPDATE public.{table} "
-            "SET {status}=%s "
-            "WHERE {key}=%s RETURNING {key};"
-        )
 
         # sequel statment objects
         self.fetchKeySQL = sql.SQL(self.fetchKeyQuery).format(
@@ -60,19 +53,18 @@ class PatientCRUD(BaseCRUD):
             lastname = sql.Identifier('lastname'),
             age = sql.Identifier('age'),
             gender = sql.Identifier('gender'),
+            status = sql.Identifier('status'),
             key = sql.Identifier('pid'))
-
-        self.updateStatusSQL = sql.SQL(self.updateStatus).format(
-            key = sql.Identifier('pid'),
-            table = sql.Identifier('patient'),
-            status = sql.Identifier('status')
-        )
 
         self.deleteSQL = sql.SQL(self.deleteQuery).format(
             table = sql.Identifier('patient'),
             key = sql.Identifier('pid'))
 
-    async def fetchKey(self, value: str):
+        self.fetchStatusSQL = sql.SQL(self.fetchOneQuery).format(
+            table = sql.Identifier('status'),
+            key = sql.Identifier('id'))
+
+    async def fetchKey(self, value: str) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchKeySQL, (value,))
@@ -86,7 +78,7 @@ class PatientCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def fetchAll(self):
+    async def fetchAll(self) -> List[Patient]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllSQL)
@@ -101,7 +93,7 @@ class PatientCRUD(BaseCRUD):
         cursor.close()
         return models
 
-    async def fetchOne(self, key: int):
+    async def fetchOne(self, key: int) -> Patient:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -116,7 +108,7 @@ class PatientCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def insert(self, patient: PatientIn):
+    async def insert(self, patient: PatientIn) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (
@@ -135,14 +127,15 @@ class PatientCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, updated: Patient):
+    async def update(self, updated: Patient) -> Patient:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.updateSQL, (
                 updated.firstname, 
                 updated.lastname, 
                 updated.age, 
-                updated.gender,  
+                updated.gender, 
+                updated.status,  
                 updated.pid, ))
         except DatabaseError as err:
             cursor.close()
@@ -155,24 +148,7 @@ class PatientCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def updateStatus(self, pid: int, status: int):
-        cursor = self.connector.getCursor()
-        try:
-            cursor.execute(self.updateStatusSQL, (
-                status,
-                pid,
-            ))
-        except DatabaseError as err:
-            cursor.close()
-            raise HTTPException(status_code=500, detail=err.pgerror)
-        result = cursor.fetchone()
-        if (result == None):
-            cursor.close()
-            raise HTTPException(status_code=404, detail='Failed to update patient status')
-        cursor.close()
-        return True
-
-    async def delete(self, key: int):
+    async def delete(self, key: int) -> bool:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.deleteSQL, (key,))
@@ -184,3 +160,27 @@ class PatientCRUD(BaseCRUD):
             raise HTTPException(status_code=404, detail='Failed to delete patient')
         cursor.close()
         return True
+
+    async def fetchStatus(self, key: int) -> Status:
+        '''
+        Fetch a row from the status table.
+
+        Parameters:
+            key (int): Primary key (id) of the status.
+
+        Returns:
+            Status: Result as a Status object.
+        '''
+        cursor = self.connector.getCursor()
+        try:
+            cursor.execute(self.fetchStatusSQL, (key,))
+        except DatabaseError as err:
+            cursor.close()
+            raise HTTPException(status_code=500, detail=err.pgerror)
+        status = cursor.fetchone()
+        if (status == None):
+            cursor.close()
+            raise HTTPException(status_code=404, detail='Failed to find status id')
+        model = parse_obj_as(Status, status)
+        cursor.close()
+        return model

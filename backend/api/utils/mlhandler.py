@@ -1,5 +1,4 @@
 from datetime import datetime
-from multiprocessing import process
 from api.userinfo.models import MLModelIn, MLModelOut, MLVitals
 from typing import List
 from tensorflow.keras.models import load_model
@@ -55,7 +54,7 @@ class MLHandler:
         )
         prediction = MLModelOut(
             pid = mlmodelin.pid,
-            status = 'critical',
+            status = 'Critical',
             vitals = vitals
         )
 

@@ -11,7 +11,7 @@ class RoleCRUD(BaseCRUD):
     Abstracts interacting with the role table from the userinfo database.
     """
     
-    def __init__(self, conn: PostgresConnector):
+    def __init__(self, conn: PostgresConnector) -> None:
         super().__init__(conn)
 
         # table dependent sql query strings.
@@ -47,7 +47,7 @@ class RoleCRUD(BaseCRUD):
             table = sql.Identifier('role'),
             key = sql.Identifier('id'))
 
-    async def fetchKey(self, value: str):
+    async def fetchKey(self, value: str) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchKeySQL, (value,))
@@ -61,7 +61,7 @@ class RoleCRUD(BaseCRUD):
         cursor.close()
         return key
         
-    async def fetchAll(self):
+    async def fetchAll(self) -> List[Role]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchAllSQL)
@@ -76,7 +76,7 @@ class RoleCRUD(BaseCRUD):
         cursor.close()
         return models
 
-    async def fetchOne(self, key: int):
+    async def fetchOne(self, key: int) -> Role:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -91,7 +91,7 @@ class RoleCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def insert(self, role: RoleIn):
+    async def insert(self, role: RoleIn) -> dict:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.insertSQL, (role.name,))
@@ -105,7 +105,7 @@ class RoleCRUD(BaseCRUD):
         cursor.close()
         return key
 
-    async def update(self, updated: Role):
+    async def update(self, updated: Role) -> Role:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.udpateSQL, (updated.name, updated.id, ))
@@ -120,7 +120,7 @@ class RoleCRUD(BaseCRUD):
         cursor.close()
         return model
 
-    async def delete(self, key: int):
+    async def delete(self, key: int) -> bool:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.deleteSQL, (key,))

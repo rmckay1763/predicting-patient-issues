@@ -9,7 +9,7 @@ import BaseToolbar from './BaseToolbar';
 import { Colors } from "../resources/Colors";
 import { useState } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { AddUser, AddLogin } from '../controllers/APIController';
+import { AddUser } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,14 +33,22 @@ export default function AddUserForm() {
 
         if (password === confirmedPassword)
         {
+            let userInfo = {
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                rank: rank,
+                role: role,
+                admin: isAdmin,
+                password: password
+            }
             try {
-                var response = await AddUser(state.token, firstname, lastname, username, rank, role, isAdmin);                
-                if (response)
-                {
-                    await AddLogin(state.token, response.data.uid, password);
-                    window.alert(`User '${username}' has been created!`);
-                    return navigate("/users")
-                }
+                var response = await AddUser(state.token, userInfo);
+                if (!response.data) {
+                    throw new Error("Empty reponse");
+                } 
+                window.alert(`User '${username}' has been created!`);
+                return navigate("/users")
             }
             catch (error) {
                 window.alert("Creation of user failed!")

@@ -1,11 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { 
-    Stack, 
-    Typography, 
-    Box, 
-    Divider,
-} from "@mui/material"
+import { Stack, Typography, Box, Divider } from "@mui/material"
 import { DeletePatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import PatientProfileToolbar from "./PatientProfileToolbar";
@@ -13,32 +8,39 @@ import ConfirmDialog from "./ConfirmDialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import VitalsTable from "./VitalsTable";
+import { StyledTypography } from "../resources/StyledComponents";
 
 /**
  * @returns Component for the patient profile page.
  */
 export default function PatientProfile() {
+
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();
     const location = useLocation();
-    const [patient, setPatient] = useState({});
+    const [patient, setPatient] = useState();
     const [deletePatient, setDeletePatient] = useState(false);
     const [deleteMessage, setDeleteMessage] = useState("");
     const [vitals, setVitals] = useState([]);
 
+    const loadData = useCallback(() => {
+        let selected = state.patients.find((patient) => patient.pid === location.state.pid);
+        setPatient(selected);
+        let rows = state.vitals.filter((vital) => {
+            return vital.pid === location.state.pid;
+        });
+        setVitals(rows);
+    }, [state, location.state])
+
     useEffect(() => {
-        setPatient(location.state.patient);
+        loadData();
+        if (!patient) return;
         document.title = ("PPCD - " + patient.firstname + " " + patient.lastname);
         let message = "Are you sure you want to remove the patient " + 
             patient.firstname + " " + patient.lastname + 
             " and their associated vitals records? This action cannot be undone.";
         setDeleteMessage(message);
-        let rows = state.vitals
-        rows = rows.filter((vital) => {
-            return vital.pid === patient.pid;
-        });
-        setVitals(rows);
-    }, [location.state.patient, state.vitals, patient]);
+    }, [state, patient, loadData]);
 
     const onDelete = async() => {
         try {
@@ -50,6 +52,8 @@ export default function PatientProfile() {
             AlertError(dispatch, "Failed to delete patient");
         }
     }
+
+    if (!patient) return <StyledTypography>loading data...</StyledTypography>;
 
     return (
         <Box backgroundColor={Colors.backgroundLight} >
@@ -64,7 +68,7 @@ export default function PatientProfile() {
                 <HeaderItem label="Patient ID" value={patient.pid} />
                 <HeaderItem label="Age" value={patient.age} />
                 <HeaderItem label="Gender" value={patient.gender} />
-                <HeaderItem label="Status" value={patient.status} />
+                <HeaderItem label="Status" value={patient.status.text} />
             </Stack>
             <VitalsTable data={vitals} />
             <ConfirmDialog
@@ -88,20 +92,9 @@ const HeaderItem = (props) => {
     const [value, setValue] = useState("");
 
     useEffect(() => {
-        switch(props.value) {
-            case "Critical":
-                setColor(Colors.alert);
-                setValue(props.value);
-                break;
-            case "f":
-                setValue("Female");
-                break;
-            case "m":
-                setValue("Male");
-                break;
-            default:
-                setValue(props.value);
-                break;
+        setValue(props.value)
+        if (props.value === "Critical") {
+            setColor(Colors.alert);
         }
     }, [props.value])
 

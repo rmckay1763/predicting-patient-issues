@@ -25,13 +25,18 @@ CREATE TABLE IF NOT EXISTS public.user (
 	lastname VARCHAR(64) NOT NULL,
 	username VARCHAR(64) UNIQUE NOT NULL,
 	rank VARCHAR(4),
-	role INT REFERENCES public.role(id),
+	role INT REFERENCES public.role(id) ON DELETE SET NULL,
     admin BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS public.login (
-	uid INT PRIMARY KEY REFERENCES public.user(uid),
+	uid INT PRIMARY KEY REFERENCES public.user(uid) ON DELETE CASCADE,
 	password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.status (
+	id INT PRIMARY KEY,
+	text VARCHAR(16)
 );
 
 CREATE TABLE IF NOT EXISTS public.patient (
@@ -40,9 +45,8 @@ CREATE TABLE IF NOT EXISTS public.patient (
 	firstname VARCHAR(64) NOT NULL,
 	lastname VARCHAR(64) NOT NULL,
 	age INT CONSTRAINT age_check CHECK (age > 0),
-	gender CHAR(1) CONSTRAINT gender_check CHECK (gender IN ('m', 'f')),
-	status INT NOT NULL DEFAULT 10
-		CONSTRAINT status_check CHECK (status IN (0, 9, 10))
+	gender VARCHAR(16) CONSTRAINT gender_check CHECK (gender IN ('Male', 'Female')),
+	status INT NOT NULL REFERENCES public.status(id) DEFAULT 10
 );
 
 CREATE TABLE IF NOT EXISTS public.vital (
@@ -59,7 +63,7 @@ CREATE TABLE IF NOT EXISTS public.patient_archive (
 	firstname VARCHAR(64) NOT NULL,
 	lastname VARCHAR(64) NOT NULL,
 	age INT CONSTRAINT age_check CHECK (age > 0),
-	gender CHAR(1) CONSTRAINT gender_check CHECK (gender IN ('m', 'f')),
+	gender VARCHAR(16) CONSTRAINT gender_check CHECK (gender IN ('Male', 'Female')),
 	status INT NOT NULL DEFAULT 10
 		CONSTRAINT status_check CHECK (status IN (0, 9, 10))
 );
@@ -107,8 +111,8 @@ FOR EACH ROW EXECUTE PROCEDURE archive_vital();
 INSERT INTO 
 	public.role (name)
 VALUES
-	('surgery'),
-	('nurse');
+	('Surgery'),
+	('Nurse');
 
 INSERT INTO
 	public.user (firstname, lastname, username, rank, role, admin)
@@ -122,14 +126,20 @@ VALUES
 	(1, '$2b$12$45/YP2Jh5ItgCyySRVy4fu3J1NoOX/8BXIq/h6/JR1YA7MIsa3tLy'),
     (2, '$2b$12$45/YP2Jh5ItgCyySRVy4fu3J1NoOX/8BXIq/h6/JR1YA7MIsa3tLy');
 
+INSERT INTO public.status(id, text)
+VALUES
+	(1, 'Critical'),
+	(9, 'Stable'),
+	(10, 'Unobserved');
+
 INSERT INTO 
 	public.patient (firstname, lastname, age, gender, status)
 VALUES 
-	('Michael', 'Scott', 22, 'm', 0),
-	('Dwight', 'Shrute', 25, 'm', 9),
-	('Pam', 'Beesly', 32, 'f', 9),
-	('Jim', 'Halpert', 27, 'm', 9),
-	('Angela', 'Martin', 19, 'f', 9);
+	('Michael', 'Scott', 22, 'Male', 1),
+	('Dwight', 'Shrute', 25, 'Male', 9),
+	('Pam', 'Beesly', 32, 'Female', 9),
+	('Jim', 'Halpert', 27, 'Male', 9),
+	('Angela', 'Martin', 19, 'Female', 9);
 
 INSERT INTO
 	public.vital (pid, timestamp, heart_rate, sao2, respiration)

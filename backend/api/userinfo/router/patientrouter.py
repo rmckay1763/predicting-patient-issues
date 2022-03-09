@@ -1,6 +1,14 @@
+from typing import List
 from fastapi import APIRouter, Depends
-from api.userinfo.models import Patient, PatientIn
-from api.userinfo.crud.patientcrud import PatientCRUD
+from api.userinfo.models import (
+    Patient, 
+    PatientIn, 
+    PatientOut, 
+    Vital, 
+    VitalIn, 
+    StatusUpdate
+)
+from api.userinfo.services.patientservice import PatientService
 from api.dependencies import auth
 
 class PatientRouter:
@@ -8,74 +16,45 @@ class PatientRouter:
     Implements routes for the patient table using an APIRouter
     '''
 
-    def __init__(self, patients: PatientCRUD):
+    def __init__(self, service: PatientService) -> None:
         '''
         Constructor.
 
         Parameters:
-            patients (PatientCRUD): The crud to interact with the table.
+            service (PatientService): Service to interact with patient related tables.
         '''
-        self.patients = patients
+        self.service = service
         self.router = APIRouter(
             prefix="/api/patient",
             dependencies=[Depends(auth.auth_wrapper)]
         )
         self.__addRoutes__()
 
-    def __addRoutes__(self):
+    def __addRoutes__(self) -> None:
         '''
         Associates http routes with class functions.
         '''
-        self.router.get("/fetchKey/{lastname}")(self.fetchKey)
-        self.router.get("/fetchAll/")(self.fetchAll)
-        self.router.get("/fetchOne/{key}")(self.fetchOne)
-        self.router.post("/insert/")(self.insert)
-        self.router.put("/update")(self.update)
-        self.router.delete("/delete/{key}")(self.delete)
+        self.router.get("/fetchAllPatients")(self.fetchAllPatients)
+        self.router.post("/addPatient/")(self.addPatient)
+        self.router.put("/updatePatient")(self.updatePatient)
+        self.router.delete("/deletePatient/{key}")(self.deletePatient)
+        self.router.get("/fetchAllVitals")(self.fetchAllVitals)
+        self.router.post("/addVital")(self.addVital)
+        self.router.put("/updateStatus")(self.updateStatus)
 
-    async def fetchKey(self, lastname: str):
-        """
-        Route to fetch the primary key of a patient.
-
-        Parameters:
-            lastname (str): The lastname of the patient.
-
-        Returns:
-            RealDictRow: The primay key of the patient.
-        """
-        try:
-            return await self.patients.fetchKey(lastname)
-        except BaseException as err:
-            raise err
-
-    async def fetchAll(self):
+    async def fetchAllPatients(self) -> List[PatientOut]:
         """
         Route to fetch all rows from the patient table.
 
         Returns:
-            list: A list of Patient objects.
+            list[PatientOut]: A list of PatientOut objects.
         """
         try:
-            return await self.patients.fetchAll()
+            return await self.service.fetchAllPatients()
         except BaseException as err:
             raise err
 
-    async def fetchOne(self, key: int):
-        """
-        Route to fetch a patient given the primary key.
-
-        Parameters:
-            key (int): The primary key (pid) of the patient.
-
-        Returns:
-            Patient: The patient as a Patient model.
-        """
-        try:
-            return await self.patients.fetchOne(key)
-        except BaseException as err:
-            raise err
-
-    async def insert(self, patientinfo: PatientIn):
+    async def addPatient(self, patientinfo: PatientIn) -> dict:
         """
         Route to insert a new patient into the patients table.
 
@@ -83,29 +62,29 @@ class PatientRouter:
             patientinfo (PatientIn): The information for the new patient.
 
         Returns:
-            RealDictRow: The primay key of the new patient.
+            dict: Primay key of the new patient as a dictionary with key 'pid'.
         """
         try:
-            return await self.patients.insert(patientinfo)
+            return await self.service.addPatient(patientinfo)
         except BaseException as err:
             raise err
 
-    async def update(self, updated: Patient):
+    async def updatePatient(self, updated: Patient) -> PatientOut:
         """
-        Route to update a patient's status.
+        Route to update a patient's information.
 
         Parameters:
-            updated (Patient): The patient with the updated status.
+            updated (Patient): The patient with the updated information.
 
         Returns:
-            Patient: The result of the update.
+            PatientOut: The result of the update as a PatientOut object.
         """
         try:
-            return await self.patients.update(updated)
+            return await self.service.updatePatient(updated)
         except BaseException as err:
             raise err
 
-    async def delete(self, key: int):
+    async def deletePatient(self, key: int) -> bool:
         """
         Route to delete a patient from the patient table.
 
@@ -113,9 +92,51 @@ class PatientRouter:
             key (int): The primary key (pid) of the patient.
 
         Returns:
-            bool: True if successful, false otherwise.
+            bool: True if successful, raise error otherwise.
         """
         try:
-            return await self.patients.delete(key)
+            return await self.service.deletePatient(key)
+        except BaseException as err:
+            raise err
+
+    async def fetchAllVitals(self) -> List[Vital]:
+        '''
+        Route to fetch all vitals from the vital table.
+
+        Returns:
+            list[Vital]: All vitals as a list of Vital objects.
+        '''
+        try:
+            return await self.service.fetchAllVitals()
+        except BaseException as err:
+            raise err
+
+    async def addVital(self, vital: VitalIn) -> dict:
+        '''
+        Route to insert a vital into the vital table.
+
+        Parameters:
+            vital (Vital): The Vital object to insert.
+
+        Returns:
+            dict: Primary key of the new vital as a dictionary with key 'id'.
+        '''
+        try:
+            return await self.service.addVital(vital)
+        except BaseException as err:
+            raise err
+
+    async def updateStatus(self, status: StatusUpdate) -> PatientOut:
+        '''
+        Route to update the status of a patient.
+
+        Parameters:
+            status (StatusUpdate): Updated status model with pid and new status.
+
+        Returns:
+            PatientOut: The result of the update.
+        '''
+        try:
+            return await self.service.updateStatus(status)
         except BaseException as err:
             raise err

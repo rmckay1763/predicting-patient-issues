@@ -1,7 +1,15 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from api.userinfo.models import User, UserIn
-from api.userinfo.crud.usercrud import UserCRUD
-from api.userinfo.crud.logincrud import LoginCRUD
+from api.userinfo.models import (
+    Role,
+    RoleIn, 
+    User, 
+    UserIn, 
+    UserOut,
+    Login, 
+    LoginUpdated
+)
+from api.userinfo.services.userservice import UserService
 from api.dependencies import auth
 
 class UserRouter:
@@ -9,61 +17,49 @@ class UserRouter:
     Implements routes for the user table using an APIRouter
     '''
 
-    def __init__(self, users: UserCRUD, logins: LoginCRUD):
+    def __init__(self, service: UserService) -> None:
         '''
         Constructor.
 
         Parameters:
-            users (UserCRUD): The crud to interact with the table.
+            service (UserService): Service to interact with user related tables.
         '''
-        self.users = users
-        self.logins = logins
+        self.service = service
         self.router = APIRouter(
             prefix="/api/user",
             dependencies=[Depends(auth.auth_wrapper)]
         )
         self.__addRoutes__()
 
-    def __addRoutes__(self):
+    def __addRoutes__(self) -> None:
         '''
         Associates http routes with class functions.
         '''
-        self.router.get("/fetchKey/{username}")(self.fetchKey)
-        self.router.get("/fetchAll/")(self.fetchAll)
-        self.router.get("/fetchOne/{key}")(self.fetchOne)
-        self.router.post("/insert/")(self.insert)
-        self.router.put("/update")(self.update)
-        self.router.delete("/delete/{key}")(self.delete)
+        self.router.get("/fetchAllUsers/")(self.fetchAllUsers)
+        self.router.get("/fetchUser/{key}")(self.fetchUser)
+        self.router.post("/addUser/")(self.addUser)
+        self.router.put("/updateUser")(self.updateUser)
+        self.router.delete("/deleteUser/{key}")(self.deleteUser)
+        self.router.get("/fetchAllRoles")(self.fetchAllRoles)
+        self.router.post("/addRole")(self.addRole)
+        self.router.delete("/deleteRole/{key}")(self.deleteRole)
+        self.router.post("/verifyPassword")(self.verifyPassword)
+        self.router.put("/updatePassword")(self.updatePassword)
 
-    async def fetchKey(self, username: str):
-        """
-        Route to fetch the primary key of a user.
-
-        Parameters:
-            username (str): The username of the user.
-
-        Returns:
-            RealDictRow: The primay key of the user.
-        """
-        try:
-            return await self.users.fetchKey(username)
-        except BaseException as err:
-            raise err
-
-    async def fetchAll(self, uid=Depends(auth.auth_wrapper)):
+    async def fetchAllUsers(self, uid=Depends(auth.auth_wrapper)) -> List[UserOut]:
         """
         Route to fetch all rows from the user table.
 
         Returns:
-            list: A list of User objects.
+            list[UserOut]: All users as a list of UserOut objects.
         """
         try:
             await self.authenticate(uid, None)
-            return await self.users.fetchAll()
+            return await self.service.fetchAllUsers()
         except BaseException as err:
             raise err
 
-    async def fetchOne(self, key: int):
+    async def fetchUser(self, key: int) -> UserOut:
         """
         Route to fetch a user given the primary key.
 
@@ -71,14 +67,14 @@ class UserRouter:
             key (int): The primary key (uid) of the user.
 
         Returns:
-            User: The user as a user model.
+            UserOut: The user as a user out model.
         """
         try:
-            return await self.users.fetchOne(key)
+            return await self.service.fetchUser(key)
         except BaseException as err:
             raise err
 
-    async def insert(self, userinfo: UserIn, uid=Depends(auth.auth_wrapper)):
+    async def addUser(self, userinfo: UserIn, uid=Depends(auth.auth_wrapper)) -> dict:
         """
         Route to insert a new user into the user table.
 
@@ -86,31 +82,31 @@ class UserRouter:
             userinfo (UserIn): The information for the new user.
 
         Returns:
-            RealDictRow: The primay key of the new user.
+            Dict: The primay key of the new user as a dictionary with key 'uid'.
         """
         try:
             await self.authenticate(uid, None)
-            return await self.users.insert(userinfo)
+            return await self.service.addUser(userinfo)
         except BaseException as err:
             raise err
 
-    async def update(self, updated: User, uid=Depends(auth.auth_wrapper)):
+    async def updateUser(self, updated: User, uid=Depends(auth.auth_wrapper)) -> UserOut:
         """
         Route to update a user in the user table.
 
         Parameters:
-            updated (User): The user with the updated data.
+            updated (User): User model with updated information.
 
         Returns:
-            User: The result of the update.
+            UserOut: The result of the update as a UserOut model.
         """
         try:
             await self.authenticate(uid, updated.uid)
-            return await self.users.update(updated)
+            return await self.service.updateUser(updated)
         except BaseException as err:
             raise err
 
-    async def delete(self, key: int, uid=Depends(auth.auth_wrapper)):
+    async def deleteUser(self, key: int, uid=Depends(auth.auth_wrapper)) -> bool:
         """
         Route to delete a user from the user table.
 
@@ -118,20 +114,96 @@ class UserRouter:
             key (int): The primary key (uid) of the user.
 
         Returns:
-            bool: True if successful, false otherwise.
+            bool: True if successful, raises error otherwise.
         """
         try:
             await self.authenticate(uid, None)
-            await self.logins.delete(key)
-            return await self.users.delete(key)
+            return await self.service.deleteUser(key)
         except BaseException as err:
             raise err
 
-    async def authenticate(self, actual: int, candidate: int):
+    async def fetchAllRoles(self, uid=Depends(auth.auth_wrapper)) -> List[Role]:
+        '''
+        Route to fetch all roles from the role table.
+
+        Returns:
+            list[Role]: All roles as a list of Role objects.
+        '''
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.fetchAllRoles()
+        except BaseException as err:
+            raise err
+
+    async def addRole(self, role: RoleIn, uid=Depends(auth.auth_wrapper)) -> dict:
+        '''
+        Route to add a role into the role table.
+
+        Parameters:
+            role (RoleIn): Information for the new role.
+
+        Returns:
+            dict: Primary key of the new role as a dictionary with key 'id'.
+        '''
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.addRole(role)
+        except BaseException as err:
+            raise err
+
+    async def deleteRole(self, key: int, uid=Depends(auth.auth_wrapper)) -> bool:
+        '''
+        Route to delete a role from the role table.
+
+        Parameters:
+            key (int): Primary key (id) of the role to delete.
+
+        Returns:
+            bool: True if successful, raise error otherwise.
+        '''
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.deleteRole(key)
+        except BaseException as err:
+            raise err
+
+    async def verifyPassword(self, candidate: Login, uid=Depends(auth.auth_wrapper)) -> bool:
+        '''
+        Route to verify a user's password.
+
+        Parameters:
+            candidate (Login): uid and password of user to verify.
+
+        Returns:
+            bool: True if verified, false if not verified.
+        '''
+        try:
+            await self.authenticate(uid, candidate.uid)
+            return await self.service.verifyPassword(candidate)
+        except BaseException as err:
+            raise err
+
+    async def updatePassword(self, updated: LoginUpdated, uid=Depends(auth.auth_wrapper)) -> bool:
+        '''
+        Route to update a user's password.
+
+        Parameters:
+            updated (LoginUpdated): The updated login information and the old password.
+
+        Returns:
+            bool: True if password updates, false if old password fails, raises error otherwise.
+        '''
+        try:
+            await self.authenticate(uid, updated.uid)
+            return await self.service.updatePassword(updated)
+        except BaseException as err:
+            raise err
+
+    async def authenticate(self, actual: int, candidate: int) -> None:
         """
         Athenticate the user for the request. 
         Checks if uid of current user matches uid of request or if current user is an admin.
-        For admin only authentication, pass in 'None' for candidate
+        For admin only authentication, pass in 'None' for candidate.
 
         Parameters:
             actual (int): The primary key (uid) of the current user.
@@ -142,7 +214,7 @@ class UserRouter:
         """
         if (actual == candidate):
             return
-        user = await self.users.fetchOne(actual)
+        user = await self.service.fetchUser(actual)
         if (user.admin):
             return
         raise HTTPException(status_code=401, detail='Unathenticated user id')

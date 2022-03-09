@@ -1,18 +1,19 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { 
     MenuItem, 
     Box, 
     Stack, 
-    IconButton 
 } from "@mui/material";
 import { UpdatePatient } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
+import { useComponentWidth } from "../contexts/Dimensions";
 import BaseToolbar from "./BaseToolbar";
-import { 
-    StyledFormControlLabel, 
+import {  
     StyledTextField, 
     StyledButtonPrimary, 
+    StyledButtonSecondary,
+    StyledIconButton,
     StyledTypography,
  } from "../resources/StyledComponents";
 import { AlertSuccess, AlertError } from "./AlertMessage";
@@ -22,70 +23,87 @@ import { Icons } from "../resources/Icons";
 /**
  * @returns Component to add a patient.
  */
-export default function AddPatientForm() {
+export default function EditPatientForm() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [state, dispatch] = useGlobal();
-    const [firstname, setFirstname] = useState(location.state.patient.firstname);
-    const [lastname, setLastname] = useState(location.state.patient.lastname);
-    const [age, setAge] = useState(location.state.patient.age);
-    const [gender, setGender] = useState(location.state.patient.gender);
+    const location = useLocation();
+    const patient = location.state.patient
+    const [firstname, setFirstname] = useState(patient.firstname);
+    const [lastname, setLastname] = useState(patient.lastname);
+    const [age, setAge] = useState(patient.age);
+    const [gender, setGender] = useState(patient.gender);
     const [ageError, setAgeError] = useState(false);
 
     useEffect(() => {
         document.title = "PPCD - Edit Patient Data";
     });
 
-    function mapStatus(status) {
-        switch (status) {
-            case 'Critical':
-                return 0;
-            case 'Stable':
-                return 9;
-            case 'Unobserved':
-                return 10;
-            default:
-                break;
-        }
+    const reset = () => {
+        setFirstname(patient.firstname);
+        setLastname(patient.lastname);
+        setAge(patient.age);
+        setGender(patient.gender);
     }
 
-    const clearInput = () => {
-        setFirstname("");
-        setLastname("");
-        setAge("");
-        setGender("");
+    const handleCancel = () => {
+        navigate('/patientProfile', {state: {pid: patient.pid}});
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let patient = location.state.patient;
-        patient.age = age;
-        patient.firstname = firstname;
-        patient.lastname = lastname;
-        patient.gender = gender;
-        patient.status = mapStatus(patient.status);
+
+        let updated = structuredClone(patient);
+        updated.status = patient.status.id;
+        updated.firstname = firstname;
+        updated.lastname = lastname;
+        updated.age = age;
+        updated.gender = gender;
 
         try {
-            let response = await UpdatePatient(state.token, patient);
+            let response = await UpdatePatient(state.token, updated);
             if (!response.data) {
                 throw new Error("Empty reponse");
             }
             AlertSuccess(dispatch, "Patient records updated successfully!");
-            return navigate('/patientProfile', {state: {patient: location.state.patient}});
+            return navigate('/patientProfile', {state: {pid: patient.pid}});
         } catch (error) {
             AlertError(dispatch, "Failed to update patient records");
-            clearInput();
+            reset();
+            console.log(patient);
         }
+    }
+
+    const EditPatientToolbar = () => {
+        const ref = useRef(null);
+        const { width } = useComponentWidth(ref);
+        const breakpoint = 600;
+        const title = "Edit Patient Records";
+        
+        const full = () => (
+            <BaseToolbar title={title} ref={ref} >
+                <StyledButtonSecondary
+                        startIcon={Icons.close}
+                        onClick={handleCancel} 
+                >
+                    Cancel
+                </StyledButtonSecondary>
+            </BaseToolbar>
+        )
+    
+        const reduced = () => (
+            <BaseToolbar title={title} ref={ref} >
+                <StyledIconButton onClick={handleCancel}>
+                    {Icons.close}
+                </StyledIconButton>
+            </BaseToolbar>
+        )
+    
+        return width < breakpoint ? reduced() : full();
     }
 
     return (
         <Fragment>
-            <BaseToolbar title="Edit Patient Records">
-                <StyledFormControlLabel 
-                    control={<IconButton children={Icons.close} />}
-                    label="Cancel"
-                    onClick={() => navigate('/patientProfile', {state: {patient: location.state.patient}})} />
-            </BaseToolbar>
+            <EditPatientToolbar />
             <Box
                 component="form"
                 onSubmit={handleSubmit}
@@ -95,7 +113,7 @@ export default function AddPatientForm() {
                     justifyContent: "center",
                 }}
             >
-                <Stack spacing={2} >
+                <Stack spacing={2} padding={2} >
                     <StyledTypography variant="subtitle1" textAlign="center">
                         Updated Patient Information
                     </StyledTypography>
@@ -129,10 +147,10 @@ export default function AddPatientForm() {
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
                     >
-                        <MenuItem value={"f"} style={{color: Colors.primary}}>
+                        <MenuItem value={"Female"} style={{color: Colors.primary}}>
                             Female
                         </MenuItem>
-                        <MenuItem value={"m"} style={{color: Colors.primary}}>
+                        <MenuItem value={"Male"} style={{color: Colors.primary}}>
                             Male
                         </MenuItem>
                     </StyledTextField>

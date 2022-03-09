@@ -8,7 +8,7 @@ class PostgresConnector:
     port = None
     conn = None
 
-    def __init__(self, config):
+    def __init__(self, config) -> None:
         self.config = config
         
         # If Remote flag is given, initialize and start SSHTunnel, and then establish
@@ -24,7 +24,7 @@ class PostgresConnector:
 
     # Opens database connection globally on given port
     # (must use OpenSSHTunnel if connecting remotely)
-    def GetDatabaseConnection(self):
+    def GetDatabaseConnection(self) -> None:
         try:
             params = {
                 'database': self.config['DatabaseSettings']['Database'],
@@ -39,7 +39,7 @@ class PostgresConnector:
             print(err)
 
     # Opens SSH Tunnel globally to establish database connection remotely
-    def OpenSSHTunnel(self):
+    def OpenSSHTunnel(self) -> None:
         try:
             self.tunnel = SSHTunnelForwarder(
                 (self.config['SSHTunnelSettings']['Endpoint'], int(self.config['SSHTunnelSettings']['Port'])),
@@ -50,7 +50,7 @@ class PostgresConnector:
             print(err)
             return None
 
-    def getCursor(self):
+    def getCursor(self) -> RealDictCursor:
         """
         Retrieve a cursor from the database connection.
 

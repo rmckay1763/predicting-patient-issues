@@ -99,7 +99,7 @@ export default function AddPatientForm() {
                     justifyContent: "center",
                 }}
             >
-                <Stack spacing={2} >
+                <Stack spacing={2} padding={2}>
                     <StyledTypography variant="subtitle1" textAlign="center">
                         Patient Information
                     </StyledTypography>
@@ -133,10 +133,10 @@ export default function AddPatientForm() {
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
                     >
-                        <MenuItem value={"f"} style={{color: Colors.primary}}>
+                        <MenuItem value={"Female"} style={{color: Colors.primary}}>
                             Female
                         </MenuItem>
-                        <MenuItem value={"m"} style={{color: Colors.primary}}>
+                        <MenuItem value={"Male"} style={{color: Colors.primary}}>
                             Male
                         </MenuItem>
                     </StyledTextField>

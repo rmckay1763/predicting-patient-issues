@@ -1,5 +1,7 @@
+from typing import List
 from fastapi import APIRouter, Depends
-from api.userinfo.crud.archivecrud import ArchiveCRUD
+from api.userinfo.models import Patient, Vital
+from api.userinfo.services.archiveservice import ArchiveService
 from api.dependencies import auth
 
 class ArchiveRouter:
@@ -7,21 +9,21 @@ class ArchiveRouter:
     Implements routes for the archive tables using an APIRouter
     '''
 
-    def __init__(self, archive: ArchiveCRUD):
+    def __init__(self, service: ArchiveService) -> None:
         '''
         Constructor.
 
         Parameters:
-            archive (ArchiveCRUD): The crud to interact with the archive tables.
+            service (ArchiveService): Service to interact with the archive tables.
         '''
-        self.archive = archive
+        self.service = service
         self.router = APIRouter(
             prefix="/api/archive",
             dependencies=[Depends(auth.auth_wrapper)]
         )
         self.__addRoutes__()
 
-    def __addRoutes__(self):
+    def __addRoutes__(self) -> None:
         '''
         Associates http routes with class functions.
         '''
@@ -29,21 +31,21 @@ class ArchiveRouter:
         self.router.get("/fetchPatient/{key}")(self.fetchPatient)
         self.router.delete("/deletePatient/{key}")(self.deletePatient)
         self.router.get("/fetchAllVitals")(self.fetchAllVitals)
-        self.router.get("/fetchPatientVitals/{key}")(self.fetchPatientVitals)
+        self.router.get("/fetchVitals/{key}")(self.fetchVitals)
 
-    async def fetchAllPatients(self):
+    async def fetchAllPatients(self) -> List[Patient]:
         """
         Route to fetch all rows from the patient_archive table.
 
         Returns:
-            list: A list of Patient objects.
+            list[Patient]: A list of Patient objects.
         """
         try:
-            return await self.archive.fetchAllPatients()
+            return await self.service.fetchAllPatients()
         except BaseException as err:
             raise err
 
-    async def fetchPatient(self, key: int):
+    async def fetchPatient(self, key: int) -> Patient:
         """
         Route to fetch a patient given the primary key.
 
@@ -54,11 +56,11 @@ class ArchiveRouter:
             Patient: The patient as a Patient model.
         """
         try:
-            return await self.archive.fetchPatient(key)
+            return await self.service.fetchPatient(key)
         except BaseException as err:
             raise err
 
-    async def deletePatient(self, key: int):
+    async def deletePatient(self, key: int) -> bool:
         """
         Route to delete a patient from the patient_archive table.
 
@@ -69,11 +71,11 @@ class ArchiveRouter:
             bool: True if successful, false otherwise.
         """
         try:
-            return await self.archive.deletePatient(key)
+            return await self.service.deletePatient(key)
         except BaseException as err:
             raise err
     
-    async def fetchAllVitals(self):
+    async def fetchAllVitals(self) -> List[Vital]:
         """
         Route to fetch all vitals from vital_archive table.
 
@@ -81,11 +83,11 @@ class ArchiveRouter:
             list[Vital]: list of all entries in the vital_archive table.
         """
         try:
-            return await self.archive.fetchAllVitals()
+            return await self.service.fetchAllVitals()
         except BaseException as err:
             raise err
 
-    async def fetchPatientVitals(self, key: int):
+    async def fetchVitals(self, key: int) -> List[Vital]:
         """
         Route to fetch all vitals from the given patient id.
 
@@ -93,9 +95,9 @@ class ArchiveRouter:
             key (int): Primary key (pid) of the patient.
 
         Returns:
-            list: A list of Vital objects.
+            list[Vital]: A list of Vital objects.
         """
         try:
-            return await self.archive.fetchPatientVitals(key)
+            return await self.service.fetchVitals(key)
         except BaseException as err:
             raise err

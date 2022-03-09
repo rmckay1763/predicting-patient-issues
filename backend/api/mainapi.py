@@ -1,19 +1,16 @@
-from hashlib import new
 from http.client import HTTPException
-from lib2to3.pytree import Base
-import string
 from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from api.utils.loginhandler import LoginHandler
-from api.userinfo.models import LoginAttempt
+from api.userinfo.models import LoginAttempt, LoginSuccess
 from api.dependencies import auth
+from api.userinfo.services.userservice import UserService
 
 class MainAPI:
     '''
     Implements a fastapi with routers.
     '''
-    def __init__(self, loginHandler: LoginHandler):
-        self.loginHandler = loginHandler
+    def __init__(self, userService: UserService) -> None:
+        self.userService = userService
         self.app = FastAPI()
         self.origins = [
             "http://localhost",
@@ -32,7 +29,7 @@ class MainAPI:
         self.app.get("/api/validate/")(self.validate)
         self.app.get("/api/validateAdmin/")(self.validateAdmin)
 
-    def addRouter(self, router: APIRouter):
+    def addRouter(self, router: APIRouter) -> None:
         '''
         Add a router to the fastapi.
 
@@ -41,7 +38,7 @@ class MainAPI:
         '''
         self.app.include_router(router)
 
-    async def login(self, attempt: LoginAttempt):
+    async def login(self, attempt: LoginAttempt) -> LoginSuccess:
         """
         Route to authenticate an attempted login.
 
@@ -52,14 +49,14 @@ class MainAPI:
             HTTPException: If authentication fails.
 
         Returns:
-            token (str): Session token.
+            LoginSuccess: Bearer token and UserOut model for logged in user.
         """
         try:
-            return await self.loginHandler.login(attempt)
+            return await self.userService.login(attempt)
         except BaseException as err:
             raise err
 
-    async def validate(self, uid=Depends(auth.auth_wrapper)):
+    async def validate(self, uid=Depends(auth.auth_wrapper)) -> int:
         """
         Route to check bearer token.
 
@@ -71,7 +68,7 @@ class MainAPI:
         """
         return uid
 
-    async def validateAdmin(self, uid=Depends(auth.auth_wrapper)):
+    async def validateAdmin(self, uid=Depends(auth.auth_wrapper)) -> int:
         """
         Route to check bearer token for admin authentication.
 
@@ -83,7 +80,7 @@ class MainAPI:
             uid (int): uid of the current user.
         """
         try:
-            user = await self.loginHandler.users.fetchOne(uid)
+            user = await self.userService.fetchUser(uid)
 
             if (user.admin):
                 return user.uid
@@ -92,4 +89,3 @@ class MainAPI:
 
         except BaseException as err:
             raise err
-

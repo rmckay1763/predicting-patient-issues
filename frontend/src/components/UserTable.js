@@ -168,7 +168,7 @@ export default function UserTable() {
         },
         {
             name: 'Role',
-            selector: row => row.role,
+            selector: row => row.role.name,
             sortable: true
         },
         {

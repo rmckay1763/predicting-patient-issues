@@ -30,12 +30,15 @@ This will install all necessary Python modules to run the backend service. Make 
 
 ##### FastAPI for userinfo database
 
-The api provides routes to interact with each table in the userinfo database.
+The api provides routes to interact with tables in the backend database. The backend implements the api with the following architecture:
 - Each table has a class that implements basic CRUD operations.
-- Each table has a class that implements an APIRouter for the table routes.
-- The class for the main api adds the APIRouters to the FastAPI.
+- Service classes use the CRUD classes to implement functions needed by the api router classes.
+- Router classes expose HTTP routes and call the functions in the service classes to handle requests.
+- The class for the main api includes the Router classes and provides login and validation routes.
 
-Refer to the router classes located at `backend/api/[database_name]/routers/` for available routes.
+Functions to support new routes should be defined in a service class in order to keep the CRUD classes decoupled from the rest of the api. `UserService` Provides functions for user related operations, `PatientService` provides functions for patient related operations, and `ArchiveService` provides functions for archive related operations. Each service class has a corresponding router class that provides HTTP routes to access functions.
+
+Refer to the router classes located at `backend/api/userinfo/router/` for available routes.
 
 Operation:
 - Change working directory to `/backend`

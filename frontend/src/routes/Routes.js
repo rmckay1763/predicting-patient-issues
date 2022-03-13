@@ -71,9 +71,9 @@ export const LoginRoute = () => (
  */
   export const UserTableRoute = () => (
     <AdminAuthRoute>
-      <BaseAdminRoute>
+      <BaseRoute>
         <UserTable />
-      </BaseAdminRoute>
+      </BaseRoute>
     </AdminAuthRoute>
    )
 
@@ -83,9 +83,9 @@ export const LoginRoute = () => (
  */
   export const AddUserRoute = () => (
     <AdminAuthRoute>
-      <BaseAdminRoute>
+      <BaseRoute>
         <AddUserForm />
-      </BaseAdminRoute>
+      </BaseRoute>
     </AdminAuthRoute>
    )
 

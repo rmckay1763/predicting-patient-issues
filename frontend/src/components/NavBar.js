@@ -19,7 +19,7 @@ import { useGlobal, Actions } from "../contexts/GlobalContext"
 import DrawerComponent from "./Drawer";
 import { StyledMenu } from "../resources/StyledComponents";
 
-function Navbar(props) {
+function Navbar() {
   const navigate = useNavigate();
   const [state, dispatch] = useGlobal();
   const [anchorEl, setAnchorEl] = useState(null);

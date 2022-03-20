@@ -1,7 +1,6 @@
 import { Navigate } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import { Actions, useGlobal } from "../contexts/GlobalContext";
-import BaseAdminRoute from "./BaseAdminRoute";
 import BaseRoute from "./BaseRoute";
 import PatientTable from "../components/PatientTable";
 import EditProfileForm from "../components/EditProfileForm";
@@ -58,36 +57,26 @@ export const LoginRoute = () => (
 )
 
 /**
- * @returns Component for test admin route
- */
- export const TestAdminRoute = () => (
-  <AdminAuthRoute>
-    This is an admin page.
-  </AdminAuthRoute>
- )
-
- /**
  * @returns Component for patient table route
  */
-  export const UserTableRoute = () => (
-    <AdminAuthRoute>
-      <BaseRoute>
-        <UserTable />
-      </BaseRoute>
-    </AdminAuthRoute>
-   )
-
+export const UserTableRoute = () => (
+  <AdminAuthRoute>
+    <BaseRoute>
+      <UserTable />
+    </BaseRoute>
+  </AdminAuthRoute>
+  )
 
  /**
  * @returns Component for new user route
  */
-  export const AddUserRoute = () => (
-    <AdminAuthRoute>
-      <BaseRoute>
-        <AddUserForm />
-      </BaseRoute>
-    </AdminAuthRoute>
-   )
+export const AddUserRoute = () => (
+  <AdminAuthRoute>
+    <BaseRoute>
+      <AddUserForm />
+    </BaseRoute>
+  </AdminAuthRoute>
+)
 
 /**
  * @returns Component for patient table route
@@ -114,7 +103,7 @@ export const EditProfileRoute = () => (
 /**
  * @returns Component for patient profile route
  */
- export const PatientProfileRoute = () => (
+export const PatientProfileRoute = () => (
   <AuthRoute>
     <BaseRoute>
       <PatientProfile />
@@ -147,7 +136,7 @@ export const EnterVitalsRoute = () =>(
 /**
  * @returns Component to edit patient records
  */
- export const EditPatientRoute = () =>(
+export const EditPatientRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <EditPatientForm />

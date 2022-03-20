@@ -7,11 +7,16 @@ import { Colors } from '../resources/Colors';
 import { IconButton } from '@mui/material';
 import UserTableToolbar from './UserTableToolbar';
 import { DeleteUser } from '../controllers/APIController';
+import ConfirmDialog from "./ConfirmDialog";
+import { AlertError, AlertSuccess } from "./AlertMessage";
 
 export default function UserTable() {
-    const [state,] = useGlobal();
+    const [state, dispatch] = useGlobal();
     const [data, setData] = useState([]);
     const [query, setQuery] = useState([]);
+    const [deleteUser, setDeleteUser] = useState(false);
+    const [deleteMessage, setDeleteMessage] = useState('');
+    const [selectedUser, setSelectedUser] = useState();
     const navigate = useNavigate();
     document.title = "PPCD Admin - Users";
 
@@ -30,23 +35,26 @@ export default function UserTable() {
 
     // click handler for table rows
     const onRowClicked = (row) => {
-        let selected = state.patients.find((patient) => patient.pid === row.pid);
-        return navigate('/patientProfile', { state: { patient: selected } });
+        return
+    }
+
+    const onDelete = (row) => {
+        let selected = state.users.find((user) => user.uid === row.uid);
+        setSelectedUser(selected);
+        let message = `Are you sure you want to delete user '${selected.username}'?`;
+        setDeleteMessage(message);
+        setDeleteUser(true);
     }
 
     // click handler for delete column on table
-    const onRowDeleteClicked = (row) => {
-        let selected = state.users.find((user) => user.uid === row.uid);
-        let response = window.confirm(`Are you sure you want to delete user '${selected.uid}'?`);
-
-        if (response) {
-            try {
-                DeleteUser(state.token, selected.uid);
-                window.alert(`User '${selected.uid}' has been deleted.`);
-            } catch (error) {
-                console.log(error);
-                window.alert(`Deletion of user failed.`);
-            }
+    const deleteUserCallback = async () => {
+        try {
+            await DeleteUser(state.token, selectedUser.uid);
+            AlertSuccess(dispatch, "User deleted");
+            return navigate("/users")
+        } catch (error) {
+            console.error(error);
+            AlertError(dispatch, "Failed to delete user");
         }
     }
 
@@ -69,7 +77,7 @@ export default function UserTable() {
     const deleteButton = (row) => {
         return (
             <IconButton
-                onClick={() => onRowDeleteClicked(row)}
+                onClick={() => onDelete(row)}
                 sx={{
                     color: Colors.primary,
                     '&:hover': { color: Colors.secondary, background: Colors.primary }
@@ -190,6 +198,13 @@ export default function UserTable() {
                 columns={columns}
                 data={data}
                 customStyles={customStyles}
+            />
+            <ConfirmDialog
+                open={deleteUser}
+                setOpen={setDeleteUser}
+                onConfirm={deleteUserCallback}
+                title="Confirmation Required"
+                content={deleteMessage}
             />
         </Fragment>
     );

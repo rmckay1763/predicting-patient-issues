@@ -36,6 +36,9 @@ export const StyledFormControlLabel = styled(FormControlLabel)({
     color: Colors.primary,
     '& .MuiCheckbox-root': {
         color: Colors.primary,
+        '&.Mui-checked': {
+            color: Colors.primary
+        }
     },
     '& .Mui-checked': {
         color: Colors.primary,

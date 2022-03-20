@@ -1,20 +1,20 @@
-import { 
-  Divider, 
-  Typography, 
-  Box, 
-  TextField,
-  Button
-} from '@mui/material';
+import { Divider, Box, } from '@mui/material';
 import BaseToolbar from './BaseToolbar';
-import { Colors } from "../resources/Colors";
 import { useState } from 'react';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Checkbox } from '@mui/material';
 import { AddUser } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useNavigate } from 'react-router-dom';
+import { 
+  StyledTextField, 
+  StyledButtonPrimary, 
+  StyledTypography, 
+  StyledFormControlLabel
+} from '../resources/StyledComponents';
+import { AlertError, AlertSuccess} from './AlertMessage';
 
 export default function AddUserForm() {
-    const [state,] = useGlobal();
+    const [state, dispatch] = useGlobal();
     const [username, setUsername] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
@@ -47,16 +47,17 @@ export default function AddUserForm() {
                 if (!response.data) {
                     throw new Error("Empty reponse");
                 } 
-                window.alert(`User '${username}' has been created!`);
+                let message = `User '${username}' has been created!`;
+                AlertSuccess(dispatch, message)
                 return navigate("/users")
             }
             catch (error) {
-                window.alert("Creation of user failed!")
+                AlertError(dispatch, "Creation of user failed!");
             }
         }
         else
         {
-            window.alert("Passwords do not match!");
+            AlertError(dispatch, "Passwords do not match!")
         }
     }
 
@@ -74,86 +75,86 @@ export default function AddUserForm() {
       autoComplete="off"
       paddingTop= {5}
     >
-        <p>
-        <Typography
-          sx={{ mt: 0.5, ml: 2 }}
-          color="text.secondary"
-          display="block"
-          variant="caption"
-        >
+      <p>
+        <StyledTypography sx={{ mt: 0.5, ml: 1 }} variant="subtitle1">
           User Info
-        </Typography>
+        </StyledTypography>
       </p>
       <div>
-      <TextField
+        <StyledTextField
           id="outlined-disabled"
           label="Username"
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
-      <TextField
+        <StyledTextField
           id="outlined-disabled"
           label="First Name"
           onChange={(e) => setFirstname(e.target.value)}
+          required
         />
-        <TextField
+        <StyledTextField
           id="outlined-disabled"
           label="Last Name"
           onChange={(e) => setLastname(e.target.value)}
+          required
         />
-    </div>
-    <div>
-    <Divider component="p" />
-      <p>
-        <Typography
-          sx={{ mt: 0.5, ml: 2 }}
-          color="text.secondary"
-          display="block"
-          variant="caption"
-        >
-          Attributes
-        </Typography>
-      </p>
-    <TextField
+      </div>
+      <div>
+        <Divider component="p" />
+        <p>
+          <StyledTypography sx={{ mt: 0.5, ml: 1 }} variant="subtitle1">
+            Attributes
+          </StyledTypography>
+        </p>
+        <StyledTextField
           id="outlined-disabled"
           label="Rank"
           onChange={(e) => setRank(e.target.value)}
+          required
         />
-        <TextField
+        <StyledTextField
           id="outlined-disabled"
           label="Role"
           onChange={(e) => setRole(e.target.value)}
+          required
         />
-        <FormControlLabel sx={{ mt: 2, ml: 4}} control={<Checkbox onChange={(e) => setIsAdmin(e.target.checked)}/>} label="Admin?" />
-    </div>
-    <div>
-    <Divider component="p" />
-      <p>
-        <Typography
-          sx={{ mt: 0.5, ml: 2 }}
-          color="text.secondary"
-          display="block"
-          variant="caption"
-        >
-          Password
-        </Typography>
-      </p>
-        <TextField
+        <StyledFormControlLabel 
+          sx={{ mt: 2, ml: 4}} 
+          control={<Checkbox onChange={(e) => setIsAdmin(e.target.checked)}/>} 
+          label="Admin?" 
+        />
+      </div>
+      <div>
+        <Divider component="p" />
+        <p>
+          <StyledTypography sx={{ mt: 0.5, ml: 1 }} variant="subtitle1">
+            Password
+          </StyledTypography>
+        </p>
+        <StyledTextField
           id="standard-password-input"
           label="Password"
           type="password"
           variant="standard"
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <TextField
+        <StyledTextField
           id="standard-password-input"
           label="Confirm Password"
           type="password"
           variant="standard"
           onChange={(e) => setConfirmedPassword(e.target.value)}
+          required
         />
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, bgcolor:  Colors.primary }}>
-            Submit    
-        </Button>
+        <StyledButtonPrimary 
+          type="submit" 
+          variant="contained" 
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Submit    
+        </StyledButtonPrimary>
     </div>
     </Box>
     </div>

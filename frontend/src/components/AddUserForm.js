@@ -8,10 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { 
   StyledTextField, 
   StyledButtonPrimary, 
+  StyledButtonSecondary, 
   StyledTypography, 
   StyledFormControlLabel
 } from '../resources/StyledComponents';
 import { AlertError, AlertSuccess} from './AlertMessage';
+import { Icons } from '../resources/Icons';
 
 export default function AddUserForm() {
     const [state, dispatch] = useGlobal();
@@ -62,19 +64,25 @@ export default function AddUserForm() {
     }
 
     return (
-        <div>
-        <BaseToolbar title="Edit Profile" >
-        </BaseToolbar>
-    <Box
-      component="form"
-      onSubmit={handleSubmit} method="post"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
-      }}
-      noValidate
-      autoComplete="off"
-      paddingTop= {5}
-    >
+      <div>
+      <BaseToolbar title="Add New User" >
+        <StyledButtonSecondary
+          startIcon={Icons.close}
+          onClick={() => navigate("/users")} 
+        >
+          Cancel
+        </StyledButtonSecondary>
+      </BaseToolbar>
+      <Box
+        component="form"
+        onSubmit={handleSubmit} method="post"
+        sx={{
+          '& .MuiTextField-root': { m: 1, width: '25ch' },
+        }}
+        noValidate
+        autoComplete="off"
+        paddingTop= {5}
+      >
       <p>
         <StyledTypography sx={{ mt: 0.5, ml: 1 }} variant="subtitle1">
           User Info

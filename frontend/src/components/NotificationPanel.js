@@ -69,7 +69,7 @@ export default function NotificationPage() {
 
     const NotificationButton = ({patient}) => (
         <Button
-            onClick={() => navigate('/patientProfile', {state: {patient: patient}})}
+            onClick={() => navigate('/patientProfile', {state: {pid: patient.pid}})}
             size='small'
             sx={{
                 color: Colors.primary,

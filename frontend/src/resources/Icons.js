@@ -55,4 +55,5 @@ export const Icons = {
 
 export const IconsLarge = {
     notification: <NotificationImportantIcon fontSize='large' />,
+    menu: <MenuIcon fontSize='large' />,
 }

@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { StyledList } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors";
-import { Icons } from "../resources/Icons";
+import { Icons, IconsLarge } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
 import { useViewport } from "../contexts/Dimensions"
 
@@ -75,7 +75,7 @@ export default function DrawerComponent() {
                         color: Colors.primary
                     }
                 }} >
-                {Icons.menu}
+                {IconsLarge.menu}
             </IconButton>
         </>
     );

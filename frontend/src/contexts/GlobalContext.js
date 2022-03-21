@@ -19,6 +19,7 @@ export const Actions = {
     setPatients: 'set_patients',
     setVitals: 'set_vitals',
     setUsers: 'set_users',
+    clearUsers: 'clear_users',
     setAlert: 'set_alert',
     clearAlert: 'clear_alert'
 };
@@ -82,6 +83,8 @@ const reducer = (state, { type, payload }) => {
             return { ...state, vitals: payload };
         case Actions.setUsers:
             return { ...state, users: payload };
+        case Actions.clearUsers:
+            return { ...state, users: [] };
         case Actions.setAlert:
             return { ...state, alert: payload };
         case Actions.clearAlert:

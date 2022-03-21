@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetAllPatients, GetAllVitals } from "../controllers/APIController";
+import { GetAllPatients, GetAllVitals, GetUsers } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -22,7 +22,7 @@ export default function BaseRoute(props) {
     const breakpoint = 900;
 
     // api calls
-    const loadData = useCallback(async () => {
+    const loadPatientData = useCallback(async () => {
         try {
             const response = await GetAllPatients(state.token);
             dispatch({ type: Actions.setPatients, payload: response.data });
@@ -37,21 +37,42 @@ export default function BaseRoute(props) {
         }
     }, [dispatch, state.token])
 
+    const loadAdminData = useCallback(async () => {
+        if (!state.user.admin) {
+            dispatch({ type: Actions.clearUsers });
+            return;
+        }
+        try {
+            const response = await GetUsers(state.token);
+            dispatch({ type: Actions.setUsers, payload: response.data });
+        } catch (error) {
+            console.log(error);
+        }
+    }, [dispatch, state.token, state.user.admin])
+
     // data updates
     useEffect(() => {
-        loadData()
+        loadPatientData();
         const interval = setInterval(() => {
-            loadData();
+            loadPatientData();
         }, MINUTE_MS);
         return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-    }, [loadData])
+    }, [loadPatientData])
+
+    useEffect(() => {
+        loadAdminData();
+        const interval = setInterval(() => {
+            loadAdminData();
+        }, MINUTE_MS);
+        return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    }, [loadAdminData])
 
     // return single pane if narrow screen size
     if (width < breakpoint) {
         return (
             <Fragment>
                 <AlertMessage />
-                <Navbar refresh={loadData} />
+                <Navbar />
                 {props.children}
             </Fragment>
         );
@@ -61,7 +82,7 @@ export default function BaseRoute(props) {
     return (
         <Fragment>
             <AlertMessage />
-            <Navbar refresh={loadData}/>
+            <Navbar />
             <BrowserView>
                 <ReflexContainer orientation="vertical" windowResizeAware={true}>
                     <ReflexElement flex="1">

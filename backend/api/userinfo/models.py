@@ -16,6 +16,15 @@ class RoleIn(BaseModel):
     '''
     name: str
 
+class Rank(BaseModel):
+    '''
+    Represents an entry in the rank table.
+    '''
+    id: int
+    pay_grade: Optional[str] = None
+    abbreviation: str
+    name: str
+
 class User(BaseModel):
     '''
     Represents an entry in the user table.
@@ -24,8 +33,8 @@ class User(BaseModel):
     firstname: str
     lastname: str
     username: str
-    rank: Optional[str] = ""
-    role: Optional[int] = 0
+    rank: int
+    role: int
     admin: bool
 
 class UserIn(BaseModel):
@@ -35,8 +44,8 @@ class UserIn(BaseModel):
     firstname: str
     lastname: str
     username: str
-    rank: Optional[str] = ""
-    role: Optional[int] = 0
+    rank: int
+    role: int
     admin = False
     password: str
 
@@ -48,8 +57,8 @@ class UserOut(BaseModel):
     firstname: str
     lastname: str
     username: str
-    rank: Optional[str] = ""
-    role: Optional[Role] = None
+    rank: Rank
+    role: Role
     admin: bool
 
 class Login(BaseModel):

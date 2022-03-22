@@ -105,7 +105,7 @@ class BaseCRUD(abc.ABC):
         pass
 
     @abc.abstractmethod
-    async def delete(self, key) -> bool:
+    async def delete(self, key: int) -> bool:
         """
         Delete a row from the table.
 

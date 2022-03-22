@@ -3,7 +3,8 @@ from fastapi.exceptions import HTTPException
 from api.userinfo.models import (
     User, 
     UserIn, 
-    UserOut,
+    UserOut, 
+    Rank, 
     Role, 
     RoleIn, 
     Login, 
@@ -14,6 +15,7 @@ from api.userinfo.models import (
 from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
+from api.userinfo.crud.rankcrud import RankCRUD
 from api.dependencies import auth
 
 class UserService:
@@ -21,7 +23,7 @@ class UserService:
     Service to interact with user related tables.
     '''
 
-    def __init__(self, users: UserCRUD, logins: LoginCRUD, roles: RoleCRUD) -> None:
+    def __init__(self, users: UserCRUD, logins: LoginCRUD, roles: RoleCRUD, ranks: RankCRUD) -> None:
         '''
         Constructor.
 
@@ -33,6 +35,7 @@ class UserService:
         self.users = users
         self.logins = logins
         self.roles = roles
+        self.ranks = ranks
 
     async def __hydrateUser(self, user: User) -> UserOut:
         '''
@@ -45,13 +48,14 @@ class UserService:
             UserOut: Hydrated user out model.
         '''
         try:
+            rank = await self.ranks.fetchOne(user.rank)
             role = await self.roles.fetchOne(user.role)
             out = UserOut(
                 uid = user.uid,
                 firstname = user.firstname,
                 lastname = user.lastname,
                 username = user.username,
-                rank = user.rank,
+                rank = rank,
                 role = role,
                 admin = user.admin
             )
@@ -195,6 +199,18 @@ class UserService:
         '''
         try:
             return await self.roles.delete(id)
+        except BaseException as err:
+            raise err
+
+    async def fetchAllRanks(self) -> List[Rank]:
+        '''
+        Fetch all rows from the rank table.
+
+        Returns:
+            list[Rank]: All ranks as list of Rank objects.
+        '''
+        try: 
+            return await self.ranks.fetchAll()
         except BaseException as err:
             raise err
 

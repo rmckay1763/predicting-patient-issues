@@ -97,7 +97,7 @@ export default function EditProfileForm() {
           disabled
           id="outlined-disabled"
           label="Rank"
-          value={user.rank}
+          value={user.rank.abbreviation}
         />
         <TextField
           disabled

@@ -7,6 +7,7 @@ from api.utils.postgresconnector import PostgresConnector
 from api.userinfo.crud.usercrud import UserCRUD
 from api.userinfo.crud.logincrud import LoginCRUD
 from api.userinfo.crud.rolecrud import RoleCRUD
+from api.userinfo.crud.rankcrud import RankCRUD
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
 from api.userinfo.crud.archivecrud import ArchiveCRUD
@@ -41,13 +42,14 @@ class APIDriver:
         # crud classes
         users = UserCRUD(connector)
         roles = RoleCRUD(connector)
+        ranks = RankCRUD(connector)
         logins = LoginCRUD(connector)
         patients = PatientCRUD(connector)
         vitals = VitalCRUD(connector)
         archive = ArchiveCRUD(connector)
 
         # service/handler classes
-        userService = UserService(users, logins, roles)
+        userService = UserService(users, logins, roles, ranks)
         patientService = PatientService(patients, vitals)
         archiveService = ArchiveService(archive)
         mlHandler = MLHandler()

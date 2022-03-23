@@ -171,7 +171,7 @@ export default function UserTable() {
         },
         {
             name: 'Rank',
-            selector: row => row.rank,
+            selector: row => row.rank.abbreviation,
             sortable: true
         },
         {

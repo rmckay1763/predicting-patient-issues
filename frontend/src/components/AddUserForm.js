@@ -20,8 +20,8 @@ export default function AddUserForm() {
     const [username, setUsername] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
-    const [rank, setRank] = useState("");
-    const [role, setRole] = useState("");
+    const [rank, setRank] = useState(1);
+    const [role, setRole] = useState(1);
     const [isAdmin, setIsAdmin] = useState(false);
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -90,22 +90,22 @@ export default function AddUserForm() {
       </p>
       <div>
         <StyledTextField
+          required
           id="outlined-disabled"
           label="Username"
           onChange={(e) => setUsername(e.target.value)}
-          required
         />
         <StyledTextField
+          required
           id="outlined-disabled"
           label="First Name"
           onChange={(e) => setFirstname(e.target.value)}
-          required
         />
         <StyledTextField
+          required
           id="outlined-disabled"
           label="Last Name"
           onChange={(e) => setLastname(e.target.value)}
-          required
         />
       </div>
       <div>
@@ -116,16 +116,16 @@ export default function AddUserForm() {
           </StyledTypography>
         </p>
         <StyledTextField
+          required
           id="outlined-disabled"
           label="Rank"
           onChange={(e) => setRank(e.target.value)}
-          required
         />
         <StyledTextField
+          required
           id="outlined-disabled"
           label="Role"
           onChange={(e) => setRole(e.target.value)}
-          required
         />
         <StyledFormControlLabel 
           sx={{ mt: 2, ml: 4}} 
@@ -141,20 +141,20 @@ export default function AddUserForm() {
           </StyledTypography>
         </p>
         <StyledTextField
+          required
           id="standard-password-input"
           label="Password"
           type="password"
           variant="standard"
           onChange={(e) => setPassword(e.target.value)}
-          required
         />
         <StyledTextField
+          required
           id="standard-password-input"
           label="Confirm Password"
           type="password"
           variant="standard"
           onChange={(e) => setConfirmedPassword(e.target.value)}
-          required
         />
         <StyledButtonPrimary 
           type="submit" 

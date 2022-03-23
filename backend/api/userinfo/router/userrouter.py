@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from api.userinfo.models import (
+    Rank,
     Role,
     RoleIn, 
     User, 
@@ -35,7 +36,8 @@ class UserRouter:
         '''
         Associates http routes with class functions.
         '''
-        self.router.get("/fetchAllUsers/")(self.fetchAllUsers)
+        self.router.get("/fetchAllRanks")(self.fetchAllRanks)
+        self.router.get("/fetchAllUsers")(self.fetchAllUsers)
         self.router.get("/fetchUser/{key}")(self.fetchUser)
         self.router.post("/addUser/")(self.addUser)
         self.router.put("/updateUser")(self.updateUser)
@@ -45,6 +47,18 @@ class UserRouter:
         self.router.delete("/deleteRole/{key}")(self.deleteRole)
         self.router.post("/verifyPassword")(self.verifyPassword)
         self.router.put("/updatePassword")(self.updatePassword)
+
+    async def fetchAllRanks(self) -> List[Rank]:
+        """
+        Route to fetch all rows from the rank table.
+
+        Returns:
+            list[Rank]: All ranks as a list or Rank objects.
+        """
+        try:
+            return await self.service.fetchAllRanks()
+        except BaseException as err:
+            raise err
 
     async def fetchAllUsers(self, uid=Depends(auth.auth_wrapper)) -> List[UserOut]:
         """

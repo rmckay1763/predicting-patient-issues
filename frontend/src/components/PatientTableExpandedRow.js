@@ -1,6 +1,23 @@
+import { useState, useEffect, useCallback } from 'react';
 import DataTable from 'react-data-table-component';
+import { useGlobal } from '../contexts/GlobalContext';
+import { GetVitals } from '../controllers/APIController';
 
-export default function PatientTableExpandedRow({ data }) {
+/**
+ * 
+ * @props {object} data -- Selected row from the patient table.
+ * @returns Table component for patient vitals.
+ */
+export default function PatientTableExpandedRow(props) {
+    const [state, ] = useGlobal();
+    const [data, setData] = useState([]);
+
+    const loadData = useCallback(async () => {
+        let response = await GetVitals(state.token, props.data.pid);
+        setData(response.data);
+    }, [state.token, props]);
+
+    useEffect(loadData);
 
     const columns = [
         {

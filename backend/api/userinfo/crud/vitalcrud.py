@@ -38,7 +38,8 @@ class VitalCRUD(BaseCRUD):
                 sql.Identifier('sao2'),
                 sql.Identifier('respiration')]))
 
-    async def fetchOne(self, key: int) -> Vital:
+    # fetches all vital records associated with the given patient id
+    async def fetchOne(self, key: int) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))

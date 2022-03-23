@@ -45,15 +45,6 @@ export default function PatientTable() {
         navigate('/patientProfile', {state: {pid: row.pid}})
     }
 
-    // component for expanded rows
-    const expandedComponent = ({data}) => {
-        let rows = state.vitals
-        rows = rows.filter((vital) => {
-            return vital.pid === data.pid;
-        });
-        return <PatientTableExpandedRow data={rows} />
-    }
-
     // action button for patient profile
     const profileButton = (row) => {
         return (
@@ -176,7 +167,7 @@ export default function PatientTable() {
                 highlightOnHover = {true}
                 pagination = {true}
                 expandableRows = {true}
-                expandableRowsComponent = {expandedComponent}
+                expandableRowsComponent = {PatientTableExpandedRow}
                 columns = {columns}
                 data = {data}
                 customStyles={customStyles}

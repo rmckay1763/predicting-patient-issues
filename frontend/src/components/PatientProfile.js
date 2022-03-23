@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Stack, Typography, Box, Divider } from "@mui/material"
-import { DeletePatient } from "../controllers/APIController";
+import { DeletePatient, GetVitals } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import PatientProfileToolbar from "./PatientProfileToolbar";
 import ConfirmDialog from "./ConfirmDialog";
@@ -23,14 +23,12 @@ export default function PatientProfile() {
     const [deleteMessage, setDeleteMessage] = useState("");
     const [vitals, setVitals] = useState([]);
 
-    const loadData = useCallback(() => {
+    const loadData = useCallback(async () => {
         let selected = state.patients.find((patient) => patient.pid === location.state.pid);
         setPatient(selected);
-        let rows = state.vitals.filter((vital) => {
-            return vital.pid === location.state.pid;
-        });
-        setVitals(rows);
-    }, [state, location.state])
+        let response = await GetVitals(state.token, location.state.pid);
+        setVitals(response.data);
+    }, [state, location.state]);
 
     useEffect(() => {
         loadData();

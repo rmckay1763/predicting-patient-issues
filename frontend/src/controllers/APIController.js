@@ -46,11 +46,12 @@ export const UpdatePatient = async (token, patient) => {
 
 export const DeletePatient = async (token, pid) => {
   let path = "api/patient/deletePatient/" + pid;
-  return axios.delete(path, { headers: { Authorization: `Bearer ${token}` } })
+  return axios.delete(path, { headers: { Authorization: `Bearer ${token}` } });
 }
 
-export const GetAllVitals = async (token) => {
-  return axios.get("api/patient/fetchAllVitals", { headers: { Authorization: `Bearer ${token}` } });
+export const GetVitals = async (token, pid) => {
+  let path = "api/patient/fetchVitals/" + pid;
+  return axios.get(path, { headers: { Authorization: `Bearer ${token}` } });
 }
 
 export const AddVital = async (token, vital) => {

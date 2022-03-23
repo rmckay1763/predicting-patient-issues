@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetAllPatients, GetAllVitals, GetUsers } from "../controllers/APIController";
+import { GetAllPatients, GetUsers } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -29,13 +29,7 @@ export default function BaseRoute(props) {
         } catch (error) {
             console.error(error);
         }
-        try {
-            const response = await GetAllVitals(state.token);
-            dispatch({ type: Actions.setVitals, payload: response.data });
-        } catch (error) {
-            console.log(error);
-        }
-    }, [dispatch, state.token])
+    }, [dispatch, state.token]);
 
     const loadAdminData = useCallback(async () => {
         if (!state.user.admin) {
@@ -48,7 +42,7 @@ export default function BaseRoute(props) {
         } catch (error) {
             console.log(error);
         }
-    }, [dispatch, state.token, state.user.admin])
+    }, [dispatch, state.token, state.user.admin]);
 
     // data updates
     useEffect(() => {

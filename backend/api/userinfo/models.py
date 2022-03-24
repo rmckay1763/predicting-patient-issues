@@ -1,4 +1,5 @@
 from datetime import datetime
+from numpy import double
 from pydantic import BaseModel
 from typing import Optional
 from typing import List
@@ -141,6 +142,11 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
+    cvp: int
+    systolic: int
+    diastolic: int
+    temperature: float
+    icp: int
 
 class VitalIn(BaseModel):
     '''
@@ -150,6 +156,11 @@ class VitalIn(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
+    cvp: int
+    systolic: int
+    diastolic: int
+    temperature: float
+    icp: int
 
 class MLVitals(BaseModel):
     timestamp: datetime

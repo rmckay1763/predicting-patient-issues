@@ -25,14 +25,6 @@ services:
     depends_on:
       - "postgres"
 
-  # machine learning container
-  # ml:
-  #   build: ./ml
-  #   image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml
-  #   container_name: ml-dev
-  #   volumes:
-  #     - "./ml:/app"
-
 # internal volumes
 volumes:
   postgres-data:

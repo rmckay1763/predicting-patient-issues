@@ -17,7 +17,6 @@ export const Actions = {
     setUser: 'set_user',
     clearUser: 'clear_user',
     setPatients: 'set_patients',
-    setVitals: 'set_vitals',
     setUsers: 'set_users',
     clearUsers: 'clear_users',
     setAlert: 'set_alert',
@@ -49,7 +48,6 @@ export const GlobalProvider = (props) => {
         token: props.token,
         user: props.user,
         patients: [],
-        vitals: [],
         users: [],
         alert: {open: false, severity: "success", message: ""}
     };
@@ -79,8 +77,6 @@ const reducer = (state, { type, payload }) => {
             return { ...state, user: null }
         case Actions.setPatients:
             return { ...state, patients: payload };
-        case Actions.setVitals:
-            return { ...state, vitals: payload };
         case Actions.setUsers:
             return { ...state, users: payload };
         case Actions.clearUsers:

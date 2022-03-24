@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   Avatar,
+  Link
 } from "@mui/material";
 
 import { Colors } from "../resources/Colors"
@@ -98,15 +99,29 @@ function Navbar() {
   </Button>
   )
 
+  const Title = () => (
+    <Link
+      href='/'
+      underline='hover'
+      variant='h5'
+      sx={{
+        color: Colors.backgroundLight,
+        '&:hover': {
+          cursor: 'pointer'
+        }
+      }} 
+    >
+      Predicting Patient Conditions Database
+    </Link>
+  )
+
   return (
     <AppBar position="static" >
       
       <Toolbar sx={{ background: Colors.primary, color: Colors.backgroundLighter }}>
       <DrawerComponent />
         <Box sx={{flexGrow: 1 }}>
-        <Typography variant="h5">
-          Predicting Patient Conditions Database
-        </Typography>
+          <Title />
         </Box>
         {AvatarButton()}
         <ProfileMenu />

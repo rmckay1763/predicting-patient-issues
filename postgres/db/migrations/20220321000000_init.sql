@@ -17,9 +17,9 @@ DROP TABLE IF EXISTS public.role;
 DROP TABLE IF EXISTS public.rank;
 DROP TABLE IF EXISTS public.vital;
 DROP TABLE IF EXISTS public.patient;
-DROP TABLE IF EXISTS public.status;
 DROP TABLE IF EXISTS public.vital_archive;
 DROP TABLE IF EXISTS public.patient_archive;
+DROP TABLE IF EXISTS public.status;
 
 CREATE TABLE IF NOT EXISTS public.rank (
 	id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -68,7 +68,12 @@ CREATE TABLE IF NOT EXISTS public.vital (
 	timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	heart_rate INT,
 	sao2 INT,
-	respiration INT
+	respiration INT,
+	cvp INT,
+	systolic INT,
+	diastolic INT,
+	temperature NUMERIC,
+	icp INT
 );
 
 CREATE TABLE IF NOT EXISTS public.patient_archive (
@@ -78,8 +83,7 @@ CREATE TABLE IF NOT EXISTS public.patient_archive (
 	lastname VARCHAR(64) NOT NULL,
 	age INT CONSTRAINT age_check CHECK (age > 0),
 	gender VARCHAR(16) CONSTRAINT gender_check CHECK (gender IN ('Male', 'Female')),
-	status INT NOT NULL DEFAULT 10
-		CONSTRAINT status_check CHECK (status IN (0, 9, 10))
+	status INT NOT NULL REFERENCES public.status(id) DEFAULT 10
 );
 
 CREATE TABLE IF NOT EXISTS public.vital_archive (
@@ -87,7 +91,12 @@ CREATE TABLE IF NOT EXISTS public.vital_archive (
 	timestamp TIMESTAMP,
 	heart_rate INT,
 	sao2 INT,
-	respiration INT
+	respiration INT,
+	cvp INT,
+	systolic INT,
+	diastolic INT,
+	temperature NUMERIC,
+	icp INT
 );
 
 --
@@ -116,9 +125,9 @@ CREATE OR REPLACE FUNCTION archive_vital() RETURNS TRIGGER AS $archive_vital$
 	-- Stores deleted row from vital into vital_archive
 	--
 		INSERT INTO
-			public.vital_archive(pid, timestamp, heart_rate, sao2, respiration)
+			public.vital_archive(pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
 		VALUES
-			(OLD.pid, OLD.timestamp, OLD.heart_rate, OLD.sao2, OLD.respiration);
+			(OLD.pid, OLD.timestamp, OLD.heart_rate, OLD.sao2, OLD.respiration, OLD.cvp, OLD.systolic, OLD.diastolic, OLD.temperature, OLD.icp);
 		RETURN NULL;
 	END;
 $archive_vital$ LANGUAGE plpgsql;
@@ -200,31 +209,31 @@ VALUES
 	('Angela', 'Martin', 19, 'Female', 9);
 
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
 VALUES
-	(1, NOW() + INTERVAL '5 minutes', 77, 96, 21),
-	(2, NOW() + INTERVAL '5 minutes', 68, 91, 32),
-	(3, NOW() + INTERVAL '5 minutes', 101, 93, 18),
-	(4, NOW() + INTERVAL '5 minutes', 83, 98, 25),
-	(5, NOW() + INTERVAL '5 minutes', 82, 97, 21);
+	(1, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46, 38.5, 8),
+	(2, NOW() + INTERVAL '5 minutes', 68, 91, 32, 20, 114, 52, 37.2, 10),
+	(3, NOW() + INTERVAL '5 minutes', 101, 93, 18, 46, 123, 71, 37.9, 12),
+	(4, NOW() + INTERVAL '5 minutes', 83, 98, 25, 38, 127, 61, 36.5, 14),
+	(5, NOW() + INTERVAL '5 minutes', 82, 97, 21, 16, 132, 63, 36.2, 10);
 	
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
 VALUES
-	(1, NOW() + INTERVAL '10 minutes', 78, 93, 26),
-	(2, NOW() + INTERVAL '10 minutes', 74, 94, 25),
-	(3, NOW() + INTERVAL '10 minutes', 102, 93, 16),
-	(4, NOW() + INTERVAL '10 minutes', 77, 95, 31),
-	(5, NOW() + INTERVAL '10 minutes', 91, 96, 23);
+	(1, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45, 38.7, 9),
+	(2, NOW() + INTERVAL '10 minutes', 74, 94, 25, 22, 87, 58, 37.1, 11),
+	(3, NOW() + INTERVAL '10 minutes', 102, 93, 16, 46, 117, 67, 37.9, 11),
+	(4, NOW() + INTERVAL '10 minutes', 77, 95, 31, 38, 127, 62, 36.6, 13),
+	(5, NOW() + INTERVAL '10 minutes', 91, 96, 23, 17, 132, 64, 36.2, 12);
 	
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
 VALUES
-	(1, NOW() + INTERVAL '15 minutes', 84, 94, 26),
-	(2, NOW() + INTERVAL '15 minutes', 73, 93, 31),
-	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18),
-	(4, NOW() + INTERVAL '15 minutes', 73, 99, 20),
-	(5, NOW() + INTERVAL '15 minutes', 72, 96, 19);
+	(1, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
+	(2, NOW() + INTERVAL '15 minutes', 73, 93, 31, 21, 109, 45, 37.1, 12),
+	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
+	(4, NOW() + INTERVAL '15 minutes', 73, 99, 20, 38, 127, 62, 36.6, 12),
+	(5, NOW() + INTERVAL '15 minutes', 72, 96, 19, 17, 134, 62, 36.2, 11);
 
 
 -- migrate:down

@@ -148,15 +148,18 @@ class PatientService:
         except BaseException as err:
             raise err
 
-    async def fetchAllVitals(self) -> List[Vital]:
+    async def fetchVitals(self, pid: int) -> List[Vital]:
         '''
-        Fetch all vital records from the vital table.
+        Fetch vital records for a specified patient.
+
+        Parameters:
+            pid (int): Primary key of the patient.
 
         Returns:
-            list[Vital]: All vital records as a list of Vital objects.
+            list(Vital): List of Vital objects with given pid.
         '''
         try:
-            return await self.vitals.fetchAll()
+            return await self.vitals.fetchOne(pid)
         except BaseException as err:
             raise err
 

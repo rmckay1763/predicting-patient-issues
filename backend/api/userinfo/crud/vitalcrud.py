@@ -18,15 +18,17 @@ class VitalCRUD(BaseCRUD):
 
         # table dependent sql query strings.
         self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
-            "VALUES (%s, %s, %s, %s, %s) RETURNING {key};")
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING {key};")
         
         # sequel statment objects
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('vital'),
-            key = sql.Identifier('pid'))
+            key = sql.Identifier('pid')
+        )
 
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
-            table = sql.Identifier('vital'))
+            table = sql.Identifier('vital')
+        )
 
         self.insertSQL = sql.SQL(self.insertQuery).format(
             table = sql.Identifier('vital'),
@@ -36,9 +38,17 @@ class VitalCRUD(BaseCRUD):
                 sql.Identifier('timestamp'),
                 sql.Identifier('heart_rate'),
                 sql.Identifier('sao2'),
-                sql.Identifier('respiration')]))
+                sql.Identifier('respiration'),
+                sql.Identifier('cvp'),
+                sql.Identifier('systolic'),
+                sql.Identifier('diastolic'),
+                sql.Identifier('temperature'),
+                sql.Identifier('icp')
+            ])
+        )
 
-    async def fetchOne(self, key: int) -> Vital:
+    # fetches all vital records associated with the given patient id
+    async def fetchOne(self, key: int) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
             cursor.execute(self.fetchOneSQL, (key,))
@@ -76,7 +86,12 @@ class VitalCRUD(BaseCRUD):
                 datetime.now(), 
                 vital.heart_rate, 
                 vital.sao2, 
-                vital.respiration,))
+                vital.respiration,
+                vital.cvp,
+                vital.systolic,
+                vital.diastolic,
+                vital.temperature,
+                vital.icp,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

@@ -38,7 +38,7 @@ class PatientRouter:
         self.router.post("/addPatient/")(self.addPatient)
         self.router.put("/updatePatient")(self.updatePatient)
         self.router.delete("/deletePatient/{key}")(self.deletePatient)
-        self.router.get("/fetchAllVitals")(self.fetchAllVitals)
+        self.router.get("/fetchVitals/{pid}")(self.fetchVitals)
         self.router.post("/addVital")(self.addVital)
         self.router.put("/updateStatus")(self.updateStatus)
 
@@ -99,15 +99,18 @@ class PatientRouter:
         except BaseException as err:
             raise err
 
-    async def fetchAllVitals(self) -> List[Vital]:
+    async def fetchVitals(self, pid: int) -> List[Vital]:
         '''
-        Route to fetch all vitals from the vital table.
+        Route to fetch vitals records for a patient.
+
+        Parameters:
+            pid (int): Primary key of the patient.
 
         Returns:
-            list[Vital]: All vitals as a list of Vital objects.
+            list[Vital]: List of vital objects for given patient.
         '''
         try:
-            return await self.service.fetchAllVitals()
+            return await self.service.fetchVitals(pid)
         except BaseException as err:
             raise err
 

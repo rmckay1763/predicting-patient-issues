@@ -26,9 +26,19 @@ export default function EnterVitals() {
     const [heartRate, setHeartRate] = useState("");
     const [sao2, setSao2] = useState("");
     const [respiration, setRespiration] = useState("");
+    const [cvp, setCvp] = useState("");
+    const [systolic, setSystolic] = useState("");
+    const [diastolic, setDiastolic] = useState("");
+    const [temperature, setTemperature] = useState("");
+    const [icp, setIcp] = useState("");
     const [heartRateError, setHeartRateError] = useState(false);
     const [sao2Error, setSao2Error] = useState(false);
     const [respirationError, setRespirationError] = useState(false);
+    const [cvpError, setCvpError] = useState(false);
+    const [systolicError, setSystolicError] = useState(false);
+    const [diastolicError, setDiastolicError] = useState(false);
+    const [temperatureError, setTemperatureError] = useState(false);
+    const [icpError, setIcpError] = useState(false);
 
     useEffect(() => {
         document.title = "PPCD - Enter Vitals";
@@ -46,7 +56,12 @@ export default function EnterVitals() {
             pid: patient.pid,
             heart_rate: heartRate,
             sao2: sao2,
-            respiration: respiration
+            respiration: respiration,
+            cvp: cvp,
+            systolic: systolic,
+            diastolic: diastolic,
+            temperature: temperature,
+            icp: icp
         }
         try {
             let response  = await AddVital(state.token, vital);
@@ -110,7 +125,6 @@ export default function EnterVitals() {
                         Vital Information
                     </StyledTypography>
                     <StyledTextField
-                        id="outlined-basic"
                         type="number"
                         InputProps={{ inputProps: { min: 0 } }}
                         required
@@ -124,9 +138,9 @@ export default function EnterVitals() {
                             setHeartRate(e.target.value);
                         }} />
                     <StyledTextField
-                        id="outlined-basic"
                         type="number"
                         InputProps={{ inputProps: { min: 0 } }}
+                        required
                         label="SaO2"
                         value={sao2}
                         error={sao2Error}
@@ -136,9 +150,9 @@ export default function EnterVitals() {
                             setSao2(e.target.value);
                         }} />
                     <StyledTextField
-                        id="outlined-basic"
                         type="number"
                         InputProps={{ inputProps: { min: 0 } }}
+                        required
                         label="Respiration"
                         value={respiration}
                         error={respirationError}
@@ -146,6 +160,66 @@ export default function EnterVitals() {
                         onChange={(e) => {
                             setRespirationError(e.target.value < 0);
                             setRespiration(e.target.value);
+                        }} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="CVP"
+                        value={cvp}
+                        error={cvpError}
+                        helperText={cvpError ? "CVP must be positive." : ""}
+                        onChange={(e) => {
+                            setCvpError(e.target.value < 0);
+                            setCvp(e.target.value);
+                        }} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="Systolic"
+                        value={systolic}
+                        error={systolicError}
+                        helperText={systolicError ? "Systolic must be positive." : ""}
+                        onChange={(e) => {
+                            setSystolicError(e.target.value < 0);
+                            setSystolic(e.target.value);
+                        }} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="Diastolic"
+                        value={diastolic}
+                        error={diastolicError}
+                        helperText={diastolicError ? "Diastolic must be positive." : ""}
+                        onChange={(e) => {
+                            setDiastolicError(e.target.value < 0);
+                            setDiastolic(e.target.value);
+                        }} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="Temperature (Celcius)"
+                        value={temperature}
+                        error={temperatureError}
+                        helperText={temperatureError ? "Temperature must be positive." : ""}
+                        onChange={(e) => {
+                            setTemperatureError(e.target.value < 0);
+                            setTemperature(e.target.value);
+                        }} />
+                    <StyledTextField
+                        type="number"
+                        InputProps={{ inputProps: { min: 0 } }}
+                        required
+                        label="ICP"
+                        value={icp}
+                        error={icpError}
+                        helperText={icpError ? "ICP must be positive." : ""}
+                        onChange={(e) => {
+                            setIcpError(e.target.value < 0);
+                            setIcp(e.target.value);
                         }} />
                     <StyledButtonPrimary type="submit">Submit</StyledButtonPrimary>
                 </Stack>

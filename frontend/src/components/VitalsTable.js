@@ -47,15 +47,43 @@ export default function VitalsTable({ data }) {
         {
             name: 'Heart Rate',
             selector: row => row.heart_rate,
+            right: true
         },
         {
             name: 'SaO2',
             selector: row => row.sao2,
+            right: true
         },
         {
             name: 'Respiration',
             selector: row => row.respiration,
+            right: true
         },
+        {
+            name: 'CVP',
+            selector: row => row.cvp,
+            right: true
+        },
+        {
+            name: 'Systolic',
+            selector: row => row.systolic,
+            right: true
+        },
+        {
+            name: 'Diastolic',
+            selector: row => row.diastolic,
+            right: true
+        },
+        {
+            name: 'Temperature',
+            selector: row => row.temperature,
+            right: true
+        },
+        {
+            name: 'ICP',
+            selector: row => row.icp,
+            right: true
+        }
     ];
 
     return (

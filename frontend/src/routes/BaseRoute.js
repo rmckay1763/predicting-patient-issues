@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetAllPatients, GetUsers } from "../controllers/APIController";
+import { GetPatients, GetUsers } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -24,7 +24,7 @@ export default function BaseRoute(props) {
     // api calls
     const loadPatientData = useCallback(async () => {
         try {
-            const response = await GetAllPatients(state.token);
+            const response = await GetPatients(state.token);
             dispatch({ type: Actions.setPatients, payload: response.data });
         } catch (error) {
             console.error(error);

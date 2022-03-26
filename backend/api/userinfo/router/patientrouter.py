@@ -5,8 +5,7 @@ from api.userinfo.models import (
     PatientIn, 
     PatientOut, 
     Vital, 
-    VitalIn, 
-    StatusUpdate
+    VitalIn
 )
 from api.userinfo.services.patientservice import PatientService
 from api.dependencies import auth
@@ -37,8 +36,8 @@ class PatientRouter:
         self.router.get("/fetchAllPatients")(self.fetchAllPatients)
         self.router.post("/addPatient/")(self.addPatient)
         self.router.put("/updatePatient")(self.updatePatient)
-        self.router.delete("/deletePatient/{key}")(self.deletePatient)
-        self.router.get("/fetchVitals/{pid}")(self.fetchVitals)
+        self.router.delete("/deletePatient")(self.deletePatient)
+        self.router.get("/fetchVitals")(self.fetchVitals)
         self.router.post("/addVital")(self.addVital)
         self.router.put("/updateStatus")(self.updateStatus)
 
@@ -99,18 +98,19 @@ class PatientRouter:
         except BaseException as err:
             raise err
 
-    async def fetchVitals(self, pid: int) -> List[Vital]:
+    async def fetchVitals(self, key: int, limit: int = 20) -> List[Vital]:
         '''
         Route to fetch vitals records for a patient.
 
         Parameters:
             pid (int): Primary key of the patient.
+            limit (int): Max number of records to return.
 
         Returns:
             list[Vital]: List of vital objects for given patient.
         '''
         try:
-            return await self.service.fetchVitals(pid)
+            return await self.service.fetchVitals(key, limit)
         except BaseException as err:
             raise err
 
@@ -129,17 +129,18 @@ class PatientRouter:
         except BaseException as err:
             raise err
 
-    async def updateStatus(self, status: StatusUpdate) -> PatientOut:
+    async def updateStatus(self, pid: int, status: int) -> PatientOut:
         '''
         Route to update the status of a patient.
 
         Parameters:
-            status (StatusUpdate): Updated status model with pid and new status.
+            pid (int): prmiary key of patient.
+            status (int): primary key of the updated status.
 
         Returns:
             PatientOut: The result of the update.
         '''
         try:
-            return await self.service.updateStatus(status)
+            return await self.service.updateStatus(pid, status)
         except BaseException as err:
             raise err

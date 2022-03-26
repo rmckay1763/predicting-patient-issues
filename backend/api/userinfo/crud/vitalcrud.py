@@ -17,13 +17,21 @@ class VitalCRUD(BaseCRUD):
         super().__init__(conn)
 
         # table dependent sql query strings.
-        self.insertQuery = ("INSERT INTO public.{table} ({columns}) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING {key};")
+        self.insertQuery = (
+            "INSERT INTO public.{table} ({columns}) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+            "RETURNING {key};")
+
+        self.fetchOneQuery = (
+            "SELECT * FROM public.{table} "
+            "WHERE {key} = %s "
+            "ORDER BY {timestamp} DESC LIMIT %s;")
         
         # sequel statment objects
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('vital'),
-            key = sql.Identifier('pid')
+            key = sql.Identifier('pid'),
+            timestamp = sql.Identifier('timestamp')
         )
 
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
@@ -48,10 +56,10 @@ class VitalCRUD(BaseCRUD):
         )
 
     # fetches all vital records associated with the given patient id
-    async def fetchOne(self, key: int) -> List[Vital]:
+    async def fetchOne(self, key: int, limit: int) -> List[Vital]:
         cursor = self.connector.getCursor()
         try:
-            cursor.execute(self.fetchOneSQL, (key,))
+            cursor.execute(self.fetchOneSQL, (key, limit,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

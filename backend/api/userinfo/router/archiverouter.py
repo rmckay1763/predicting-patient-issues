@@ -28,10 +28,10 @@ class ArchiveRouter:
         Associates http routes with class functions.
         '''
         self.router.get("/fetchAllPatients/")(self.fetchAllPatients)
-        self.router.get("/fetchPatient/{key}")(self.fetchPatient)
-        self.router.delete("/deletePatient/{key}")(self.deletePatient)
+        self.router.get("/fetchPatient")(self.fetchPatient)
+        self.router.delete("/deletePatient")(self.deletePatient)
         self.router.get("/fetchAllVitals")(self.fetchAllVitals)
-        self.router.get("/fetchVitals/{key}")(self.fetchVitals)
+        self.router.get("/fetchVitals")(self.fetchVitals)
 
     async def fetchAllPatients(self) -> List[Patient]:
         """

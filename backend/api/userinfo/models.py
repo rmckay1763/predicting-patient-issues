@@ -1,5 +1,4 @@
 from datetime import datetime
-from numpy import double
 from pydantic import BaseModel
 from typing import Optional
 from typing import List
@@ -176,8 +175,4 @@ class MLModelOut(BaseModel):
     pid: int
     status: str
     vitals: MLVitals
-
-class StatusUpdate(BaseModel):
-    pid: int
-    status: int
 

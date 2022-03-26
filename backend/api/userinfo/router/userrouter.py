@@ -38,13 +38,13 @@ class UserRouter:
         '''
         self.router.get("/fetchAllRanks")(self.fetchAllRanks)
         self.router.get("/fetchAllUsers")(self.fetchAllUsers)
-        self.router.get("/fetchUser/{key}")(self.fetchUser)
+        self.router.get("/fetchUser")(self.fetchUser)
         self.router.post("/addUser/")(self.addUser)
         self.router.put("/updateUser")(self.updateUser)
-        self.router.delete("/deleteUser/{key}")(self.deleteUser)
+        self.router.delete("/deleteUser")(self.deleteUser)
         self.router.get("/fetchAllRoles")(self.fetchAllRoles)
         self.router.post("/addRole")(self.addRole)
-        self.router.delete("/deleteRole/{key}")(self.deleteRole)
+        self.router.delete("/deleteRole")(self.deleteRole)
         self.router.post("/verifyPassword")(self.verifyPassword)
         self.router.put("/updatePassword")(self.updatePassword)
 

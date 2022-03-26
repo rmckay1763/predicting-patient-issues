@@ -1,3 +1,4 @@
+import time
 from dotenv import load_dotenv
 import schedule
 from apihandler import APIHandler
@@ -17,12 +18,12 @@ def test():
         data = DataProcessor(patient, vitals)
         data.setOffsets()
         data.parseVitals()
-    log = open('/var/log/ml.log', 'a')
+    log = open('/var/log/scheduler.log', 'a')
     print(data.offsets, file=log)
     log.close()
 
 if __name__ == '__main__':
     schedule.every(10).seconds.do(test)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

@@ -16,7 +16,7 @@ class APIHandler:
         Constructor. Expects environment variables for endpoint.
         '''
         load_dotenv()
-        self.baseRoute = os.environ['BASE_ROUTE']
+        self.baseRoute = os.environ['PATIENT_SERVER']
         self.username = os.environ['USERNAME']
         self.password = os.environ['PASSWORD']
 

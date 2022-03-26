@@ -24,6 +24,6 @@ def test():
 
 if __name__ == '__main__':
     schedule.every(10).seconds.do(test)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)

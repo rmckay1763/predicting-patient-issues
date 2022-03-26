@@ -1,59 +1,113 @@
 import axios from "../config/api";
 
 export const CheckToken = async (token) => {
-  return axios.get("api/validate", { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/validate";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
 }
 
 export const CheckAdminToken = async (token) => {
-  return axios.get("api/validateAdmin", { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/validateAdmin";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
 }
 
 export const Login = async (username, password) => {
-  return axios.post("api/login", { username: username, password: password });
+    let path = "api/login";
+    let credentials = { username: username, password: password }
+    return axios.post(path, credentials);
 }
 
 export const VerifyPassword = async (token, password) => {
-  return axios.post("api/user/verifyPassword", password, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/user/verifyPassword";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.post(path, password, { headers: headers });
 }
 
 export const ChangePassword = async (token, update) => {
-  return axios.put("api/user/updatePassword", update, { headers: { Authorization: `Bearer ${token}` }});
+    let path = "api/user/updatePassword";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.put(path, update, { headers: headers });
 }
 
 export const GetUsers = async (token) => {
-  return axios.get("api/user/fetchAllUsers", { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/user/fetchAllUsers";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
 }
 
 export const AddUser = async (token, userInfo) => {
-  return axios.post("api/user/addUser", userInfo, { headers: { Authorization: `Bearer ${token}`}});
+    let path = "api/user/addUser";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.post(path, userInfo, { headers: headers });
 }
 
 export const DeleteUser = async (token, uid) => {
-  return axios.delete(`api/user/deleteUser/${uid}`, { headers: { Authorization: `Bearer ${token}`}});
+    let path = "api/user/deleteUser";
+    let headers = { Authorization: `Bearer ${token}` };
+    let params = { key: uid }
+    return axios.delete(path, { headers: headers, params: params });
 }
 
-export const GetAllPatients = async (token) => {
-  return axios.get("api/patient/fetchAllPatients", { headers: { Authorization: `Bearer ${token}` } });
+export const GetRanks = async (token) => {
+    let path = "api/user/fetchAllRanks";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
+}
+
+export const GetRoles = async (token) => {
+    let path = "api/user/fetchAllRoles";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
+}
+
+export const AddRole = async (token, role) => {
+    let path = "api/user/addRole";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.post(path, role, { headers: headers });
+}
+
+export const DeleteRole = async (token, id) => {
+    let path = "api/user/deleteRole";
+    let headers = { Authorization: `Bearer ${token}` };
+    let params = { key: id }
+    return axios.delete(path, {headers: headers, params: params });
+}
+
+export const GetPatients = async (token) => {
+    let path = "api/patient/fetchAllPatients";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.get(path, { headers: headers });
 }
 
 export const AddPatient = async (token, patient) => {
-  return axios.post("api/patient/addPatient", patient, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/patient/addPatient";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.post(path, patient, { headers: headers });
 }
 
 export const UpdatePatient = async (token, patient) => {
-  return axios.put("api/patient/updatePatient", patient, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/patient/updatePatient";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.put(path, patient, { headers: headers });
 }
 
 export const DeletePatient = async (token, pid) => {
-  let path = "api/patient/deletePatient/" + pid;
-  return axios.delete(path, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/patient/deletePatient/";
+    let headers = { Authorization: `Bearer ${token}` }
+    let params = { key: pid }
+    return axios.delete(path, { headers: headers, params: params });
 }
 
 export const GetVitals = async (token, pid) => {
-  let path = "api/patient/fetchVitals/" + pid;
-  return axios.get(path, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/patient/fetchVitals/";
+    let headers = { Authorization: `Bearer ${token}` }
+    let params = { key: pid }
+    return axios.get(path, { headers: headers, params: params });
 }
 
 export const AddVital = async (token, vital) => {
-  return axios.post("api/patient/addVital", vital, { headers: { Authorization: `Bearer ${token}` } });
+    let path = "api/patient/addVital";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.post(path, vital, { headers: headers });
 }

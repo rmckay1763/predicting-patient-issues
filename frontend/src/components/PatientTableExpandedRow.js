@@ -15,9 +15,9 @@ export default function PatientTableExpandedRow(props) {
     const loadData = useCallback(async () => {
         let response = await GetVitals(state.token, props.data.pid);
         setData(response.data);
-    }, [state.token, props]);
+    }, [state.token, props.data.pid]);
 
-    useEffect(loadData);
+    useEffect(() => loadData(), [loadData]);
 
     const columns = [
         {

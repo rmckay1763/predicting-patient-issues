@@ -12,6 +12,14 @@ services:
       - "8000:8000"
     volumes:
       - "./backend:/app"
+
+  # machine learning container
+  ml-scheduler:
+    build: ./ml-scheduler
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-scheduler-dev
+    container_name: ml-scheduler-dev
+    volumes:
+      - "./ml-scheduler/code:/code"
   
   # frontend node js container
   frontend:

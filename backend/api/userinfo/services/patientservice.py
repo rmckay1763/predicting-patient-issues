@@ -2,15 +2,13 @@ from typing import List
 from api.userinfo.models import (
     Patient, 
     PatientIn, 
-    PatientOut, 
+    PatientOut,  
     Vital, 
     VitalIn, 
-    Status, 
-    StatusUpdate
+    Status
 )
 from api.userinfo.crud.patientcrud import PatientCRUD
 from api.userinfo.crud.vitalcrud import VitalCRUD
-from api.dependencies import auth
 
 class PatientService:
     '''
@@ -116,19 +114,20 @@ class PatientService:
         except BaseException as err:
             raise err
 
-    async def updateStatus(self, status: StatusUpdate) -> PatientOut:
+    async def updateStatus(self, pid: int, status: int) -> PatientOut:
         '''
         Updates the status column of a patient.
 
         Parameters:
-            status (StatusUpdate): Model with pid of patient and new status id.
+            pid (int): prmiary key of patient.
+            status (int): primary key of the updated status.
 
         Returns:
             PatientOut: The result of the update as a PatientOut object.
         '''
         try:
-            patient = await self.patients.fetchOne(status.pid)
-            patient.status = status.status
+            patient = await self.patients.fetchOne(pid)
+            patient.status = status
             return await self.updatePatient(patient)
         except BaseException as err:
             raise err
@@ -148,18 +147,19 @@ class PatientService:
         except BaseException as err:
             raise err
 
-    async def fetchVitals(self, pid: int) -> List[Vital]:
+    async def fetchVitals(self, pid: int, limit: int) -> List[Vital]:
         '''
         Fetch vital records for a specified patient.
 
         Parameters:
             pid (int): Primary key of the patient.
+            limit (int): Max number of records to return.
 
         Returns:
             list(Vital): List of Vital objects with given pid.
         '''
         try:
-            return await self.vitals.fetchOne(pid)
+            return await self.vitals.fetchOne(pid, limit)
         except BaseException as err:
             raise err
 

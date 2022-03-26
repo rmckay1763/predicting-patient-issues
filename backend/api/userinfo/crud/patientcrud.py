@@ -15,6 +15,10 @@ class PatientCRUD(BaseCRUD):
         super().__init__(conn)
 
         # table dependent sql query strings.
+        self.fetchAllQuery = (
+            "SELECT * FROM public.{table} ORDER BY {status};"
+        )
+
         self.insertQuery = (
             "INSERT INTO public.{table} ({columns}) "
             "VALUES (%s, %s, %s, %s, %s) RETURNING {key};")
@@ -31,7 +35,8 @@ class PatientCRUD(BaseCRUD):
             column = sql.Identifier('lastname'))
         
         self.fetchAllSQL = sql.SQL(self.fetchAllQuery).format(
-            table = sql.Identifier('patient'))
+            table = sql.Identifier('patient'),
+            status = sql.Identifier('status'))
 
         self.fetchOneSQL = sql.SQL(self.fetchOneQuery).format(
             table = sql.Identifier('patient'),

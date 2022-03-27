@@ -235,5 +235,23 @@ VALUES
 	(4, NOW() + INTERVAL '15 minutes', 73, 99, 20, 38, 127, 62, 36.6, 12),
 	(5, NOW() + INTERVAL '15 minutes', 72, 96, 19, 17, 134, 62, 36.2, 11);
 
+INSERT INTO
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+VALUES
+	(1, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
+	(2, NOW() + INTERVAL '20 minutes', 73, 93, 31, 21, 109, 45, 37.1, 12),
+	(3, NOW() + INTERVAL '20 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
+	(4, NOW() + INTERVAL '20 minutes', 73, 99, 20, 38, 127, 62, 36.6, 12),
+	(5, NOW() + INTERVAL '20 minutes', 72, 96, 19, 17, 134, 62, 36.2, 11);
+
+INSERT INTO
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+VALUES
+	(1, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
+	(2, NOW() + INTERVAL '25 minutes', 73, 93, 31, 21, 109, 45, 37.1, 12),
+	(3, NOW() + INTERVAL '25 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
+	(4, NOW() + INTERVAL '25 minutes', 73, 99, 20, 38, 127, 62, 36.6, 12),
+	(5, NOW() + INTERVAL '25 minutes', 72, 96, 19, 17, 134, 62, 36.2, 11);
+
 
 -- migrate:down

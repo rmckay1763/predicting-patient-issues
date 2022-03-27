@@ -1,6 +1,7 @@
 import os
+import json
 from typing import List
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, ConnectionError
 import requests
 from dotenv import load_dotenv
 from pydantic.tools import parse_obj_as
@@ -16,7 +17,8 @@ class APIHandler:
         Constructor. Expects environment variables for endpoint.
         '''
         load_dotenv()
-        self.baseRoute = os.environ['PATIENT_SERVER']
+        self.patientServer = os.environ['PATIENT_SERVER']
+        self.mlServer = os.environ['ML_SERVER']
         self.username = os.environ['USERNAME']
         self.password = os.environ['PASSWORD']
 
@@ -27,11 +29,11 @@ class APIHandler:
         token = os.environ['TOKEN']
         return {'Authorization': 'Bearer ' + token}
     
-    def login(self) -> None:
+    async def login(self) -> None:
         '''
         Logs in to endpoint and sets environment variable for token.
         '''
-        route = self.baseRoute + '/api/login'
+        route = self.patientServer + '/api/login'
         credentials = {
             'username': self.username,
             'password': self.password
@@ -39,48 +41,51 @@ class APIHandler:
         try:
             response = requests.post(route, json=credentials)
             response.raise_for_status()
-        except HTTPError as err:
-            raise err
-        except Exception as err:
-            raise err
+        except HTTPError:
+            return False
+        except ConnectionError:
+            return False
         else:
             os.environ['TOKEN'] = response.json()['token']
+            return True
 
-    def checkToken(self) -> None:
+    async def checkToken(self) -> None:
         '''
         Checks if token stored in environment variable is valid. 
         If not, calls self.login to update token.
         '''
-        route = self.baseRoute + '/api/validate'
+        route = self.patientServer + '/api/validate'
         try:
             response = requests.get(route, headers=self.headers())
             response.raise_for_status()
-        except HTTPError as err:
-            self.login()
-        except Exception as err:
-            raise err
+        except HTTPError:
+            return await self.login()
+        except ConnectionError:
+            self.checkToken()
+        else:
+            return True
 
-    def fetchPatients(self) -> List[Patient]:
+    async def fetchPatients(self) -> List[Patient]:
         '''
         Fetch patients from the server database.
 
         Returns:
             list[Patient]: List of Patient models.
         '''
-        route = self.baseRoute + '/api/patient/fetchAllPatients'
+        route = self.patientServer + '/api/patient/fetchAllPatients'
         try:
             response = requests.get(route, headers=self.headers())
             response.raise_for_status()
         except HTTPError as err:
-            raise err
-        except Exception as err:
-            raise err
+            return err.response.text
+        except ConnectionError as err:
+            return 'Connection Refused'
         else:
             patients = response.json()
             models = parse_obj_as(List[Patient], patients)
             return models
 
-    def fetchVitals(self, pid: int, limit: int = 3) -> List[Vital]:
+    async def fetchVitals(self, pid: int, limit: int = 5) -> List[Vital]:
         '''
         Fetch vitals for a given patent.
 
@@ -91,21 +96,21 @@ class APIHandler:
         Returns:
             list[Vital]: List of Vital models.
         '''
-        route = self.baseRoute + '/api/patient/fetchVitals/'
+        route = self.patientServer + '/api/patient/fetchVitals/'
         payload = {'key': pid, 'limit': limit}
         try:
             response = requests.get(route, headers=self.headers(), params=payload)
             response.raise_for_status()
         except HTTPError as err:
-            raise err
-        except Exception as err:
-            raise err
+            return err.response.text
+        except ConnectionError as err:
+            return 'Connection Refused'
         else:
             vitals = response.json()
             models = parse_obj_as(List[Vital], vitals)
             return models
 
-    def updateStatus(self, pid: int, status: int) -> None:
+    async def updateStatus(self, pid: int, status: int) -> None:
         '''
         Updates the status of a given patient.
 
@@ -113,12 +118,43 @@ class APIHandler:
             pid (int): Primary key of the patient to update.
             status(int): Primary key of the updated status.
         '''
-        route = self.baseRoute + '/api/patient/updateStatus'
+        route = self.patientServer + '/api/patient/updateStatus'
         payload = {'pid': pid, 'status': status}
         try:
             response = requests.put(route, headers=self.headers(), params=payload)
             response.raise_for_status()
         except HTTPError as err:
-            raise err
-        except Exception as err:
-            raise err
+            return err.response.text
+        except ConnectionError as err:
+            return 'Connection Refused'
+
+    async def getPrediction(self, patient: Patient, vitals: List[Vital]) -> int:
+        '''
+        Gets status prediction from ml api for given patient and vitals.
+
+        Parameters:
+            patient (Patient): Patient model.
+            vitals: (list[Vital]): Vitals records associated with patient.
+
+        Returns:
+            int: Primary key for the predicted status.
+        '''
+        route = self.mlServer + '/predict'
+        patientExport = json.loads(patient.json())
+        vitalsExport = []
+        for vital in vitals:
+            temp = json.loads(vital.json())
+            vitalsExport.append(temp)
+        payload = {
+            'patient': patientExport,
+            'vitals': vitalsExport
+        }
+        try:
+            response = requests.post(route, json=payload)
+            response.raise_for_status()
+        except HTTPError as err:
+            return err.response.text
+        except ConnectionError as err:
+            return 'Connection Refused'
+        else:
+            return response.json()

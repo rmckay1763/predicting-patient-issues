@@ -1,29 +1,41 @@
 import time
+import asyncio
 from dotenv import load_dotenv
+from threading import Thread
 import schedule
 from apihandler import APIHandler
-from dataprocesssor import DataProcessor
 
 load_dotenv()
 api = APIHandler()
 
-def test():
+async def task() -> None:
     '''
     function for testing
     '''
-    api.checkToken()
-    patients = api.fetchPatients()
+    if not await api.checkToken(): return None
+    patients = await api.fetchPatients()
     for patient in patients:
-        vitals = api.fetchVitals(patient.pid, 3)
-        data = DataProcessor(patient, vitals)
-        data.setOffsets()
-        data.parseVitals()
+        vitals = await api.fetchVitals(patient.pid, 5)
+        status = await api.getPrediction(patient, vitals)
+        await api.updateStatus(patient.pid, status)
     log = open('/var/log/scheduler.log', 'a')
-    print(data.offsets, file=log)
+    print(status, file=log)
+    print(patient, file=log)
+    print(vitals, file=log)
     log.close()
 
+def awaitTask() -> None:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(task())
+    loop.close()
+
+def runTask() -> None:
+    thread = Thread(target=awaitTask)
+    thread.start()
+
 if __name__ == '__main__':
-    schedule.every(10).seconds.do(test)
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
+    schedule.every(10).seconds.do(runTask)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

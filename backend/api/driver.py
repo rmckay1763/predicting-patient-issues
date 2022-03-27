@@ -16,9 +16,7 @@ from api.userinfo.services.patientservice import PatientService
 from api.userinfo.services.archiveservice import ArchiveService
 from api.userinfo.router.userrouter import UserRouter
 from api.userinfo.router.patientrouter import PatientRouter
-from api.userinfo.router.mlrouter import MLRouter
 from api.userinfo.router.archiverouter import ArchiveRouter
-from api.utils.mlhandler import MLHandler
 import uvicorn
 import subprocess
 import shlex
@@ -52,19 +50,16 @@ class APIDriver:
         userService = UserService(users, logins, roles, ranks)
         patientService = PatientService(patients, vitals)
         archiveService = ArchiveService(archive)
-        mlHandler = MLHandler()
 
         # router classes
         userRouter = UserRouter(userService)
         patientRouter = PatientRouter(patientService)
         archiveRouter = ArchiveRouter(archiveService)
-        mlRouter = MLRouter(patients, mlHandler)
 
         # main api module
         api = MainAPI(userService)
         api.addRouter(userRouter.router)
         api.addRouter(patientRouter.router)
-        api.addRouter(mlRouter.router)
         api.addRouter(archiveRouter.router)
         return api.app
 

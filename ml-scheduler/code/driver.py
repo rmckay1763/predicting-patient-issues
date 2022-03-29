@@ -36,6 +36,9 @@ def runTask() -> None:
 
 if __name__ == '__main__':
     schedule.every(10).seconds.do(runTask)
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    '''
+    uncomment to make recurring calls to the model api
+    '''
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)

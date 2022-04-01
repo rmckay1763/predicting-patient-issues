@@ -13,7 +13,17 @@ services:
     volumes:
       - "./backend:/app"
 
-  # machine learning container
+  # ml server container
+  ml-server:
+    build: ./ml-server
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-server-dev
+    container_name: ml-server-dev
+    ports:
+      - "8001:8000"
+    volumes:
+      - "./ml-server:/app"
+
+  # ml scheduler container
   ml-scheduler:
     build: ./ml-scheduler
     image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-scheduler-dev

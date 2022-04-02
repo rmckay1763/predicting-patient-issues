@@ -39,6 +39,6 @@ if __name__ == '__main__':
     '''
     uncomment to make recurring calls to the model api
     '''
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(1)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

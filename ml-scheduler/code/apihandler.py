@@ -61,7 +61,7 @@ class APIHandler:
         except HTTPError:
             return await self.login()
         except ConnectionError:
-            self.checkToken()
+            await self.checkToken()
         else:
             return True
 
@@ -139,7 +139,7 @@ class APIHandler:
         Returns:
             int: Primary key for the predicted status.
         '''
-        route = self.mlServer + '/predict'
+        route = self.mlServer + '/api/ml/predict'
         patientExport = json.loads(patient.json())
         vitalsExport = []
         for vital in vitals:

@@ -1,6 +1,5 @@
 import random
 from fastapi import FastAPI, HTTPException
-import uvicorn
 from modelservice import ModelService
 from apimodels import MLInput
 
@@ -8,7 +7,11 @@ app = FastAPI()
 service = ModelService()
 status = [1, 9, 10]
 
-@app.post('/predict')
+@app.get('/api/ml/test')
+def test() -> None:
+    return 'ml-server'
+
+@app.post('/api/ml/predict')
 async def predict(input: MLInput) -> int:
     '''
     Predicts status from patient vitals.

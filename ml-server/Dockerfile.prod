@@ -15,10 +15,12 @@ RUN \
     pip3 install pipreqs && \
     pipreqs --force . && \
     pip3 install --no-cache-dir --upgrade -r requirements.txt && \
-    pip3 install uvicorn
+    pip3 install "uvicorn[standard]" gunicorn
 
 # expose port for api
-EXPOSE 8000
+EXPOSE 80
 
 # start api service
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD [\
+    "gunicorn", "main:app", "--workers", "2", "--worker-class", \
+    "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:80"]

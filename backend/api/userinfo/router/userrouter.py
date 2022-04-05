@@ -197,7 +197,7 @@ class UserRouter:
         except BaseException as err:
             raise err
 
-    async def updatePassword(self, updated: LoginUpdated, uid=Depends(auth.auth_wrapper)) -> bool:
+    async def updatePassword(self, updated: Login, uid=Depends(auth.auth_wrapper)) -> bool:
         '''
         Route to update a user's password.
 

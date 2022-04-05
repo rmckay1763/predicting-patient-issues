@@ -1,3 +1,4 @@
+from turtle import update
 from typing import List
 from fastapi.exceptions import HTTPException
 from api.userinfo.models import (
@@ -156,6 +157,7 @@ class UserService:
             bool: True if succesful, raises error otherwise.
         '''
         try:
+            await self.logins.delete(uid)
             return await self.users.delete(uid)
         except BaseException as err:
             raise err
@@ -245,22 +247,19 @@ class UserService:
         except BaseException as err:
             raise err   
 
-    async def updatePassword(self, updated: LoginUpdated) -> bool:
+    async def updatePassword(self, updated: Login) -> bool:
         '''
         Update a user's password in the login table. Requires verification of old password.
 
         Parameters:
-            updated (LoginUpdated): The updated password information.
+            updated (Login): The updated password information.
 
         Returns: 
             bool: True if the password updates, false if the old password fails.
         '''
-        try:            
-            old = Login(uid = updated.uid, password = updated.old_password)
-            if not await self.verifyPassword(old):
-                return False
-            hashed = auth.get_hashed_password(updated.new_password)
-            new = Login(uid = updated.uid, password = hashed)
+        try:
+            hashed = auth.get_hashed_password(updated.password)
+            new = Login(uid = updated.uid, password = hashed)            
             await self.logins.update(new)
             return True
         except BaseException as err:

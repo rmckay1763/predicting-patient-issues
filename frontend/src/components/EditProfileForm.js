@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import BaseToolbar from './BaseToolbar';
 import { Colors } from "../resources/Colors";
-import { ChangePassword } from '../controllers/APIController';
+import { ChangePassword, VerifyPassword } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
 import { AlertSuccess, AlertError } from "./AlertMessage";
@@ -31,21 +31,35 @@ export default function EditProfileForm() {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+      // old password to verify
+      let old = {
+          uid: user.uid,
+          password: oldPassword
+      }
+      // new password to update
+      let updated = {
+          uid: user.uid,
+          password: newPassword
+      }
+      // check if confirmed password is same as new password
       if (newPassword !== confirmedPassword) {
           AlertError(dispatch, "Passwords do not match!");
           return;
       }
-      let update = {
-          uid: user.uid, 
-          old_password: oldPassword, 
-          new_password: newPassword
-      };
       try {
-          let response = await ChangePassword(token, update);
+          // verify old password first
+          let response = await VerifyPassword(token, old);
+          if (response.data == false) {
+              AlertError(dispatch, "Failed to verify old password");
+              return;
+          }
+          // update with new password
+          response = await ChangePassword(token, updated);
+          console.log(response.data)
           if (response.data) {
               AlertSuccess(dispatch, "Password has been changed!");
           } else {
-              AlertError(dispatch, "The old password is incorrect!");
+            throw Error("Failed to update password")
           }
       } catch (error) {
           AlertError(dispatch, "Failed to update password");
@@ -81,7 +95,6 @@ export default function EditProfileForm() {
       <div>
       <TextField
           disabled
-          id="outlined-disabled"
           label="First Name"
           value={user.firstname}
         />
@@ -95,13 +108,11 @@ export default function EditProfileForm() {
     <div>
     <TextField
           disabled
-          id="outlined-disabled"
           label="Rank"
           value={user.rank.abbreviation}
         />
         <TextField
           disabled
-          id="outlined-disabled"
           label="Role"
           value={user.role.name}
         />
@@ -120,21 +131,18 @@ export default function EditProfileForm() {
         </Typography>
       </p>
         <TextField
-            id="standard-password-input"
             label="Old Password"
             type="password"
             variant="standard"
             onChange={(e) => setOldPassword(e.target.value)}
           />
         <TextField
-          id="standard-password-input"
           label="New Password"
           type="password"
           variant="standard"
           onChange={(e) => setNewPassword(e.target.value)}
         />
         <TextField
-          id="standard-password-input"
           label="Confirm Password"
           type="password"
           variant="standard"

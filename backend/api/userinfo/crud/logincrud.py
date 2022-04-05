@@ -1,3 +1,4 @@
+from typing import List
 from pydantic.tools import parse_obj_as
 from fastapi import HTTPException
 from psycopg2 import sql, DatabaseError
@@ -43,11 +44,11 @@ class LoginCRUD(BaseCRUD):
 
 
     # not necessary to implement (already know the primary key)
-    def fetchKey(self, value: str):
+    async def fetchKey(self, value: str):
         None
 
     # not necessary to implement (no need for a list of all passwords)
-    def fetchAll(self):
+    async def fetchAll(self):
         None
 
     async def fetchOne(self, key: int) -> Login:

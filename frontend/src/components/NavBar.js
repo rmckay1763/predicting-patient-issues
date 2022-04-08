@@ -65,7 +65,7 @@ function Navbar() {
         <Divider />
         <MenuItem onClick={editProfile}>
             <ListItemIcon>{Icons.settings}</ListItemIcon>
-            <ListItemText>Edit Profile</ListItemText>
+            <ListItemText>View Profile</ListItemText>
         </MenuItem>
         <MenuItem onClick={logout}>
             <ListItemIcon>{Icons.logout}</ListItemIcon>

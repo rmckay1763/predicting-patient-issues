@@ -1,13 +1,11 @@
 import { useEffect } from 'react';
 import { 
   Divider, 
-  Typography, 
   Box, 
-  TextField,
-  Button
+  Stack
 } from '@mui/material';
+import { StyledTypography, StyledTextField, StyledButtonPrimary } from '../resources/StyledComponents';
 import BaseToolbar from './BaseToolbar';
-import { Colors } from "../resources/Colors";
 import { ChangePassword, VerifyPassword } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
@@ -22,7 +20,7 @@ export default function EditProfileForm() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
-  document.title = "PPCD - Edit Profile";
+  document.title = "PPCD - View Profile";
 
   useEffect(() => {
       setUser(state.user);
@@ -49,7 +47,7 @@ export default function EditProfileForm() {
       try {
           // verify old password first
           let response = await VerifyPassword(token, old);
-          if (response.data == false) {
+          if (response.data === false) {
               AlertError(dispatch, "Failed to verify old password");
               return;
           }
@@ -70,7 +68,7 @@ export default function EditProfileForm() {
 
   return (
     <div>
-        <BaseToolbar title="Edit Profile" >
+        <BaseToolbar title="View Profile" >
         </BaseToolbar>
     <Box
       component="form"
@@ -83,76 +81,100 @@ export default function EditProfileForm() {
       paddingTop= {5}
     >
         <p>
-        <Typography
+        <StyledTypography
           sx={{ mt: 0.5, ml: 2 }}
           color="text.primary"
           display="block"
-          variant="caption"
+          variant="subtitle1"
         >
           User Info
-        </Typography>
+        </StyledTypography>
       </p>
-      <div>
-      <TextField
-          disabled
-          label="First Name"
-          value={user.firstname}
-        />
-        <TextField
-          disabled
-          id="outlined-disabled"
-          label="Last Name"
-          value={user.lastname}
-        />
-    </div>
-    <div>
-    <TextField
-          disabled
-          label="Rank"
-          value={user.rank.abbreviation}
-        />
-        <TextField
-          disabled
-          label="Role"
-          value={user.role.name}
-        />
-    </div>
+      
+      <Stack 
+          divider={<Divider orientation="vertical" variant="middle" flexItem />}
+          direction="row" 
+          spacing={5}
+          mt={3}
+          mb={3}
+      >
+          <HeaderItem label="Username" value={user.username} />
+          <HeaderItem label="First Name" value={user.firstname} />
+          <HeaderItem label="Last Name" value={user.lastname} />
+          <HeaderItem label="Rank" value={user.rank.name} />
+          <HeaderItem label="Role" value={user.role.name} />
+      </Stack>
 
     <div>
     <Divider component="p" />
       <p>
-        <Typography
+        <StyledTypography
           sx={{ mt: 0.5, ml: 2 }}
           color="text.secondary"
           display="block"
-          variant="caption"
+          variant="subtitle1"
         >
-          Change Password
-        </Typography>
+          Reset Password
+        </StyledTypography>
       </p>
-        <TextField
+        <StyledTextField
             label="Old Password"
             type="password"
             variant="standard"
             onChange={(e) => setOldPassword(e.target.value)}
           />
-        <TextField
+        <StyledTextField
           label="New Password"
           type="password"
           variant="standard"
           onChange={(e) => setNewPassword(e.target.value)}
         />
-        <TextField
+        <StyledTextField
           label="Confirm Password"
           type="password"
           variant="standard"
           onChange={(e) => setConfirmedPassword(e.target.value)}
         />
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, bgcolor:  Colors.primary }}>
+        <StyledButtonPrimary type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
           Change Password
-        </Button>
+        </StyledButtonPrimary>
     </div>
     </Box>
     </div>
   );
+}
+
+/**
+ * @props {string} label -- Label for the item
+ * @props {string} value -- Value for the item
+ * @returns Header item for the patient profile page
+ */
+ const HeaderItem = (props) => {
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+      setValue(props.value)
+  }, [props.value])
+
+  return (
+      <Box display="flex">
+          <StyledTypography
+              variant="subtitle1"
+              sx={{
+                  fontWeight: 600,
+                  ml: 2
+              }}
+          >
+              {props.label}: 
+          </StyledTypography>
+          <StyledTypography
+              variant="subtitle1"
+              sx={{
+                  ml: 2
+              }}
+          >
+              {value}
+          </StyledTypography>
+      </Box>
+  )
 }

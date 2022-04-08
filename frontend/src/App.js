@@ -9,7 +9,8 @@ import {
   EditPatientRoute,
   UserTableRoute,
   AddUserRoute,
-  NotificationRoute
+  NotificationRoute,
+  EditUserRoute
 } from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
@@ -62,6 +63,10 @@ export default function App() {
             exact
             path="/notifications"
             element={<NotificationRoute/>} />
+          <Route
+            exact
+            path="/editUser"
+            element={<EditUserRoute/>} />
         </Routes>
       </Router>
     </GlobalProvider>

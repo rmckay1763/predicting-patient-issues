@@ -12,6 +12,7 @@ import { CheckAdminToken, CheckToken } from "../controllers/APIController";
 import UserTable from "../components/UserTable";
 import AddUserForm from "../components/AddUserForm";
 import NotificationPage from "../components/NotificationPage";
+import EditUserForm from "../components/EditUserForm";
 
 /**
  * Wrapper for authentication routes
@@ -148,6 +149,14 @@ export const NotificationRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <NotificationPage />
+    </BaseRoute>
+  </AuthRoute>
+)
+
+export const EditUserRoute = () =>(
+  <AuthRoute>
+    <BaseRoute>
+      <EditUserForm />
     </BaseRoute>
   </AuthRoute>
 )

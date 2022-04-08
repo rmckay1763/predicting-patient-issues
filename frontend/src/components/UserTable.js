@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../contexts/GlobalContext';
 import { Icons } from '../resources/Icons';
 import { Colors } from '../resources/Colors';
-import { IconButton } from '@mui/material';
+import { StyledIconButton } from '../resources/StyledComponents';
 import UserTableToolbar from './UserTableToolbar';
 import { DeleteUser } from '../controllers/APIController';
 import ConfirmDialog from "./ConfirmDialog";
@@ -32,12 +32,6 @@ export default function UserTable() {
         setData(temp);
     }, [state.users, query]);
 
-
-    // click handler for table rows
-    const onRowClicked = (row) => {
-        return
-    }
-
     const onDelete = (row) => {
         let selected = state.users.find((user) => user.uid === row.uid);
         setSelectedUser(selected);
@@ -58,33 +52,26 @@ export default function UserTable() {
         }
     }
 
+    // click handler for table rows
+    const onRowClicked = (row) => {
+        navigate('/editUser', {state: {uid: row.uid}})
+    }
+
     // action button for user profile
-    const profileButton = (row) => {
+    const editUserButton = (row) => {
         return (
-            <IconButton
-                onClick={() => onRowClicked(row)}
-                sx={{
-                    color: Colors.primary,
-                    '&:hover': { color: Colors.secondary, background: Colors.primary }
-                }}
-            >
-                {Icons.patientProfile}
-            </IconButton>
+            <StyledIconButton onClick={() => onRowClicked(row)} >
+                {Icons.edit}
+            </StyledIconButton>
         )
     }
 
     // action button for deleting user
     const deleteButton = (row) => {
         return (
-            <IconButton
-                onClick={() => onDelete(row)}
-                sx={{
-                    color: Colors.primary,
-                    '&:hover': { color: Colors.secondary, background: Colors.primary }
-                }}
-            >
+            <StyledIconButton onClick={() => onDelete(row)} >
                 {Icons.delete}
-            </IconButton>
+            </StyledIconButton>
         )
     }
 
@@ -152,7 +139,7 @@ export default function UserTable() {
         },
         {
             button: true,
-            cell: (row) => profileButton(row)
+            cell: (row) => editUserButton(row)
         },
         {
             name: 'Username',

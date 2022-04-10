@@ -61,7 +61,7 @@ class APIHandler:
         except HTTPError:
             return await self.login()
         except ConnectionError:
-            self.checkToken()
+            await self.checkToken()
         else:
             return True
 

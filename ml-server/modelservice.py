@@ -50,7 +50,8 @@ class ModelService:
         return prediction
 
     async def predictStatus(self, hr, sao2, resp) -> int:
-        status: ndarray = self.models.status_classifier.predict([[hr, resp, sao2]])
+        model_input = [hr, resp, sao2]
+        status: ndarray = self.models.status_classifier.predict([model_input])
         value = sum(status.tolist())
         #print(f'\n**************\n[{hr}, {resp}, {sao2}] --> status: {value}\n\n')
         value = round(value)

@@ -1,6 +1,7 @@
 from apimodels import MLInput, MLVital
 from modelhandler import ModelHandler
 from dataprocessor import DataProcessor
+from numpy import ndarray, sum
 
 class ModelService:
     '''
@@ -47,3 +48,13 @@ class ModelService:
             icp = 10
         )
         return prediction
+
+    async def predictStatus(self, hr, sao2, resp) -> int:
+        status: ndarray = self.models.status_classifier.predict([[hr, resp, sao2]])
+        value = sum(status.tolist())
+        #print(f'\n**************\n[{hr}, {resp}, {sao2}] --> status: {value}\n\n')
+        value = round(value)
+
+        if value == 0:
+            return 9
+        return 1

@@ -22,8 +22,9 @@ async def predict(input: MLInput) -> int:
     try:
         futureVitals = await service.predictVitals(input)
         log = open('/var/log/predictions.log', 'a')
+        futureStatus = await service.predictStatus(futureVitals.heart_rate, futureVitals.sao2, futureVitals.respiration)
         print(futureVitals, file=log)
         log.close()
-        return random.choice(status)
+        return futureStatus
     except HTTPException as err:
         raise err

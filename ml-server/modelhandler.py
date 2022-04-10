@@ -3,6 +3,8 @@ from tensorflow.keras import Sequential
 from typing import List
 from fastapi import HTTPException
 from numpy import ndarray, sum
+import joblib
+from sklearn.ensemble import RandomForestClassifier
 
 class ModelHandler:
     '''
@@ -21,6 +23,7 @@ class ModelHandler:
             self.systolic: Sequential = load_model('systolic_model')
             self.diastolic: Sequential = load_model('diastolic_model')
             self.temperature: Sequential = load_model('temp_model')
+            self.status_classifier: RandomForestClassifier = joblib.load('model.pkl')
         except IOError as err:
             raise err
 
@@ -34,6 +37,10 @@ class ModelHandler:
         Returns:
             int: Next predicted heart rate.
         '''
+        data.reverse()
+        #print('heartrate')
+        #for hr in data:
+        #    print(f'{hr}, ')
         try:
             prediction: ndarray = self.heartRate.predict([data])
             value = sum(prediction.tolist())
@@ -51,6 +58,10 @@ class ModelHandler:
         Returns:
             int: Next predicted sao2 level.
         '''
+        data.reverse()
+        #print('sao2')
+        #for sao2 in data:
+        #    print(f'{sao2}, ')
         try:
             prediction: ndarray = self.sao2.predict([data])
             value = sum(prediction.tolist())
@@ -68,6 +79,10 @@ class ModelHandler:
         Returns:
             int: Next predicted respiration level.
         '''
+        data.reverse()
+        #print('respiration')
+        #for respiration in data:
+        #    print(f'{respiration}, ')
         try:
             prediction: ndarray = self.respiration.predict([data])
             value = sum(prediction.tolist())

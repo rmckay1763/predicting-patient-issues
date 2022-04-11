@@ -5,7 +5,7 @@ from requests.exceptions import HTTPError, ConnectionError
 import requests
 from dotenv import load_dotenv
 from pydantic.tools import parse_obj_as
-from apimodels import Vital, Patient
+from apimodels import Vital, Patient, Status
 
 class APIHandler:
     '''
@@ -41,13 +41,12 @@ class APIHandler:
         try:
             response = requests.post(route, json=credentials)
             response.raise_for_status()
-        except HTTPError:
-            return False
-        except ConnectionError:
-            return False
+        except HTTPError as err:
+            raise err
+        except ConnectionError as err:
+            raise err
         else:
             os.environ['TOKEN'] = response.json()['token']
-            return True
 
     async def checkToken(self) -> None:
         '''
@@ -77,9 +76,9 @@ class APIHandler:
             response = requests.get(route, headers=self.headers())
             response.raise_for_status()
         except HTTPError as err:
-            return err.response.text
+            raise err
         except ConnectionError as err:
-            return 'Connection Refused'
+            raise err
         else:
             patients = response.json()
             models = parse_obj_as(List[Patient], patients)
@@ -102,9 +101,9 @@ class APIHandler:
             response = requests.get(route, headers=self.headers(), params=payload)
             response.raise_for_status()
         except HTTPError as err:
-            return err.response.text
+            raise err
         except ConnectionError as err:
-            return 'Connection Refused'
+            raise err
         else:
             vitals = response.json()
             models = parse_obj_as(List[Vital], vitals)
@@ -124,11 +123,29 @@ class APIHandler:
             response = requests.put(route, headers=self.headers(), params=payload)
             response.raise_for_status()
         except HTTPError as err:
-            return err.response.text
+            raise err
         except ConnectionError as err:
-            return 'Connection Refused'
+            raise err
 
-    async def getPrediction(self, patient: Patient, vitals: List[Vital]) -> int:
+    async def checkMLServer(self) -> bool:
+        '''
+        Health check for ml server.
+
+        Returns:
+            bool - True if server is online, false otherwise.
+        '''
+        route = self.mlServer + '/health'
+        try:
+            response = requests.get(route)
+            response.raise_for_status()
+        except HTTPError as err:
+            raise err
+        except ConnectionError as err:
+            raise err
+        else:
+            return True
+
+    async def getPrediction(self, patient: Patient, vitals: List[Vital]) -> Status:
         '''
         Gets status prediction from ml api for given patient and vitals.
 
@@ -153,8 +170,10 @@ class APIHandler:
             response = requests.post(route, json=payload)
             response.raise_for_status()
         except HTTPError as err:
-            return err.response.text
+            raise err
         except ConnectionError as err:
-            return 'Connection Refused'
+            raise err
         else:
-            return response.json()
+            status = response.json()
+            model = parse_obj_as(Status, status)
+            return model

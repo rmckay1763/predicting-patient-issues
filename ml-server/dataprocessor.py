@@ -26,7 +26,7 @@ class DataProcessor:
         self.temperature = []
         self.icp = []
 
-    def setOffsets(self):
+    def setOffsets(self) -> None:
         '''
         Computes offset for each vital record in minutes.
         '''
@@ -36,7 +36,7 @@ class DataProcessor:
             offset = (end.timestamp() - start.timestamp()) / 60
             self.offsets.append(int(offset))
 
-    def parseVitals(self):
+    def parseVitals(self) -> None:
         '''
         Sets list for each individual vital.
         '''
@@ -49,3 +49,18 @@ class DataProcessor:
             self.diastolic.append(vital.diastolic)
             self.temperature.append(vital.temperature)
             self.icp.append(vital.icp)
+        self.orderVitals()
+
+    def orderVitals(self) -> None:
+        '''
+        Sort vitals in descending order for ml models.
+        '''
+        self.offsets.reverse()
+        self.heart_rate.reverse()
+        self.sao2.reverse()
+        self.respiration.reverse()
+        self.cvp.reverse()
+        self.systolic.reverse()
+        self.diastolic.reverse()
+        self.temperature.reverse()
+        self.icp.reverse()

@@ -3,26 +3,47 @@ import asyncio
 from dotenv import load_dotenv
 from threading import Thread
 import schedule
+from requests.exceptions import HTTPError, ConnectionError, RequestException
 from apihandler import APIHandler
 
 load_dotenv()
 api = APIHandler()
 
+def handleException(err: RequestException):
+    '''
+    Logs the exception.
+    '''
+    detail = err.response.text if type(err) is HTTPError else ''
+    log = open('/var/log/scheduler.log', 'a')
+    print(err, detail, file=log)
+    print()
+    log.close()
+
 async def task() -> None:
     '''
     function for testing
     '''
-    if not await api.checkToken(): return None
-    patients = await api.fetchPatients()
+    try:
+        await api.checkToken()
+        await api.checkMLServer()
+        patients = await api.fetchPatients()
+    except HTTPError as err:
+        handleException(err)
+        return
+    except ConnectionError as err:
+        handleException(err)
+        return
     for patient in patients:
-        vitals = await api.fetchVitals(patient.pid, 5)
-        status = await api.getPrediction(patient, vitals)
-        await api.updateStatus(patient.pid, status)
-    log = open('/var/log/scheduler.log', 'a')
-    print(status, file=log)
-    print(patient, file=log)
-    print(vitals, file=log)
-    log.close()
+        try:
+            vitals = await api.fetchVitals(patient.pid, 5)
+            status = await api.getPrediction(patient, vitals)
+            await api.updateStatus(patient.pid, status.id)
+        except HTTPError as err:
+            handleException(err)
+            continue
+        except ConnectionError as err:
+            handleException(err)
+            continue
 
 def awaitTask() -> None:
     loop = asyncio.new_event_loop()

@@ -1,12 +1,17 @@
-from apimodels import MLInput, MLVital
+from apimodels import MLInput, MLVital, Status
 from modelhandler import ModelHandler
 from dataprocessor import DataProcessor
-from numpy import ndarray, sum
 
 class ModelService:
     '''
     Service for ml models.
     '''
+
+    '''
+    Status objects to return to api caller.
+    '''
+    critical = Status(id = 1, text = 'Critical')
+    stable = Status(id = 9, text = 'Stable')
 
     def __init__(self) -> None:
         '''
@@ -49,13 +54,18 @@ class ModelService:
         )
         return prediction
 
-    async def predictStatus(self, hr, sao2, resp) -> int:
-        model_input = [hr, resp, sao2]
-        status: ndarray = self.models.status_classifier.predict([model_input])
-        value = sum(status.tolist())
-        #print(f'\n**************\n[{hr}, {resp}, {sao2}] --> status: {value}\n\n')
-        value = round(value)
+    async def predictStatus(self, vitals: MLVital) -> Status:
+        '''
+        Predict a patient status from given vitals.
 
-        if value == 0:
-            return 9
-        return 1
+        Parameters: 
+            vitals (MLVital) - The vitals to predict from.
+
+        Returns:
+            Status - Status object for the predicted status.
+        '''
+        model_input = [vitals.heart_rate, vitals.respiration, vitals.sao2]
+        prediction = await self.models.predictStatus(model_input)
+        if prediction == 0:
+            return self.stable
+        return self.critical

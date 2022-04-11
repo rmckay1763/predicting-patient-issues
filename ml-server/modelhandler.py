@@ -1,6 +1,6 @@
 from tensorflow.keras.models import load_model
 from tensorflow.keras import Sequential
-from typing import List
+from typing import List, Union
 from fastapi import HTTPException
 from numpy import ndarray, sum
 import joblib
@@ -10,6 +10,8 @@ class ModelHandler:
     '''
     Provides access to predict method of ml models.
     '''
+
+    inputSize = 5
 
     def __init__(self) -> None:
         '''
@@ -27,6 +29,16 @@ class ModelHandler:
         except IOError as err:
             raise err
 
+    def validateData(self, data: List[Union[int, float]]) -> None:
+        '''
+        Validates the number of records in a list of vitals.
+
+        Parameters:
+            data - List of a single vital, e.g. list of heart rate recordings.
+        '''
+        if len(data) != self.inputSize:
+            raise HTTPException(422, detail=f'Number of records not equal to {self.inputSize}')
+
     async def predictHeartRate(self, data: List[int]) -> int:
         '''
         Predicts heart rate.
@@ -37,10 +49,7 @@ class ModelHandler:
         Returns:
             int: Next predicted heart rate.
         '''
-        data.reverse()
-        #print('heartrate')
-        #for hr in data:
-        #    print(f'{hr}, ')
+        self.validateData(data)
         try:
             prediction: ndarray = self.heartRate.predict([data])
             value = sum(prediction.tolist())
@@ -58,10 +67,7 @@ class ModelHandler:
         Returns:
             int: Next predicted sao2 level.
         '''
-        data.reverse()
-        #print('sao2')
-        #for sao2 in data:
-        #    print(f'{sao2}, ')
+        self.validateData(data)
         try:
             prediction: ndarray = self.sao2.predict([data])
             value = sum(prediction.tolist())
@@ -79,10 +85,7 @@ class ModelHandler:
         Returns:
             int: Next predicted respiration level.
         '''
-        data.reverse()
-        #print('respiration')
-        #for respiration in data:
-        #    print(f'{respiration}, ')
+        self.validateData(data)
         try:
             prediction: ndarray = self.respiration.predict([data])
             value = sum(prediction.tolist())
@@ -100,6 +103,7 @@ class ModelHandler:
         Returns:
             int: Next predicted cvp level.
         '''
+        self.validateData(data)
         try:
             prediction: ndarray = self.cvp.predict([data])
             value = sum(prediction.tolist())
@@ -117,6 +121,7 @@ class ModelHandler:
         Returns:
             int: Next predicted systolic level.
         '''
+        self.validateData(data)
         try:
             prediction: ndarray = self.systolic.predict([data])
             value = sum(prediction.tolist())
@@ -134,6 +139,7 @@ class ModelHandler:
         Returns:
             int: Next predicted diastolic level.
         '''
+        self.validateData(data)
         try:
             prediction: ndarray = self.diastolic.predict([data])
             value = sum(prediction.tolist())
@@ -151,9 +157,27 @@ class ModelHandler:
         Returns:
             float: Next predicted temperature (celcius).
         '''
+        self.validateData(data)
         try:
             prediction: ndarray = self.temperature.predict([data])
             value = sum(prediction.tolist())
             return round(value, 1)
         except ValueError:
             raise HTTPException(422, 'temperature input data not valid')
+
+    async def predictStatus(self, data: List[Union[int, float]]) -> int:
+        '''
+        Predicts status from a list of vitals.
+
+        Parameters:
+            data (list[float or int]): List of individual vitals.
+
+        Returns:
+            int: Status code for the prediction.
+        '''
+        try:
+            prediction: ndarray = self.status_classifier.predict([data])
+            value = sum(prediction.tolist())
+            return round(value)
+        except ValueError:
+            raise HTTPException(422, 'vital input for status predictor not valie')

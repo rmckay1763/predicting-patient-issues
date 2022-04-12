@@ -1,5 +1,6 @@
 import os
 import json
+from time import sleep
 from typing import List
 from requests.exceptions import HTTPError, ConnectionError
 import requests
@@ -60,6 +61,7 @@ class APIHandler:
         except HTTPError:
             return await self.login()
         except ConnectionError:
+            sleep(5)
             await self.checkToken()
         else:
             return True
@@ -156,7 +158,7 @@ class APIHandler:
         Returns:
             int: Primary key for the predicted status.
         '''
-        route = self.mlServer + '/api/ml/predict'
+        route = self.mlServer + '/predict'
         patientExport = json.loads(patient.json())
         vitalsExport = []
         for vital in vitals:

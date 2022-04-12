@@ -3,11 +3,14 @@
 # image with fastapi and gunicorn
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
-# add dependencies file
-COPY requirements.prod.txt /app/requirements.txt
-
-# install dependencies
-RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
+WORKDIR /app
 
 # add source code
-COPY . /app
+COPY . .
+
+# install dependencies
+RUN \
+    pip3 install --upgrade pip && \
+    pip3 install pipreqs && \
+    pipreqs --force . && \
+    pip3 install --no-cache-dir --upgrade -r requirements.txt

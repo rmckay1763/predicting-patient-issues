@@ -11,6 +11,20 @@ services:
     image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-prod
     container_name: backend-prod
 
+   # ml server container
+  ml-server:
+    build:
+      context: ./ml-server
+      dockerfile: Dockerfile.prod
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-server-prod
+    container_name: ml-server-prod
+
+  # ml scheduler container
+  ml-scheduler:
+    build: ./ml-scheduler
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-scheduler-prod
+    container_name: ml-scheduler-prod
+
   # frontend node js container
   frontend:
     build:

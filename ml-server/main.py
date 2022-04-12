@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException
-import uvicorn
 from modelservice import ModelService
 from apimodels import MLInput, MLVital, Status
 

@@ -60,9 +60,8 @@ class APIHandler:
             response.raise_for_status()
         except HTTPError:
             return await self.login()
-        except ConnectionError:
-            sleep(5)
-            await self.checkToken()
+        except ConnectionError as err:
+            raise err
         else:
             return True
 

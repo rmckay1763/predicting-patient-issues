@@ -1,6 +1,5 @@
 import os
 import json
-from time import sleep
 from typing import List
 from requests.exceptions import HTTPError, ConnectionError
 import requests

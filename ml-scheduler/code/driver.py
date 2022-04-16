@@ -5,19 +5,19 @@ from threading import Thread
 import schedule
 from requests.exceptions import HTTPError, ConnectionError, RequestException
 from apihandler import APIHandler
+from loghandler import LogHandler
 
 load_dotenv()
 api = APIHandler()
+logger = LogHandler('scheduler_logger', 'scheduler.log')
 
 def handleException(err: RequestException):
     '''
     Logs the exception.
     '''
     detail = err.response.text if type(err) is HTTPError else ''
-    log = open('/var/log/scheduler.log', 'a')
-    print(err, detail, file=log)
-    print()
-    log.close()
+    message = f'{err}: {detail}'
+    logger.log(message, level=LogHandler.ERROR)
 
 async def task() -> None:
     '''

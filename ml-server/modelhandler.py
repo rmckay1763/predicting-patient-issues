@@ -180,4 +180,4 @@ class ModelHandler:
             value = sum(prediction.tolist())
             return round(value)
         except ValueError:
-            raise HTTPException(422, 'vital input for status predictor not valie')
+            raise HTTPException(422, 'vital input for status predictor not valid')

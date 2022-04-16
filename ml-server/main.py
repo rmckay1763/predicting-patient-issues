@@ -1,13 +1,58 @@
+from typing import Union
 from fastapi import FastAPI, HTTPException
 from modelservice import ModelService
 from apimodels import MLInput, MLVital, Status
+from loghandler import LogHandler
 
 app = FastAPI()
 service = ModelService()
-status = [1, 9, 10]
+mlLogger = LogHandler(name='ml_logger', logFile='ml.log', numLogs=5)
+errLogger = LogHandler(name='exception_logger', logFile='error.log')
+
+def handleException(err: Union[ValueError, HTTPException]) -> None:
+    '''
+    Handles exceptions from ml models.
+
+    Parameters:
+        err: The exception raised by one of the models.
+
+    Raises:
+        HTTPException: To return to api caller.
+    '''
+    if type(err) is HTTPException:
+        message = f'HTTPException: {err.status_code} - {err.detail}'
+        errLogger.log(message, level=LogHandler.ERROR)
+        raise err
+    else:
+        message = f'{err.__class__.__name__}: {err}'
+        errLogger.log(message, level=LogHandler.ERROR)
+        raise HTTPException(status_code=422, detail=str(err))
+
+def log(input: MLInput, futureVitals: MLVital, futureStatus: Status) -> None:
+    '''
+    Logs input and predictions to rotating log files. 
+
+    Parameters:
+        MLInput - Input passed to ml models.
+
+        futureVitals - Predicted vitals returned from ml models.
+
+        futureStatus - Predicted status returned from classifier.
+    '''
+    message = 'Previous 5 vital records, predicted vitals, predicted status:'
+    mlLogger.log(message, level=LogHandler.INFO)
+    for vital in input.vitals:
+        mlLogger.log(vital, level=LogHandler.INFO, format=LogHandler.PLAIN)
+    message = 'Predicted vitals: ' + str(futureVitals)
+    mlLogger.log(message, level=LogHandler.INFO, format=LogHandler.PLAIN)
+    message = 'Predicted status: ' + str(futureStatus)
+    mlLogger.log(message, level=LogHandler.INFO, format=LogHandler.PLAIN)
 
 @app.get('/health')
 async def healthCheck() -> bool:
+    '''
+    Returns: True if the api is alive.
+    '''
     return True
 
 @app.post('/predict')
@@ -24,22 +69,7 @@ async def predict(input: MLInput) -> Status:
     try:
         futureVitals = await service.predictVitals(input)
         futureStatus = await service.predictStatus(futureVitals)
-        # need to set up rolling logs with python logging library
-        #log(input, futureVitals, futureStatus)
+        log(input, futureVitals, futureStatus)
         return futureStatus
-    except HTTPException as err:
-        raise err
-    except KeyError as err:
-        raise HTTPException(status_code=422, detail=str(err))
-
-def log(input: MLInput, futureVitals: MLVital, futureStatus: Status):
-    '''
-    Logs input and predictions. Problamtic because of exceeding file size.
-    Need to implement a logging system with python logging library.
-    '''
-    log = open('/var/log/predictions.log', 'a')
-    print('*' * 80, file=log)
-    for vital in input.vitals:
-        print(vital, file=log)
-    print('Predicted vitals: ', futureVitals, file=log)
-    print('Predicted status: ', futureStatus, file=log)
+    except (HTTPException, ValueError) as err:
+        handleException(err)

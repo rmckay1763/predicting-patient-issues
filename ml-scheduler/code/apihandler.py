@@ -1,6 +1,5 @@
 import os
 import json
-from time import sleep
 from typing import List
 from requests.exceptions import HTTPError, ConnectionError
 import requests
@@ -60,9 +59,8 @@ class APIHandler:
             response.raise_for_status()
         except HTTPError:
             return await self.login()
-        except ConnectionError:
-            sleep(5)
-            await self.checkToken()
+        except ConnectionError as err:
+            raise err
         else:
             return True
 

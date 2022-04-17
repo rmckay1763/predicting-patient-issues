@@ -40,11 +40,6 @@ export default function VitalsTable({ data }) {
 
     const columns = [
         {
-            id: 'time',
-            name: 'Time',
-            selector: row => row.timestamp,
-        },
-        {
             name: 'Heart Rate',
             selector: row => row.heart_rate,
             right: true
@@ -74,24 +69,12 @@ export default function VitalsTable({ data }) {
             selector: row => row.diastolic,
             right: true
         },
-        {
-            name: 'Temperature',
-            selector: row => row.temperature,
-            right: true
-        },
-        {
-            name: 'ICP',
-            selector: row => row.icp,
-            right: true
-        }
     ];
 
     return (
         <DataTable
             theme = 'theme'
             customStyles={customStyles}
-            defaultSortFieldId='time'
-            defaultSortAsc={false}
             striped={true}
             columns={columns}
             data={data}

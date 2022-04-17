@@ -1,4 +1,5 @@
-from apimodels import MLInput, MLVital, Status
+from typing import List
+from apimodels import Status, Vital
 from modelhandler import ModelHandler
 from dataprocessor import DataProcessor
 
@@ -19,7 +20,7 @@ class ModelService:
         '''
         self.models = ModelHandler()
 
-    async def predictVitals(self, input: MLInput) -> MLVital:
+    async def predictVitals(self, input: List[Vital]) -> Vital:
         '''
         Predicts each vital one time step in future.
 
@@ -29,8 +30,7 @@ class ModelService:
         Returns:
             MLVital: Predicted vitals.
         '''
-        data = DataProcessor(input.patient, input.vitals)
-        data.setOffsets()
+        data = DataProcessor(input)
         data.parseVitals()
 
         heartRate = await self.models.predictHeartRate(data.heart_rate)
@@ -39,22 +39,18 @@ class ModelService:
         cvp = await self.models.predictCvp(data.cvp)
         systolic = await self.models.predictSystolic(data.systolic)
         diastolic = await self.models.predictDiastolic(data.diastolic)
-        temperature = await self.models.predictTemperature(data.temperature)
 
-        prediction = MLVital(
-            offset = data.offsets[-1] + 5,
+        prediction = Vital(
             heart_rate = heartRate,
             sao2 = sao2,
             respiration = respiration,
             cvp = cvp,
             systolic = systolic,
-            diastolic = diastolic,
-            temperature = temperature,
-            icp = 10
+            diastolic = diastolic
         )
         return prediction
 
-    async def predictStatus(self, vitals: MLVital) -> Status:
+    async def predictStatus(self, vitals: Vital) -> Status:
         '''
         Predict a patient status from given vitals.
 

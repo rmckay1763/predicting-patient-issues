@@ -71,9 +71,7 @@ CREATE TABLE IF NOT EXISTS public.vital (
 	respiration INT,
 	cvp INT,
 	systolic INT,
-	diastolic INT,
-	temperature NUMERIC,
-	icp INT
+	diastolic INT
 );
 
 CREATE TABLE IF NOT EXISTS public.patient_archive (
@@ -94,9 +92,7 @@ CREATE TABLE IF NOT EXISTS public.vital_archive (
 	respiration INT,
 	cvp INT,
 	systolic INT,
-	diastolic INT,
-	temperature NUMERIC,
-	icp INT
+	diastolic INT
 );
 
 --
@@ -125,9 +121,9 @@ CREATE OR REPLACE FUNCTION archive_vital() RETURNS TRIGGER AS $archive_vital$
 	-- Stores deleted row from vital into vital_archive
 	--
 		INSERT INTO
-			public.vital_archive(pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+			public.vital_archive(pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 		VALUES
-			(OLD.pid, OLD.timestamp, OLD.heart_rate, OLD.sao2, OLD.respiration, OLD.cvp, OLD.systolic, OLD.diastolic, OLD.temperature, OLD.icp);
+			(OLD.pid, OLD.timestamp, OLD.heart_rate, OLD.sao2, OLD.respiration, OLD.cvp, OLD.systolic, OLD.diastolic);
 		RETURN NULL;
 	END;
 $archive_vital$ LANGUAGE plpgsql;
@@ -209,49 +205,49 @@ VALUES
 	('Angela', 'Martin', 19, 'Female', 9);
 
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 VALUES
-	(1, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46, 38.5, 8),
-	(2, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46, 38.5, 8),
-	(3, NOW() + INTERVAL '5 minutes', 101, 93, 18, 46, 123, 71, 37.9, 12),
-	(4, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46, 38.5, 8),
-	(5, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46, 38.5, 8);
+	(1, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46),
+	(2, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46),
+	(3, NOW() + INTERVAL '5 minutes', 101, 93, 18, 46, 123, 71),
+	(4, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46),
+	(5, NOW() + INTERVAL '5 minutes', 77, 96, 21, 17, 91, 46);
 	
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 VALUES
-	(1, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45, 38.7, 9),
-	(2, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45, 38.7, 9),
-	(3, NOW() + INTERVAL '10 minutes', 102, 93, 16, 46, 117, 67, 37.9, 11),
-	(4, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45, 38.7, 9),
-	(5, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45, 38.7, 9);
+	(1, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45),
+	(2, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45),
+	(3, NOW() + INTERVAL '10 minutes', 102, 93, 16, 46, 117, 67),
+	(4, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45),
+	(5, NOW() + INTERVAL '10 minutes', 78, 93, 26, 18, 88, 45);
 	
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 VALUES
-	(1, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(2, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
-	(4, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(5, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10);
+	(1, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47),
+	(2, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47),
+	(3, NOW() + INTERVAL '15 minutes', 102, 96, 18, 47, 119, 67),
+	(4, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47),
+	(5, NOW() + INTERVAL '15 minutes', 84, 94, 26, 19, 93, 47);
 
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 VALUES
-	(1, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(2, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(3, NOW() + INTERVAL '20 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
-	(4, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(5, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10);
+	(1, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47),
+	(2, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47),
+	(3, NOW() + INTERVAL '20 minutes', 102, 96, 18, 47, 119, 67),
+	(4, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47),
+	(5, NOW() + INTERVAL '20 minutes', 84, 94, 26, 19, 93, 47);
 
 INSERT INTO
-	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic, temperature, icp)
+	public.vital (pid, timestamp, heart_rate, sao2, respiration, cvp, systolic, diastolic)
 VALUES
-	(1, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(2, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(3, NOW() + INTERVAL '25 minutes', 102, 96, 18, 47, 119, 67, 37.8, 14),
-	(4, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10),
-	(5, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47, 38.7, 10);
+	(1, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47),
+	(2, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47),
+	(3, NOW() + INTERVAL '25 minutes', 102, 96, 18, 47, 119, 67),
+	(4, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47),
+	(5, NOW() + INTERVAL '25 minutes', 84, 94, 26, 19, 93, 47);
 
 
 -- migrate:down

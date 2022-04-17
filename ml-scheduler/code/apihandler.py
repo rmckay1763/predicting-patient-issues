@@ -145,27 +145,21 @@ class APIHandler:
         else:
             return True
 
-    async def getPrediction(self, patient: Patient, vitals: List[Vital]) -> Status:
+    async def getPrediction(self, vitals: List[Vital]) -> Status:
         '''
         Gets status prediction from ml api for given patient and vitals.
 
         Parameters:
-            patient (Patient): Patient model.
-            vitals: (list[Vital]): Vitals records associated with patient.
+            vitals: List of vitals to get prediction for.
 
         Returns:
-            int: Primary key for the predicted status.
+            Status: The predicted status.
         '''
         route = self.mlServer + '/predict'
-        patientExport = json.loads(patient.json())
-        vitalsExport = []
+        payload = []
         for vital in vitals:
             temp = json.loads(vital.json())
-            vitalsExport.append(temp)
-        payload = {
-            'patient': patientExport,
-            'vitals': vitalsExport
-        }
+            payload.append(temp)
         try:
             response = requests.post(route, json=payload)
             response.raise_for_status()

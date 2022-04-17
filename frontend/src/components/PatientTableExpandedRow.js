@@ -21,11 +21,6 @@ export default function PatientTableExpandedRow(props) {
 
     const columns = [
         {
-            id: 'time',
-            name: 'Time',
-            selector: row => row.timestamp,
-        },
-        {
             name: 'Heart Rate',
             selector: row => row.heart_rate,
             right: true
@@ -55,22 +50,10 @@ export default function PatientTableExpandedRow(props) {
             selector: row => row.diastolic,
             right: true
         },
-        {
-            name: 'Temperature',
-            selector: row => row.temperature,
-            right: true
-        },
-        {
-            name: 'ICP',
-            selector: row => row.icp,
-            right: true
-        }
     ];
 
     return (
         <DataTable
-            defaultSortFieldId='time'
-            defaultSortAsc={false}
             dense={true}
             striped={true}
             columns={columns}

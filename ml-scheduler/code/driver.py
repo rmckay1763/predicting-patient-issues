@@ -21,7 +21,7 @@ def handleException(err: RequestException):
 
 async def task() -> None:
     '''
-    function for testing
+    get predictions for each patient and update status in backend.
     '''
     try:
         await api.checkToken()
@@ -36,7 +36,7 @@ async def task() -> None:
     for patient in patients:
         try:
             vitals = await api.fetchVitals(patient.pid, 5)
-            status = await api.getPrediction(patient, vitals)
+            status = await api.getPrediction(vitals)
             await api.updateStatus(patient.pid, status.id)
         except HTTPError as err:
             handleException(err)

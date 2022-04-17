@@ -144,8 +144,6 @@ class Vital(BaseModel):
     cvp: int
     systolic: int
     diastolic: int
-    temperature: float
-    icp: int
 
 class VitalIn(BaseModel):
     '''
@@ -158,8 +156,14 @@ class VitalIn(BaseModel):
     cvp: int
     systolic: int
     diastolic: int
-    temperature: float
-    icp: int
+
+class VitalOut(BaseModel):
+    heart_rate: int
+    sao2: int
+    respiration: int
+    cvp: int
+    systolic: int
+    diastolic: int
 
 class MLVitals(BaseModel):
     timestamp: datetime

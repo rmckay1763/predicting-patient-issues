@@ -4,7 +4,8 @@ from api.userinfo.models import (
     PatientIn, 
     PatientOut,  
     Vital, 
-    VitalIn, 
+    VitalIn,
+    VitalOut, 
     Status
 )
 from api.userinfo.crud.patientcrud import PatientCRUD
@@ -147,7 +148,7 @@ class PatientService:
         except BaseException as err:
             raise err
 
-    async def fetchVitals(self, pid: int, limit: int) -> List[Vital]:
+    async def fetchVitals(self, pid: int, limit: int) -> List[VitalOut]:
         '''
         Fetch vital records for a specified patient.
 
@@ -158,8 +159,20 @@ class PatientService:
         Returns:
             list(Vital): List of Vital objects with given pid.
         '''
+        outList: List[VitalOut] = []
         try:
-            return await self.vitals.fetchOne(pid, limit)
+            vitals =  await self.vitals.fetchOne(pid, limit)
+            for vital in vitals:
+                out = VitalOut(
+                    heart_rate = vital.heart_rate,
+                    sao2 = vital.sao2,
+                    respiration = vital.respiration,
+                    cvp = vital.cvp,
+                    systolic = vital.systolic,
+                    diastolic = vital.diastolic
+                )
+                outList.append(out)
+            return outList
         except BaseException as err:
             raise err
 

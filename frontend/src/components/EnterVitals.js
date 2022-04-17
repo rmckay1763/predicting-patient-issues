@@ -29,16 +29,12 @@ export default function EnterVitals() {
     const [cvp, setCvp] = useState("");
     const [systolic, setSystolic] = useState("");
     const [diastolic, setDiastolic] = useState("");
-    const [temperature, setTemperature] = useState("");
-    const [icp, setIcp] = useState("");
     const [heartRateError, setHeartRateError] = useState(false);
     const [sao2Error, setSao2Error] = useState(false);
     const [respirationError, setRespirationError] = useState(false);
     const [cvpError, setCvpError] = useState(false);
     const [systolicError, setSystolicError] = useState(false);
     const [diastolicError, setDiastolicError] = useState(false);
-    const [temperatureError, setTemperatureError] = useState(false);
-    const [icpError, setIcpError] = useState(false);
 
     useEffect(() => {
         document.title = "PPCD - Enter Vitals";
@@ -48,6 +44,9 @@ export default function EnterVitals() {
         setHeartRate("");
         setSao2("");
         setRespiration("");
+        setCvp("");
+        setSystolic("")
+        setDiastolic("")
     }
 
     const handleSubmit = async (e) => {
@@ -59,9 +58,7 @@ export default function EnterVitals() {
             respiration: respiration,
             cvp: cvp,
             systolic: systolic,
-            diastolic: diastolic,
-            temperature: temperature,
-            icp: icp
+            diastolic: diastolic
         }
         try {
             let response  = await AddVital(state.token, vital);
@@ -196,30 +193,6 @@ export default function EnterVitals() {
                         onChange={(e) => {
                             setDiastolicError(e.target.value < 0);
                             setDiastolic(e.target.value);
-                        }} />
-                    <StyledTextField
-                        type="number"
-                        InputProps={{ inputProps: { min: 0 } }}
-                        required
-                        label="Temperature (Celcius)"
-                        value={temperature}
-                        error={temperatureError}
-                        helperText={temperatureError ? "Temperature must be positive." : ""}
-                        onChange={(e) => {
-                            setTemperatureError(e.target.value < 0);
-                            setTemperature(e.target.value);
-                        }} />
-                    <StyledTextField
-                        type="number"
-                        InputProps={{ inputProps: { min: 0 } }}
-                        required
-                        label="ICP"
-                        value={icp}
-                        error={icpError}
-                        helperText={icpError ? "ICP must be positive." : ""}
-                        onChange={(e) => {
-                            setIcpError(e.target.value < 0);
-                            setIcp(e.target.value);
                         }} />
                     <StyledButtonPrimary type="submit">Submit</StyledButtonPrimary>
                 </Stack>

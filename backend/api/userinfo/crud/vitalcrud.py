@@ -19,7 +19,7 @@ class VitalCRUD(BaseCRUD):
         # table dependent sql query strings.
         self.insertQuery = (
             "INSERT INTO public.{table} ({columns}) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
             "RETURNING {key};")
 
         self.fetchOneQuery = (
@@ -49,9 +49,7 @@ class VitalCRUD(BaseCRUD):
                 sql.Identifier('respiration'),
                 sql.Identifier('cvp'),
                 sql.Identifier('systolic'),
-                sql.Identifier('diastolic'),
-                sql.Identifier('temperature'),
-                sql.Identifier('icp')
+                sql.Identifier('diastolic')
             ])
         )
 
@@ -97,9 +95,7 @@ class VitalCRUD(BaseCRUD):
                 vital.respiration,
                 vital.cvp,
                 vital.systolic,
-                vital.diastolic,
-                vital.temperature,
-                vital.icp,))
+                vital.diastolic,))
         except DatabaseError as err:
             cursor.close()
             raise HTTPException(status_code=500, detail=err.pgerror)

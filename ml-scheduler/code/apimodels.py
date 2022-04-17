@@ -6,16 +6,12 @@ class Vital(BaseModel):
     '''
     Represents a vital record.
     '''
-    pid: int
-    timestamp: datetime
     heart_rate: int
     sao2: int
     respiration: int
     cvp: int
     systolic: int
     diastolic: int
-    temperature: float
-    icp: int
 
 class Status(BaseModel):
     '''

@@ -1,7 +1,7 @@
-from typing import Union
+from typing import Union, List
 from fastapi import FastAPI, HTTPException
 from modelservice import ModelService
-from apimodels import MLInput, MLVital, Status
+from apimodels import Status, Vital
 from loghandler import LogHandler
 
 app = FastAPI()
@@ -28,7 +28,7 @@ def handleException(err: Union[ValueError, HTTPException]) -> None:
         errLogger.log(message, level=LogHandler.ERROR)
         raise HTTPException(status_code=422, detail=str(err))
 
-def log(input: MLInput, futureVitals: MLVital, futureStatus: Status) -> None:
+def log(input: List[Vital], futureVitals: Vital, futureStatus: Status) -> None:
     '''
     Logs input and predictions to rotating log files. 
 
@@ -39,9 +39,9 @@ def log(input: MLInput, futureVitals: MLVital, futureStatus: Status) -> None:
 
         futureStatus - Predicted status returned from classifier.
     '''
-    message = 'Previous 5 vital records, predicted vitals, predicted status:'
+    message = 'Previous 5 vital records:'
     mlLogger.log(message, level=LogHandler.INFO)
-    for vital in input.vitals:
+    for vital in input:
         mlLogger.log(vital, level=LogHandler.INFO, format=LogHandler.PLAIN)
     message = 'Predicted vitals: ' + str(futureVitals)
     mlLogger.log(message, level=LogHandler.INFO, format=LogHandler.PLAIN)
@@ -56,7 +56,7 @@ async def healthCheck() -> bool:
     return True
 
 @app.post('/predict')
-async def predict(input: MLInput) -> Status:
+async def predict(input: List[Vital]) -> Status:
     '''
     Predicts status from patient vitals.
 

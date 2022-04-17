@@ -24,8 +24,7 @@ class ModelHandler:
             self.cvp: Sequential = load_model('cvp_model')
             self.systolic: Sequential = load_model('systolic_model')
             self.diastolic: Sequential = load_model('diastolic_model')
-            self.temperature: Sequential = load_model('temp_model')
-            self.status_classifier: RandomForestClassifier = joblib.load('model.pkl')
+            self.status_classifier: RandomForestClassifier = joblib.load('status_classifier.pkl')
         except IOError as err:
             raise err
 
@@ -147,24 +146,6 @@ class ModelHandler:
         except ValueError:
             raise HTTPException(422, 'diastolic input data not valid')
 
-    async def predictTemperature(self, data: List[float]) -> float:
-        '''
-        Predicts temperature.
-
-        Parameters:
-            data (list[float]): Previous 5 recorded temperatures (celcius).
-
-        Returns:
-            float: Next predicted temperature (celcius).
-        '''
-        self.validateData(data)
-        try:
-            prediction: ndarray = self.temperature.predict([data])
-            value = sum(prediction.tolist())
-            return round(value, 1)
-        except ValueError:
-            raise HTTPException(422, 'temperature input data not valid')
-
     async def predictStatus(self, data: List[Union[int, float]]) -> int:
         '''
         Predicts status from a list of vitals.
@@ -179,5 +160,6 @@ class ModelHandler:
             prediction: ndarray = self.status_classifier.predict([data])
             value = sum(prediction.tolist())
             return round(value)
+
         except ValueError:
             raise HTTPException(422, 'vital input for status predictor not valid')

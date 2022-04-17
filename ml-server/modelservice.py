@@ -60,7 +60,14 @@ class ModelService:
         Returns:
             Status - Status object for the predicted status.
         '''
-        model_input = [vitals.heart_rate, vitals.respiration, vitals.sao2]
+        model_input = [
+            vitals.heart_rate, 
+            vitals.respiration, 
+            vitals.sao2,
+            vitals.cvp,
+            vitals.systolic,
+            vitals.diastolic
+        ]
         prediction = await self.models.predictStatus(model_input)
         if prediction == 0:
             return self.stable

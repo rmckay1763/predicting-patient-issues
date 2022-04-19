@@ -21,7 +21,7 @@ export default function EditUserFormToolbar(props) {
 
     const resetPassword = () => {
         return navigate("/users");
-        //navigate("/editPatient", {state: {patient: props.patient}})
+        //navigate("/resetPassword", {state: {user: props.user}})
     }
 
     const onDelete = () => {

@@ -25,6 +25,8 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
+import CheckIcon from '@mui/icons-material/Check';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 
 export const Icons = {
@@ -51,6 +53,9 @@ export const Icons = {
     notification: <NotificationImportantIcon />,
     stable: <CheckCircleIcon />,
     unknown: <HelpIcon />,
+    submit: <CheckIcon />,
+    reset: <RestartAltIcon />,
+
 }
 
 export const IconsLarge = {

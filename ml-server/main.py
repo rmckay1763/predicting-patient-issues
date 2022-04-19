@@ -68,7 +68,7 @@ async def predict(input: List[Vital]) -> Status:
     '''
     try:
         futureVitals = await service.predictVitals(input)
-        futureStatus = await service.predictStatus(futureVitals)
+        futureStatus = await service.checkVitals(futureVitals)
         log(input, futureVitals, futureStatus)
         return futureStatus
     except (HTTPException, ValueError) as err:

@@ -167,7 +167,6 @@ class PatientService:
                     heart_rate = vital.heart_rate,
                     sao2 = vital.sao2,
                     respiration = vital.respiration,
-                    cvp = vital.cvp,
                     systolic = vital.systolic,
                     diastolic = vital.diastolic
                 )

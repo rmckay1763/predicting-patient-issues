@@ -19,7 +19,7 @@ class VitalCRUD(BaseCRUD):
         # table dependent sql query strings.
         self.insertQuery = (
             "INSERT INTO public.{table} ({columns}) "
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s) "
             "RETURNING {key};")
 
         self.fetchOneQuery = (
@@ -47,7 +47,6 @@ class VitalCRUD(BaseCRUD):
                 sql.Identifier('heart_rate'),
                 sql.Identifier('sao2'),
                 sql.Identifier('respiration'),
-                sql.Identifier('cvp'),
                 sql.Identifier('systolic'),
                 sql.Identifier('diastolic')
             ])
@@ -93,7 +92,6 @@ class VitalCRUD(BaseCRUD):
                 vital.heart_rate, 
                 vital.sao2, 
                 vital.respiration,
-                vital.cvp,
                 vital.systolic,
                 vital.diastolic,))
         except DatabaseError as err:

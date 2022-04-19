@@ -36,11 +36,6 @@ export default function PatientTableExpandedRow(props) {
             right: true
         },
         {
-            name: 'CVP',
-            selector: row => row.cvp,
-            right: true
-        },
-        {
             name: 'Systolic',
             selector: row => row.systolic,
             right: true

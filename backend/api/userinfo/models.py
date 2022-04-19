@@ -141,7 +141,6 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
 
@@ -153,30 +152,15 @@ class VitalIn(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
 
 class VitalOut(BaseModel):
+    '''
+    Represents a vital sent to the frontend
+    '''
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
-
-class MLVitals(BaseModel):
-    timestamp: datetime
-    heart_rate: int
-    sao2: int
-    respiration: int
-
-class MLModelIn(BaseModel):
-    pid: int
-    vitals: List[MLVitals]
-
-class MLModelOut(BaseModel):
-    pid: int
-    status: str
-    vitals: MLVitals
-

@@ -18,7 +18,6 @@ class DataProcessor:
         self.heart_rate = []
         self.sao2 = []
         self.respiration = []
-        self.cvp = []
         self.systolic = []
         self.diastolic = []
 
@@ -30,7 +29,6 @@ class DataProcessor:
             self.heart_rate.append(vital.heart_rate)
             self.sao2.append(vital.sao2)
             self.respiration.append(vital.respiration)
-            self.cvp.append(vital.cvp)
             self.systolic.append(vital.systolic)
             self.diastolic.append(vital.diastolic)
         self.orderVitals()
@@ -42,6 +40,5 @@ class DataProcessor:
         self.heart_rate.reverse()
         self.sao2.reverse()
         self.respiration.reverse()
-        self.cvp.reverse()
         self.systolic.reverse()
         self.diastolic.reverse()

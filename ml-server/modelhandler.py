@@ -3,8 +3,6 @@ from tensorflow.keras import Sequential
 from typing import List, Union
 from fastapi import HTTPException
 from numpy import ndarray, sum
-import joblib
-from sklearn.ensemble import RandomForestClassifier
 
 class ModelHandler:
     '''
@@ -21,10 +19,8 @@ class ModelHandler:
             self.heartRate: Sequential = load_model('hr_model')
             self.sao2: Sequential = load_model('sao2_model')
             self.respiration: Sequential = load_model('resp_model')
-            self.cvp: Sequential = load_model('cvp_model')
             self.systolic: Sequential = load_model('systolic_model')
             self.diastolic: Sequential = load_model('diastolic_model')
-            self.status_classifier: RandomForestClassifier = joblib.load('status_classifier.pkl')
         except IOError as err:
             raise err
 
@@ -92,24 +88,6 @@ class ModelHandler:
         except ValueError:
             raise HTTPException(422, 'respiration input data not valid')
 
-    async def predictCvp(self, data: List[int]) -> int:
-        '''
-        Predicts cvp.
-
-        Parameters:
-            data (list[int]): Previous 5 recorded cvp levels.
-
-        Returns:
-            int: Next predicted cvp level.
-        '''
-        self.validateData(data)
-        try:
-            prediction: ndarray = self.cvp.predict([data])
-            value = sum(prediction.tolist())
-            return round(value)
-        except ValueError:
-            raise HTTPException(422, 'cvp input data not valid')
-
     async def predictSystolic(self, data: List[int]) -> int:
         '''
         Predicts systolic blood pressure.
@@ -145,21 +123,3 @@ class ModelHandler:
             return round(value)
         except ValueError:
             raise HTTPException(422, 'diastolic input data not valid')
-
-    async def predictStatus(self, data: List[Union[int, float]]) -> int:
-        '''
-        Predicts status from a list of vitals.
-
-        Parameters:
-            data (list[float or int]): List of individual vitals.
-
-        Returns:
-            int: Status code for the prediction.
-        '''
-        try:
-            prediction: ndarray = self.status_classifier.predict([data])
-            value = sum(prediction.tolist())
-            return round(value)
-
-        except ValueError:
-            raise HTTPException(422, 'vital input for status predictor not valid')

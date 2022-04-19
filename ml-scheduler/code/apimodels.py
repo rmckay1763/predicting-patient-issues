@@ -9,7 +9,6 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
 

@@ -32,7 +32,7 @@ export default function NotificationPage() {
         temp.sort((a, b) => a.status.id - b.status.id);
         if (criticalOnly) {
             temp = temp.filter((patient) => {
-                return patient.status.text === 'Critical';
+                return patient.status.text === 'Alert';
             });
         }
         setPatients(temp);
@@ -54,7 +54,7 @@ export default function NotificationPage() {
         const labeledSwitch = (
             <StyledFormControlLabel 
                 control={unlabeledSwitch}
-                label={"Critical Only"}
+                label={"Alerts only"}
                 onChange={onCriticalOnlyChanged} />
         )
         const title = width < 500 ? IconsLarge.notification : 'Notifications'
@@ -85,7 +85,7 @@ export default function NotificationPage() {
     )
 
     const NotificationStatus = ({patient}) => {
-        let critical = patient.status.text === 'Critical';
+        let critical = patient.status.text === 'Alert';
         return (
             <Stack 
                 direction='row' 

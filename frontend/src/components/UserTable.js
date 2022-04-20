@@ -6,17 +6,11 @@ import { Icons } from '../resources/Icons';
 import { Colors } from '../resources/Colors';
 import { StyledIconButton } from '../resources/StyledComponents';
 import UserTableToolbar from './UserTableToolbar';
-import { DeleteUser } from '../controllers/APIController';
-import ConfirmDialog from "./ConfirmDialog";
-import { AlertError, AlertSuccess } from "./AlertMessage";
 
 export default function UserTable() {
     const [state, dispatch] = useGlobal();
     const [data, setData] = useState([]);
     const [query, setQuery] = useState([]);
-    const [deleteUser, setDeleteUser] = useState(false);
-    const [deleteMessage, setDeleteMessage] = useState('');
-    const [selectedUser, setSelectedUser] = useState();
     const navigate = useNavigate();
     document.title = "PPCD Admin - Users";
 
@@ -32,26 +26,6 @@ export default function UserTable() {
         setData(temp);
     }, [state.users, query]);
 
-    const onDelete = (row) => {
-        let selected = state.users.find((user) => user.uid === row.uid);
-        setSelectedUser(selected);
-        let message = `Are you sure you want to delete user '${selected.username}'?`;
-        setDeleteMessage(message);
-        setDeleteUser(true);
-    }
-
-    // click handler for delete column on table
-    const deleteUserCallback = async () => {
-        try {
-            await DeleteUser(state.token, selectedUser.uid);
-            AlertSuccess(dispatch, "User deleted");
-            return navigate("/users")
-        } catch (error) {
-            console.error(error);
-            AlertError(dispatch, "Failed to delete user");
-        }
-    }
-
     // click handler for table rows
     const onRowClicked = (row) => {
         navigate('/editUser', {state: {uid: row.uid}})
@@ -62,15 +36,6 @@ export default function UserTable() {
         return (
             <StyledIconButton onClick={() => onRowClicked(row)} >
                 {Icons.edit}
-            </StyledIconButton>
-        )
-    }
-
-    // action button for deleting user
-    const deleteButton = (row) => {
-        return (
-            <StyledIconButton onClick={() => onDelete(row)} >
-                {Icons.delete}
             </StyledIconButton>
         )
     }
@@ -166,10 +131,6 @@ export default function UserTable() {
             selector: row => row.role.name,
             sortable: true
         },
-        {
-            button: true,
-            cell: (row) => deleteButton(row)
-        },
     ];
 
     return (
@@ -185,13 +146,6 @@ export default function UserTable() {
                 columns={columns}
                 data={data}
                 customStyles={customStyles}
-            />
-            <ConfirmDialog
-                open={deleteUser}
-                setOpen={setDeleteUser}
-                onConfirm={deleteUserCallback}
-                title="Confirmation Required"
-                content={deleteMessage}
             />
         </Fragment>
     );

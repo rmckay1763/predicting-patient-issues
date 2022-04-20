@@ -13,6 +13,7 @@ import UserTable from "../components/UserTable";
 import AddUserForm from "../components/AddUserForm";
 import NotificationPage from "../components/NotificationPage";
 import EditUserForm from "../components/EditUserForm";
+import AdminResetPassword from "../components/AdminResetPassword";
 
 /**
  * Wrapper for authentication routes
@@ -157,6 +158,14 @@ export const EditUserRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <EditUserForm />
+    </BaseRoute>
+  </AuthRoute>
+)
+
+export const ResetPasswordRoute = () => (
+  <AuthRoute>
+    <BaseRoute>
+      <AdminResetPassword />
     </BaseRoute>
   </AuthRoute>
 )

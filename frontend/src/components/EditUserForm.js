@@ -112,6 +112,8 @@ export default function EditUserForm () {
         </StyledTypography>
         </p>
 
+        <Divider component="p" />
+
         <ConfirmDialog
           open={deleteUser}
           setOpen={setDeleteUser}

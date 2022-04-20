@@ -20,8 +20,7 @@ export default function EditUserFormToolbar(props) {
     }
 
     const resetPassword = () => {
-        return navigate("/users");
-        //navigate("/resetPassword", {state: {user: props.user}})
+        return navigate("/resetPassword", {state: {user: props.user}});
     }
 
     const onDelete = () => {

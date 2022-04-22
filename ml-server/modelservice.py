@@ -1,5 +1,6 @@
 from typing import List
 from dataclasses import dataclass
+from math import inf
 from apimodels import Status, Vital
 from modelhandler import ModelHandler
 from dataprocessor import DataProcessor
@@ -36,10 +37,10 @@ class ModelService:
 
     vitalBounds = VitalBounds(
         heartrate = Bound(lower=50, upper=200),
-        respiration = Bound(lower=10, upper=40),
-        sao2 = Bound(upper=100, lower=70),
-        systolic = Bound(upper=150, lower=80),
-        diastolic = Bound(upper=80, lower=40)
+        respiration = Bound(lower=10, upper=28),
+        sao2 = Bound(upper=inf, lower=85),
+        systolic = Bound(upper=180, lower=80),
+        diastolic = Bound(upper=100, lower=40)
     )
     '''Vital bounds for checking predicted vitals'''
 

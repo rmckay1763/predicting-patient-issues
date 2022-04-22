@@ -30,3 +30,10 @@ class Patient(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
     status: Status
+
+class Prediction(BaseModel):
+    '''
+    Represents the predicted vitals and status from a call to the ml server.
+    '''
+    vitals: Vital
+    status: Status

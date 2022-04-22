@@ -36,8 +36,8 @@ async def task() -> None:
     for patient in patients:
         try:
             vitals = await api.fetchVitals(patient.pid, 5)
-            status = await api.getPrediction(vitals)
-            await api.updateStatus(patient.pid, status.id)
+            prediction = await api.getPrediction(vitals)
+            await api.updateStatus(patient.pid, prediction.status.id)
         except HTTPError as err:
             handleException(err)
             continue

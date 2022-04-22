@@ -1,7 +1,7 @@
 from typing import Union, List
 from fastapi import FastAPI, HTTPException
 from modelservice import ModelService
-from apimodels import Status, Vital
+from apimodels import Status, Vital, Prediction
 from loghandler import LogHandler
 
 app = FastAPI()
@@ -70,6 +70,6 @@ async def predict(input: List[Vital]) -> Status:
         futureVitals = await service.predictVitals(input)
         futureStatus = await service.checkVitals(futureVitals)
         log(input, futureVitals, futureStatus)
-        return futureStatus
+        return Prediction(vitals=futureVitals, status=futureStatus)
     except (HTTPException, ValueError) as err:
         handleException(err)

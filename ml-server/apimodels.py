@@ -17,3 +17,10 @@ class Status(BaseModel):
     '''
     id: int
     text: str
+
+class Prediction(BaseModel):
+    '''
+    Represents the predicted vitals and status from a call to the ml server.
+    '''
+    vitals: Vital
+    status: Status

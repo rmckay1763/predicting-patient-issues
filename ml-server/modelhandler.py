@@ -16,9 +16,9 @@ class ModelHandler:
         Constructor.
         '''
         try:
-            self.heartRate: Sequential = load_model('hr_model')
+            self.heartRate: Sequential = load_model('heartrate_model')
             self.sao2: Sequential = load_model('sao2_model')
-            self.respiration: Sequential = load_model('resp_model')
+            self.respiration: Sequential = load_model('respiration_model')
             self.systolic: Sequential = load_model('systolic_model')
             self.diastolic: Sequential = load_model('diastolic_model')
         except IOError as err:

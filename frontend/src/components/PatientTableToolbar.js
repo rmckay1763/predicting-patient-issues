@@ -73,7 +73,7 @@ export default function PatientTableToolbar({ setCriticalOnly, setQuery }) {
         <BaseToolbar title="Patients" ref={toolbar} >
             <StyledFormControlLabel 
                 control={<StyledSwitch className='CustomSwitch'/>}
-                label={"Critical Only"}
+                label={"Alerts only"}
                 onChange={onCriticalOnlyChanged} />
             {SearchBox()}
         </BaseToolbar>

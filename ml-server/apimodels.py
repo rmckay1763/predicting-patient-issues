@@ -1,6 +1,4 @@
-from datetime import datetime
 from pydantic import BaseModel
-from typing import Any, Optional, List
 
 class Vital(BaseModel):
     '''
@@ -9,7 +7,6 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
 
@@ -20,3 +17,10 @@ class Status(BaseModel):
     '''
     id: int
     text: str
+
+class Prediction(BaseModel):
+    '''
+    Represents the predicted vitals and status from a call to the ml server.
+    '''
+    vitals: Vital
+    status: Status

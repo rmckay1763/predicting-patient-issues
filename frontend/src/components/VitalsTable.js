@@ -55,11 +55,6 @@ export default function VitalsTable({ data }) {
             right: true
         },
         {
-            name: 'CVP',
-            selector: row => row.cvp,
-            right: true
-        },
-        {
             name: 'Systolic',
             selector: row => row.systolic,
             right: true

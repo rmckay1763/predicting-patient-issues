@@ -9,7 +9,6 @@ class Vital(BaseModel):
     heart_rate: int
     sao2: int
     respiration: int
-    cvp: int
     systolic: int
     diastolic: int
 
@@ -30,4 +29,11 @@ class Patient(BaseModel):
     lastname: str
     age: Optional[int] = None
     gender: Optional[str] = None
+    status: Status
+
+class Prediction(BaseModel):
+    '''
+    Represents the predicted vitals and status from a call to the ml server.
+    '''
+    vitals: Vital
     status: Status

@@ -34,7 +34,7 @@ export default function PatientTable() {
         });
         if (criticalOnly) {
             temp = temp.filter((patient) => {
-                return patient.status.text === 'Critical';
+                return patient.status.text === 'Alert';
             });
         }
         setData(temp);
@@ -113,7 +113,7 @@ export default function PatientTable() {
     // conditional styling for critical status
     const conditionalCellStyles = [
         {
-            when: row => row.status.text === 'Critical',
+            when: row => row.status.text === 'Alert',
             style: {
                 backgroundColor: Colors.alert,
                 color: Colors.white

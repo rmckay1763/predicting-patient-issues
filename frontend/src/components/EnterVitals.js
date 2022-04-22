@@ -26,13 +26,11 @@ export default function EnterVitals() {
     const [heartRate, setHeartRate] = useState("");
     const [sao2, setSao2] = useState("");
     const [respiration, setRespiration] = useState("");
-    const [cvp, setCvp] = useState("");
     const [systolic, setSystolic] = useState("");
     const [diastolic, setDiastolic] = useState("");
     const [heartRateError, setHeartRateError] = useState(false);
     const [sao2Error, setSao2Error] = useState(false);
     const [respirationError, setRespirationError] = useState(false);
-    const [cvpError, setCvpError] = useState(false);
     const [systolicError, setSystolicError] = useState(false);
     const [diastolicError, setDiastolicError] = useState(false);
 
@@ -44,7 +42,6 @@ export default function EnterVitals() {
         setHeartRate("");
         setSao2("");
         setRespiration("");
-        setCvp("");
         setSystolic("")
         setDiastolic("")
     }
@@ -56,7 +53,6 @@ export default function EnterVitals() {
             heart_rate: heartRate,
             sao2: sao2,
             respiration: respiration,
-            cvp: cvp,
             systolic: systolic,
             diastolic: diastolic
         }
@@ -157,18 +153,6 @@ export default function EnterVitals() {
                         onChange={(e) => {
                             setRespirationError(e.target.value < 0);
                             setRespiration(e.target.value);
-                        }} />
-                    <StyledTextField
-                        type="number"
-                        InputProps={{ inputProps: { min: 0 } }}
-                        required
-                        label="CVP"
-                        value={cvp}
-                        error={cvpError}
-                        helperText={cvpError ? "CVP must be positive." : ""}
-                        onChange={(e) => {
-                            setCvpError(e.target.value < 0);
-                            setCvp(e.target.value);
                         }} />
                     <StyledTextField
                         type="number"

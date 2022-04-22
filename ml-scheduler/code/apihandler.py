@@ -5,7 +5,7 @@ from requests.exceptions import HTTPError, ConnectionError
 import requests
 from dotenv import load_dotenv
 from pydantic.tools import parse_obj_as
-from apimodels import Vital, Patient, Status
+from apimodels import Vital, Patient, Prediction
 
 class APIHandler:
     '''
@@ -145,15 +145,15 @@ class APIHandler:
         else:
             return True
 
-    async def getPrediction(self, vitals: List[Vital]) -> Status:
+    async def getPrediction(self, vitals: List[Vital]) -> Prediction:
         '''
-        Gets status prediction from ml api for given patient and vitals.
+        Gets vitals/status prediction from ml api for given list of vitals.
 
         Parameters:
             vitals: List of vitals to get prediction for.
 
         Returns:
-            Status: The predicted status.
+            Prediction: The predicted vitals and status.
         '''
         route = self.mlServer + '/predict'
         payload = []
@@ -168,6 +168,6 @@ class APIHandler:
         except ConnectionError as err:
             raise err
         else:
-            status = response.json()
-            model = parse_obj_as(Status, status)
+            prediction = response.json()
+            model = parse_obj_as(Prediction, prediction)
             return model

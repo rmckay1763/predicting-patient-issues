@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { useNavigate } from "react-router-dom";
 import { InputAdornment } from '@mui/material'
 import BaseToolbar from './BaseToolbar';
 import { 
@@ -17,7 +16,6 @@ import { Icons } from '../resources/Icons';
  */
 export default function RoleTableToolbar({ setQuery, addRole }) {
 
-    const navigate = useNavigate();
     const toolbar = useRef(null);
     const { width } = useComponentWidth(toolbar);
     const breakpoint = 700;

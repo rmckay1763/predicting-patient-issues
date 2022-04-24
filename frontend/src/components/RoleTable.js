@@ -58,11 +58,11 @@ export default function RoleTable() {
     const addRoleHandler = async () => {
         let roleName = prompt("Please enter new role name");
 
-        if(roleName.length == 0)
+        if(roleName.length === 0)
         {
             AlertError(dispatch, "Aborting: Role name is empty");
         }
-        else if(state.roles.some(role => role.name.toLowerCase() == roleName.toLowerCase()))
+        else if(state.roles.some(role => role.name.toLowerCase() === roleName.toLowerCase()))
         {
             AlertError(dispatch, "Aborting: Role '" + roleName + "' already exists");
         }

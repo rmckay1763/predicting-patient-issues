@@ -55,10 +55,10 @@ class ModelService:
         Predicts each vital one time step in future.
 
         Parameters:
-            input (MLInput): Patient and associated vital records.
+            input - Time sequence of vitals, expected length of 5.
 
         Returns:
-            MLVital: Predicted vitals.
+            Vital - Predicted vitals.
         '''
         data = DataProcessor(input)
         data.parseVitals()
@@ -80,13 +80,13 @@ class ModelService:
 
     async def checkVitals(self, vitals: Vital) -> Status:
         '''
-        Check vital .
+        Determine the status based on the given vitals.
 
         Parameters: 
-            vitals (MLVital) - The vitals to predict from.
+            vitals - The vitals to check.
 
         Returns:
-            Status - Status object for the predicted status.
+            Status: Normal status if vitals in safe range, Alert status otherwise.
         '''
         return self.normal if self.checkBounds(vitals) else self.alert
 
@@ -98,7 +98,7 @@ class ModelService:
             vitals - Vital object to check.
 
         Returns:
-            bool - True if all vitals within safe range, false otherwise.
+            bool: True if all vitals within safe range, false otherwise.
         '''
         return (
             self.checkRange(
@@ -130,7 +130,7 @@ class ModelService:
 
     def checkRange(self, value, upper, lower) -> bool:
         '''
-        Check if a value is within a given range
+        Check if a value is within a given range.
 
         Parameters:
             value - The value to check.

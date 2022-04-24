@@ -14,7 +14,7 @@ def handleException(err: Union[ValueError, HTTPException]) -> None:
     Handles exceptions from ml models.
 
     Parameters:
-        err: The exception raised by one of the models.
+        err - The exception raised by one of the models.
 
     Raises:
         HTTPException: To return to api caller.
@@ -33,11 +33,11 @@ def log(input: List[Vital], futureVitals: Vital, futureStatus: Status) -> None:
     Logs input and predictions to rotating log files. 
 
     Parameters:
-        MLInput - Input passed to ml models.
+        input - List of vitals to feed models.
 
-        futureVitals - Predicted vitals returned from ml models.
+        futureVitals - Predicted vitals returned from forecasters.
 
-        futureStatus - Predicted status returned from classifier.
+        futureStatus - Predicted status status based on future vitals.
     '''
     message = 'Previous 5 vital records:'
     mlLogger.log(message, level=LogHandler.INFO)
@@ -56,15 +56,15 @@ async def healthCheck() -> bool:
     return True
 
 @app.post('/predict')
-async def predict(input: List[Vital]) -> Status:
+async def predict(input: List[Vital]) -> Prediction:
     '''
-    Predicts status from patient vitals.
+    Predicts future vitals/status from list of vitals.
 
     Parameters:
-        input (MLInput): Patient object and list of Vital objects.
+        input - List of vitals sorted by time in descending order. 
 
     Returns:
-        Status: Status object for the predicted status.
+        Prediction: Predicted vitals and status.
     '''
     try:
         futureVitals = await service.predictVitals(input)

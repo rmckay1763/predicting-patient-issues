@@ -1,15 +1,17 @@
 from tensorflow.keras.models import load_model
 from tensorflow.keras import Sequential
-from typing import List, Union
+from typing import List
 from fastapi import HTTPException
 from numpy import ndarray, sum
 
 class ModelHandler:
     '''
     Provides access to predict method of ml models.
+    Note: The predict methods expect a time sequence with 5 items.
     '''
 
     inputSize = 5
+    'Number of items in time sequence expected by forecasting models.'
 
     def __init__(self) -> None:
         '''
@@ -24,12 +26,15 @@ class ModelHandler:
         except IOError as err:
             raise err
 
-    def validateData(self, data: List[Union[int, float]]) -> None:
+    def validateData(self, data: List[int]) -> None:
         '''
         Validates the number of records in a list of vitals.
 
         Parameters:
             data - List of a single vital, e.g. list of heart rate recordings.
+
+        Raises:
+            HTTPException: If number of items in sequence not equal to expected length.
         '''
         if len(data) != self.inputSize:
             raise HTTPException(422, detail=f'Number of records not equal to {self.inputSize}')
@@ -39,7 +44,7 @@ class ModelHandler:
         Predicts heart rate.
 
         Parameters:
-            data (list[int]): Previous 5 recorded heart rates.
+            data - Previous 5 recorded heart rates.
 
         Returns:
             int: Next predicted heart rate.
@@ -57,7 +62,7 @@ class ModelHandler:
         Predicts sao2.
 
         Parameters:
-            data (list[int]): Previous 5 recorded sao2 levels.
+            data - Previous 5 recorded sao2 levels.
 
         Returns:
             int: Next predicted sao2 level.
@@ -75,7 +80,7 @@ class ModelHandler:
         Predicts respiration.
 
         Parameters:
-            data (list[int]): Previous 5 recorded respiration levels.
+            data - Previous 5 recorded respiration levels.
 
         Returns:
             int: Next predicted respiration level.
@@ -93,7 +98,7 @@ class ModelHandler:
         Predicts systolic blood pressure.
 
         Parameters:
-            data (list[int]): Previous 5 recorded systolic levels.
+            data - Previous 5 recorded systolic levels.
 
         Returns:
             int: Next predicted systolic level.
@@ -111,7 +116,7 @@ class ModelHandler:
         Predicts diastolic blood pressure.
 
         Parameters:
-            data (list[int]): Previous 5 recorded diastolic levels.
+            data - Previous 5 recorded diastolic levels.
 
         Returns:
             int: Next predicted diastolic level.

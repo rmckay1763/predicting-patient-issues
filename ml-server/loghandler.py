@@ -55,7 +55,7 @@ class LogHandler:
 
             numLogs - Number of files in rotation. Default 1.
 
-            logSize - Limit (bytes) before writing to next log in rotation.
+            logSize - Limit (bytes) before writing to next log in rotation: Default 1e6.
         '''
         self.format = self.REGULAR
         self.logger = logging.getLogger(name)

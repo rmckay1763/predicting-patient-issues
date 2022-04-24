@@ -4,6 +4,10 @@ from apimodels import Vital
 class DataProcessor:
     '''
     Class to prepare patient/vital data for ml models.
+
+    !!!IMPORTANT!!! Constructor expects list of vitals sorted by time in descending order.
+    Expects five minute intervals between each vital. parseVitals method prepares the
+    input for the forecasting models based on this assumption.
     '''
 
     def __init__(self, vitals: List[Vital]) -> None:
@@ -11,8 +15,7 @@ class DataProcessor:
         Constructor.
 
         Parameters:
-            patient (Patient): The patient to send to the ml models.
-            vitals (list[Vital]): Vitals records for selected patient.
+            vitals - List of vitals sorted by time in descending order. 
         '''
         self.vitals = vitals
         self.heart_rate = []
@@ -35,7 +38,7 @@ class DataProcessor:
 
     def orderVitals(self) -> None:
         '''
-        Sort vitals in descending order for ml models.
+        Resorts vitals in descending order for ml models.
         '''
         self.heart_rate.reverse()
         self.sao2.reverse()

@@ -19,6 +19,8 @@ export const Actions = {
     setPatients: 'set_patients',
     setUsers: 'set_users',
     clearUsers: 'clear_users',
+    setRoles: 'set_roles',
+    clearRoles: 'clear_roles',
     setAlert: 'set_alert',
     clearAlert: 'clear_alert'
 };
@@ -49,6 +51,7 @@ export const GlobalProvider = (props) => {
         user: props.user,
         patients: [],
         users: [],
+        roles: [],
         alert: {open: false, severity: "success", message: ""}
     };
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -81,6 +84,10 @@ const reducer = (state, { type, payload }) => {
             return { ...state, users: payload };
         case Actions.clearUsers:
             return { ...state, users: [] };
+        case Actions.setRoles:
+            return { ...state, roles: payload };
+        case Actions.clearRoles:
+            return { ...state, roles: [] };
         case Actions.setAlert:
             return { ...state, alert: payload };
         case Actions.clearAlert:

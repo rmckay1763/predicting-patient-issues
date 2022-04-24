@@ -31,7 +31,7 @@ export const ChangePassword = async (token, update) => {
 }
 
 export const GetUsers = async (token) => {
-    let path = "api/user/fetchAllUsers";
+    let path = "api/user/fetchAllUsersMinusCaller";
     let headers = { Authorization: `Bearer ${token}` };
     return axios.get(path, { headers: headers });
 }
@@ -64,7 +64,8 @@ export const GetRoles = async (token) => {
 export const AddRole = async (token, role) => {
     let path = "api/user/addRole";
     let headers = { Authorization: `Bearer ${token}` };
-    return axios.post(path, role, { headers: headers });
+    let params = { name: role }
+    return axios.post(path, params, { headers: headers });
 }
 
 export const DeleteRole = async (token, id) => {

@@ -38,6 +38,7 @@ class UserRouter:
         '''
         self.router.get("/fetchAllRanks")(self.fetchAllRanks)
         self.router.get("/fetchAllUsers")(self.fetchAllUsers)
+        self.router.get("/fetchAllUsersMinusCaller")(self.fetchAllUsersMinusCaller)
         self.router.get("/fetchUser")(self.fetchUser)
         self.router.post("/addUser/")(self.addUser)
         self.router.put("/updateUser")(self.updateUser)
@@ -70,6 +71,19 @@ class UserRouter:
         try:
             await self.authenticate(uid, None)
             return await self.service.fetchAllUsers()
+        except BaseException as err:
+            raise err
+
+    async def fetchAllUsersMinusCaller(self, uid=Depends(auth.auth_wrapper)) -> List[UserOut]:
+        """
+        Route to fetch all rows from the user table excluding the caller.
+
+        Returns:
+            list[UserOut]: All users (minus calling user) as a list of UserOut objects.
+        """
+        try:
+            await self.authenticate(uid, None)
+            return await self.service.fetchAllUsersMinusCaller(uid)
         except BaseException as err:
             raise err
 

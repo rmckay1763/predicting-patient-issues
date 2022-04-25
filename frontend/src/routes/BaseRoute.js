@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetPatients, GetRoles, GetUsers } from "../controllers/APIController";
+import { GetPatients, GetRoles, GetUsers, GetRanks } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -34,13 +34,17 @@ export default function BaseRoute(props) {
     const loadAdminData = useCallback(async () => {
         if (!state.user.admin) {
             dispatch({ type: Actions.clearUsers });
+            dispatch({ type: Actions.clearRoles });
+            dispatch({ type: Actions.clearRanks });
             return;
         }
         try {
-            const response = await GetUsers(state.token);
+            let response = await GetUsers(state.token);
             dispatch({ type: Actions.setUsers, payload: response.data });
-            const response2 = await GetRoles(state.token);
-            dispatch({ type: Actions.setRoles, payload: response2.data });
+            response = await GetRoles(state.token);
+            dispatch({ type: Actions.setRoles, payload: response.data });
+            response = await GetRanks(state.token);
+            dispatch({ type: Actions.setRanks, payload: response.data });
         } catch (error) {
             console.log(error);
         }

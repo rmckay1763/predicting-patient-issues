@@ -64,6 +64,12 @@ export default function DrawerComponent() {
                             icon={Icons.admin} 
                             text='Manage Users' />
                     }
+                    {state.user.admin && 
+                        <DrawerListItem 
+                            to="/roles"
+                            icon={Icons.admin} 
+                            text='Manage Roles' />
+                    }
                 </StyledList>
             </Drawer>
             <IconButton 

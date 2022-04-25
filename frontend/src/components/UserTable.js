@@ -46,7 +46,7 @@ export default function UserTable() {
         setDeleteUser(true);
     }
 
-    // click handler for delete column on table
+    // click handler for delete column on table.
     const deleteUserCallback = async () => {
         try {
             await DeleteUser(state.token, selectedUser.uid);

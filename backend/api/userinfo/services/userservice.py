@@ -112,6 +112,24 @@ class UserService:
         except BaseException as err:
             raise err
 
+    async def fetchAllUsersMinusCaller(self, uid) -> List[UserOut]:
+        '''
+        Fetch and hydrate all users from the table.
+
+        Returns:
+            List[UserOut]: All users as list of UserOut models.
+        '''
+        try:
+            outList: List[UserOut] = []
+            users = await self.users.fetchAll()
+            for user in users:
+                if (user.uid != uid):
+                    out = await self.__hydrateUser(user)
+                    outList.append(out)
+            return outList
+        except BaseException as err:
+            raise err
+
     async def addUser(self, userInfo: UserIn) -> dict:
         '''
         Inserts a user into the user table.

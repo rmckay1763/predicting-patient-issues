@@ -3,7 +3,7 @@ import { ReflexContainer, ReflexSplitter, ReflexElement } from 'react-reflex'
 import 'react-reflex/styles.css'
 import { BrowserView, MobileView } from 'react-device-detect';
 import { useGlobal, Actions } from "../contexts/GlobalContext";
-import { GetPatients, GetUsers } from "../controllers/APIController";
+import { GetPatients, GetRoles, GetUsers } from "../controllers/APIController";
 import { useViewport } from "../contexts/Dimensions";
 import Navbar from "../components/NavBar";
 import NotificationPanel from "../components/NotificationPanel";
@@ -39,6 +39,8 @@ export default function BaseRoute(props) {
         try {
             const response = await GetUsers(state.token);
             dispatch({ type: Actions.setUsers, payload: response.data });
+            const response2 = await GetRoles(state.token);
+            dispatch({ type: Actions.setRoles, payload: response2.data });
         } catch (error) {
             console.log(error);
         }

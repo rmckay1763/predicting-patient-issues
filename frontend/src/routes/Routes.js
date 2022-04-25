@@ -12,6 +12,7 @@ import { CheckAdminToken, CheckToken } from "../controllers/APIController";
 import UserTable from "../components/UserTable";
 import AddUserForm from "../components/AddUserForm";
 import NotificationPage from "../components/NotificationPage";
+import RoleTable from "../components/RoleTable";
 
 /**
  * Wrapper for authentication routes
@@ -77,6 +78,17 @@ export const AddUserRoute = () => (
     </BaseRoute>
   </AdminAuthRoute>
 )
+
+/**
+ * @returns Component for role table route
+ */
+ export const RoleTableRoute = () => (
+  <AdminAuthRoute>
+    <BaseRoute>
+      <RoleTable />
+    </BaseRoute>
+  </AdminAuthRoute>
+  )
 
 /**
  * @returns Component for patient table route

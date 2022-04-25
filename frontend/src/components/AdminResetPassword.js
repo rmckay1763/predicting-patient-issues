@@ -9,7 +9,7 @@ import {
     StyledTypography, 
   } from '../resources/StyledComponents';
 import { AlertError, AlertSuccess} from './AlertMessage';
-
+import { ChangePassword } from '../controllers/APIController';
 import BaseToolbar from './BaseToolbar';
 
 import { Icons } from '../resources/Icons';
@@ -21,6 +21,7 @@ export default function AdminResetPassword () {
     const [state, dispatch] = useGlobal();
     const location = useLocation();
     const user = location.state.user;
+    const token = state.token;
     const title = "Reset User Password: " + user.username;
 
     const [newPassword, setNewPassword] = useState();
@@ -28,9 +29,33 @@ export default function AdminResetPassword () {
 
     useEffect(() => {
         document.title = ("PPCD - Reset User Password");
-    }, [state]);
+    }, []);
 
-    const handleSubmit = async (e) => {};
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        let updated = {
+            uid: user.uid,
+            password: newPassword
+        }
+        if (newPassword !== confirmedPassword) {
+            AlertError(dispatch, "Passwords do not match!");
+            return;
+        }
+        try {
+            // update with new password
+            let response = await ChangePassword(token, updated);
+            console.log(response.data);
+            if (response.data) {
+                AlertSuccess(dispatch, "Password has been changed!");
+                return navigate('/editUser', {state: {uid: user.uid}});
+            } else {
+              throw Error("Failed to update password");
+            }
+        } catch (error) {
+            AlertError(dispatch, "Failed to update password");
+            console.log(error.message);
+        }
+    };
 
     return (
         <Fragment>
@@ -55,7 +80,7 @@ export default function AdminResetPassword () {
             >
                 <Stack spacing={2} padding={2} >
                     <StyledTypography variant="subtitle1" textAlign="center">
-                        This will reset the password of {user.username}. Proceed with caution and notify them of changes immediately.
+                        This will reset the password of {user.username}. Proceed with caution.
                     </StyledTypography>
                     <StyledTextField
                         required

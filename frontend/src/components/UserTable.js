@@ -40,6 +40,15 @@ export default function UserTable() {
         )
     }
 
+    const returnAdmin = (row) => {
+        if (row.admin === true) {
+            return "True";
+        }
+        else {
+            return "False";
+        }
+    }
+
     // theme for table
     createTheme(
         'theme',
@@ -129,6 +138,11 @@ export default function UserTable() {
         {
             name: 'Role',
             selector: row => row.role.name,
+            sortable: true
+        },
+        {
+            name: 'Admin Status',
+            selector: (row ) => returnAdmin(row),
             sortable: true
         },
     ];

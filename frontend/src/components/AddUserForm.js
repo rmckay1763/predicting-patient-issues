@@ -1,7 +1,6 @@
-import { Divider, Box, Autocomplete  } from '@mui/material';
+import { Divider, Box, Autocomplete, Checkbox, MenuItem  } from '@mui/material';
 import BaseToolbar from './BaseToolbar';
 import { useState } from 'react';
-import { Checkbox } from '@mui/material';
 import { AddUser } from '../controllers/APIController';
 import { useGlobal } from '../contexts/GlobalContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +11,6 @@ import {
   StyledTypography, 
   StyledFormControlLabel
 } from '../resources/StyledComponents';
-import { MenuItem } from "@mui/material";
 import { AlertError, AlertSuccess} from './AlertMessage';
 import { Icons } from '../resources/Icons';
 import { Colors } from '../resources/Colors';
@@ -34,13 +32,20 @@ export default function AddUserForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let rankVal = 0;
+        for (let i = 0; i < 28; i++) {
+          if (rank === ranks[i]) {
+            rankVal = i + 1;
+          }
+        }
+
         if (password === confirmedPassword)
         {
             let userInfo = {
                 firstname: firstname,
                 lastname: lastname,
                 username: username,
-                rank: rank.id,
+                rank: rankVal,
                 role: role,
                 admin: isAdmin,
                 password: password
@@ -186,32 +191,33 @@ export default function AddUserForm() {
     )
 }
 
-const ranks = [
-  { id: 1, label: 'Civilian'},
-  { id: 2, label: 'Other'},
-  { id: 3, label: 'Seaman Recruit'},
-  { id: 4, label: 'Seaman Apprentice'},
-  { id: 5, label: 'Seaman'},
-  { id: 6, label: 'Petty Officer Third Class'},
-  { id: 7, label: 'Petty Officer Second Class'},
-  { id: 8, label: 'Petty Officer First Class'},
-  { id: 9, label: 'Chief Petty Officer'},
-  { id: 10, label: 'Senior Chief Petty Officer'},
-  { id: 11, label: 'Master Chief Petty Officer'},
-  { id: 12, label: 'Command Master Chief Petty Officer'},
-  { id: 13, label: 'Master Chief Petty Officer Of The Navy'},
-  { id: 14, label: 'Chief Warrant Officer 2'},
-  { id: 15, label: 'Chief Warrant Officer 3'},
-  { id: 16, label: 'Chief Warrant Officer 4'},
-  { id: 17, label: 'Chief Warrant Officer 5'},
-  { id: 18, label: 'Ensign'},
-  { id: 19, label: 'Lieutenant, Junior Grade'},
-  { id: 20, label: 'Lieutenant'},
-  { id: 21, label: 'Lieutenant Commander'},
-  { id: 22, label: 'Captain'},
-  { id: 23, label: 'Rear Admiral Lower Half'},
-  { id: 24, label: 'Rear Admiral Upper Half'},
-  { id: 25, label: 'Vice Admiral'},
-  { id: 26, label: 'Admiral'},
-  { id: 27, label: 'Fleet Admiral'},
+export const ranks = [
+  'Civilian',
+  'Other',
+  'Seaman Recruit',
+  'Seaman Apprentice',
+  'Seaman',
+  'Petty Officer Third Class',
+  'Petty Officer Second Class',
+  'Petty Officer First Class',
+  'Chief Petty Officer',
+  'Senior Chief Petty Officer',
+  'Master Chief Petty Officer',
+  'Command Master Chief Petty Officer',
+  'Master Chief Petty Officer Of The Navy',
+  'Chief Warrant Officer 2',
+  'Chief Warrant Officer 3',
+  'Chief Warrant Officer 4',
+  'Chief Warrant Officer 5',
+  'Ensign',
+  'Lieutenant, Junior Grade',
+  'Lieutenant',
+  'Lieutenant Commander',
+  'Commander',
+  'Captain',
+  'Rear Admiral Lower Half',
+  'Rear Admiral Upper Half',
+  'Vice Admiral',
+  'Admiral',
+  'Fleet Admiral'
 ];

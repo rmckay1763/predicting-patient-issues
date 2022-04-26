@@ -4,7 +4,7 @@ import { Stack, Typography, Box, Divider } from "@mui/material"
 import { DeletePatient, GetVitals } from "../controllers/APIController";
 import { useGlobal } from "../contexts/GlobalContext";
 import PatientProfileToolbar from "./PatientProfileToolbar";
-import ConfirmDialog from "./ConfirmDialog";
+import { ConfirmDialog } from "./Dialog";
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import { Colors } from "../resources/Colors";
 import VitalsTable from "./VitalsTable";

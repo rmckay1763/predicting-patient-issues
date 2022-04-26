@@ -102,12 +102,14 @@ export default function AddUserForm() {
     const UserAttributeFields = () => (
         <Stack spacing={2} direction="row">
             <Autocomplete
+                isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(event, newValue) => setRank(newValue)}
                 options={state.ranks}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => <StyledTextField required {...params} label="Rank" />}
             />
             <Autocomplete
+                isOptionEqualToValue={(option, value) => option.id === value.id}
                 onChange={(event, newValue) => setRole(newValue)}
                 options={state.roles}
                 getOptionLabel={(option) => option.name}

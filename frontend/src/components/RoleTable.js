@@ -3,12 +3,12 @@ import DataTable, {createTheme} from 'react-data-table-component';
 import { useNavigate } from 'react-router-dom';
 import { AddRole, DeleteRole } from '../controllers/APIController';
 import { Colors } from '../resources/Colors';
-import ConfirmDialog from "./ConfirmDialog";
 import { useGlobal } from '../contexts/GlobalContext';
 import { Icons } from '../resources/Icons';
 import { IconButton } from '@mui/material';
 import { AlertError, AlertSuccess } from "./AlertMessage";
 import RoleTableToolbar from './RoleTableToolbar';
+import { InputDialogue, ConfirmDialog } from './Dialog';
 
 /**
  * 
@@ -20,12 +20,15 @@ export default function RoleTable() {
     const [data, setData] = useState([]);
     const [query, setQuery] = useState([]);
     const [deleteRole, setDeleteRole] = useState(false);
+    const [addRole, setAddRole] = useState(false);
     const [deleteMessage, setDeleteMessage] = useState('');
+    const [addRoleMessage, setAddRoleMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState();
     const navigate = useNavigate();
     document.title = "PPCD Admin - Roles";
 
     useEffect(() => {
+        setAddRoleMessage("Please enter a new role name.")
         let temp = state.roles;
         temp = temp.filter((role) => {
             return (
@@ -55,8 +58,7 @@ export default function RoleTable() {
         }
     )
 
-    const addRoleHandler = async () => {
-        let roleName = prompt("Please enter new role name");
+    const addRoleHandler = async (roleName) => {
 
         if(roleName.length === 0)
         {
@@ -163,7 +165,7 @@ export default function RoleTable() {
 
     return (
         <Fragment>
-            <RoleTableToolbar setQuery={setQuery} addRole={addRoleHandler} />
+            <RoleTableToolbar setQuery={setQuery} addRole={setAddRole} />
             <DataTable
                 theme='theme'
                 keyField='ID'
@@ -180,6 +182,13 @@ export default function RoleTable() {
                 onConfirm={deleteRoleCallback}
                 title="Confirmation Required"
                 content={deleteMessage}
+            />
+            <InputDialogue
+                open={addRole}
+                setOpen={setAddRole}
+                onSubmit={addRoleHandler}
+                title="Add New Role"
+                content={addRoleMessage}
             />
         </Fragment>
     );

@@ -27,6 +27,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
 import CheckIcon from '@mui/icons-material/Check';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import AddCard from '@mui/icons-material/AddCard';
 
 
 export const Icons = {
@@ -55,7 +56,7 @@ export const Icons = {
     unknown: <HelpIcon />,
     submit: <CheckIcon />,
     reset: <RestartAltIcon />,
-
+    role: <AddCard />
 }
 
 export const IconsLarge = {

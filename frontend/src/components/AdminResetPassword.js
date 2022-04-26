@@ -11,28 +11,32 @@ import {
 import { AlertError, AlertSuccess} from './AlertMessage';
 import { ChangePassword } from '../controllers/APIController';
 import BaseToolbar from './BaseToolbar';
+import { ConfirmDialog } from "./Dialog";
 
 import { Icons } from '../resources/Icons';
-import { Colors } from '../resources/Colors';
 
 export default function AdminResetPassword () {
 
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();
     const location = useLocation();
-    const user = location.state.user;
-    const token = state.token;
-    const title = "Reset User Password: " + user.username;
-
-    const [newPassword, setNewPassword] = useState();
-    const [confirmedPassword, setConfirmedPassword] = useState();
+    const [user, setUser] = useState(location.state.user);
+    const [title, setTitle] = useState("");
+    const [confirmMessage, setConfirmMessage] = useState("");
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmedPassword, setConfirmedPassword] = useState("");
 
     useEffect(() => {
         document.title = ("PPCD - Reset User Password");
-    }, []);
+        let message = "Reset User Password: " + user.username;
+        setTitle(message);
+        message = "This action will permanently reset the password" +
+            "Please record updateded password and inform " + user.username;
+        setConfirmMessage(message)
+    }, [user]);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         let updated = {
             uid: user.uid,
             password: newPassword
@@ -43,7 +47,7 @@ export default function AdminResetPassword () {
         }
         try {
             // update with new password
-            let response = await ChangePassword(token, updated);
+            let response = await ChangePassword(state.token, updated);
             console.log(response.data);
             if (response.data) {
                 AlertSuccess(dispatch, "Password has been changed!");
@@ -70,8 +74,6 @@ export default function AdminResetPassword () {
             </BaseToolbar>
 
             <Box
-                component="form"
-                onSubmit={handleSubmit}
                 sx={{
                     mt: 5,
                     display: "flex",
@@ -85,19 +87,30 @@ export default function AdminResetPassword () {
                     <StyledTextField
                         required
                         autoFocus
+                        type="password"
                         label="New Password"
                         display="block"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)} />
                     <StyledTextField
                         required
+                        type="password"
                         label="Confirm New Password"
                         display="block"
                         value={confirmedPassword}
                         onChange={(e) => setConfirmedPassword(e.target.value)} />
-                    <StyledButtonPrimary type="submit">Reset Password</StyledButtonPrimary>
+                    <StyledButtonPrimary onClick={() => setOpenConfirm(true)}>
+                        Reset Password
+                    </StyledButtonPrimary>
                 </Stack>
             </Box>
+            <ConfirmDialog
+                open={openConfirm}
+                setOpen={setOpenConfirm}
+                onConfirm={handleSubmit}
+                title="Confirmation Required"
+                content={confirmMessage}
+            />
         </Fragment>
     )
 }

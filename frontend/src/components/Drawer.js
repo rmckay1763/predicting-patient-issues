@@ -67,7 +67,7 @@ export default function DrawerComponent() {
                     {state.user.admin && 
                         <DrawerListItem 
                             to="/roles"
-                            icon={Icons.admin} 
+                            icon={Icons.role} 
                             text='Manage Roles' />
                     }
                 </StyledList>

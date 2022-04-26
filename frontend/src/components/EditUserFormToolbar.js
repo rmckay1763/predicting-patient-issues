@@ -15,10 +15,6 @@ export default function EditUserFormToolbar(props) {
     const breakpoint = 750; 
     const title = "Edit User: " + props.user.username;
 
-    const onSubmit = () => {
-        props.onSubmit(true);
-    }
-
     const resetPassword = () => {
         return navigate("/resetPassword", {state: {user: props.user}});
     }
@@ -36,9 +32,6 @@ export default function EditUserFormToolbar(props) {
      */
     const reduced = () => (
         <BaseToolbar title={title} ref={toolbar}>
-            <StyledIconButton onClick={onSubmit} >
-                {Icons.submit}
-            </StyledIconButton>
             <StyledIconButton onClick={resetPassword} >
                 {Icons.reset}
             </StyledIconButton>
@@ -56,12 +49,6 @@ export default function EditUserFormToolbar(props) {
      */
     const full = () => (
         <BaseToolbar title={title} ref={toolbar}>
-            <StyledButtonSecondary 
-                startIcon={Icons.submit}
-                onClick={onSubmit}
-            >
-                Submit Changes
-            </StyledButtonSecondary>
             <StyledButtonSecondary 
                 startIcon={Icons.reset}
                 onClick={resetPassword}

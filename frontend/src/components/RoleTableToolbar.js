@@ -32,7 +32,7 @@ export default function RoleTableToolbar({ setQuery, addRole }) {
      * Handler for add role button.
      */
     const onAddRole = () => {
-        addRole();
+        addRole(true);
     }
 
     /**

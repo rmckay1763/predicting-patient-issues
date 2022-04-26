@@ -42,6 +42,12 @@ export const AddUser = async (token, userInfo) => {
     return axios.post(path, userInfo, { headers: headers });
 }
 
+export const UpdateUser = async (token, userInfo) => {
+    let path = "api/user/updateUser";
+    let headers = { Authorization: `Bearer ${token}` };
+    return axios.put(path, userInfo, { headers: headers });
+}
+
 export const DeleteUser = async (token, uid) => {
     let path = "api/user/deleteUser";
     let headers = { Authorization: `Bearer ${token}` };

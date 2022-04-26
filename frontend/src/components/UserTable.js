@@ -4,19 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useGlobal } from '../contexts/GlobalContext';
 import { Icons } from '../resources/Icons';
 import { Colors } from '../resources/Colors';
-import { IconButton } from '@mui/material';
+import { StyledIconButton } from '../resources/StyledComponents';
 import UserTableToolbar from './UserTableToolbar';
-import { DeleteUser } from '../controllers/APIController';
-import ConfirmDialog from "./ConfirmDialog";
-import { AlertError, AlertSuccess } from "./AlertMessage";
 
 export default function UserTable() {
     const [state, dispatch] = useGlobal();
     const [data, setData] = useState([]);
     const [query, setQuery] = useState([]);
-    const [deleteUser, setDeleteUser] = useState(false);
-    const [deleteMessage, setDeleteMessage] = useState('');
-    const [selectedUser, setSelectedUser] = useState();
     const navigate = useNavigate();
     document.title = "PPCD Admin - Users";
 
@@ -32,60 +26,27 @@ export default function UserTable() {
         setData(temp);
     }, [state.users, query]);
 
-
     // click handler for table rows
     const onRowClicked = (row) => {
-        return
-    }
-
-    const onDelete = (row) => {
-        let selected = state.users.find((user) => user.uid === row.uid);
-        setSelectedUser(selected);
-        let message = `Are you sure you want to delete user '${selected.username}'?`;
-        setDeleteMessage(message);
-        setDeleteUser(true);
-    }
-
-    // click handler for delete column on table.
-    const deleteUserCallback = async () => {
-        try {
-            await DeleteUser(state.token, selectedUser.uid);
-            AlertSuccess(dispatch, "User deleted");
-            return navigate("/users")
-        } catch (error) {
-            console.error(error);
-            AlertError(dispatch, "Failed to delete user");
-        }
+        navigate('/editUser', {state: {uid: row.uid}})
     }
 
     // action button for user profile
-    const profileButton = (row) => {
+    const editUserButton = (row) => {
         return (
-            <IconButton
-                onClick={() => onRowClicked(row)}
-                sx={{
-                    color: Colors.primary,
-                    '&:hover': { color: Colors.secondary, background: Colors.primary }
-                }}
-            >
-                {Icons.patientProfile}
-            </IconButton>
+            <StyledIconButton onClick={() => onRowClicked(row)} >
+                {Icons.edit}
+            </StyledIconButton>
         )
     }
 
-    // action button for deleting user
-    const deleteButton = (row) => {
-        return (
-            <IconButton
-                onClick={() => onDelete(row)}
-                sx={{
-                    color: Colors.primary,
-                    '&:hover': { color: Colors.secondary, background: Colors.primary }
-                }}
-            >
-                {Icons.delete}
-            </IconButton>
-        )
+    const returnAdmin = (row) => {
+        if (row.admin === true) {
+            return "True";
+        }
+        else {
+            return "False";
+        }
     }
 
     // theme for table
@@ -152,7 +113,7 @@ export default function UserTable() {
         },
         {
             button: true,
-            cell: (row) => profileButton(row)
+            cell: (row) => editUserButton(row)
         },
         {
             name: 'Username',
@@ -180,8 +141,9 @@ export default function UserTable() {
             sortable: true
         },
         {
-            button: true,
-            cell: (row) => deleteButton(row)
+            name: 'Admin Status',
+            selector: (row ) => returnAdmin(row),
+            sortable: true
         },
     ];
 
@@ -198,13 +160,6 @@ export default function UserTable() {
                 columns={columns}
                 data={data}
                 customStyles={customStyles}
-            />
-            <ConfirmDialog
-                open={deleteUser}
-                setOpen={setDeleteUser}
-                onConfirm={deleteUserCallback}
-                title="Confirmation Required"
-                content={deleteMessage}
             />
         </Fragment>
     );

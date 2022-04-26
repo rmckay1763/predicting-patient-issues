@@ -10,7 +10,9 @@ import {
   UserTableRoute,
   AddUserRoute,
   NotificationRoute,
-  RoleTableRoute
+  RoleTableRoute,
+  EditUserRoute,
+  ResetPasswordRoute
 } from "./routes/Routes";
 import { GlobalProvider } from "./contexts/GlobalContext";
 
@@ -67,6 +69,14 @@ export default function App() {
             exact
             path="/notifications"
             element={<NotificationRoute/>} />
+          <Route
+            exact
+            path="/editUser"
+            element={<EditUserRoute/>} />
+          <Route
+            exact
+            path="/resetPassword"
+            element={<ResetPasswordRoute/>} />
         </Routes>
       </Router>
     </GlobalProvider>

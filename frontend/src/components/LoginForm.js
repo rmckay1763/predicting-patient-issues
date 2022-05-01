@@ -10,6 +10,9 @@ import {
 } from "../resources/StyledComponents";
 import { Colors } from "../resources/Colors";
 
+/**
+ * @returns Component to login to the application.
+ */
 export default function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

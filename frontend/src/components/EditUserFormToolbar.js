@@ -8,6 +8,11 @@ import BaseToolbar from './BaseToolbar';
 import { useComponentWidth } from "../contexts/Dimensions";
 import { Icons } from '../resources/Icons';
 
+/**
+ * @props {object} user - The selected user to edit. 
+ * @Props {function} onDelete - Callback for the delete user button.
+ * @returns Toolbar for the edit user form component.
+ */
 export default function EditUserFormToolbar(props) {
     const navigate = useNavigate();
     const toolbar = useRef(null);

@@ -47,6 +47,9 @@ def log(input: List[Vital], futureVitals: Vital, futureStatus: Status) -> None:
     mlLogger.log(message, level=LogHandler.INFO, format=LogHandler.PLAIN)
     message = 'Predicted status: ' + str(futureStatus)
     mlLogger.log(message, level=LogHandler.INFO, format=LogHandler.PLAIN)
+    
+
+###################################### API Routes ######################################
 
 @app.get('/health')
 async def healthCheck() -> bool:

@@ -19,6 +19,9 @@ import { AlertError, AlertSuccess } from "./AlertMessage";
 import EditUserFormToolbar from "./EditUserFormToolbar";
 import { Icons } from "../resources/Icons";
 
+/**
+ * @returns Component for an admin to edit a user's information.
+ */
 export default function EditUserForm () {
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();
@@ -68,7 +71,7 @@ export default function EditUserForm () {
 
         setDataLoaded(true)
 
-    }, [state, location.state, resetInput]);
+    }, [state, location.state, dataLoaded, resetInput]);
 
     const onDelete = async() => {
         try {

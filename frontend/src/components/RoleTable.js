@@ -13,7 +13,7 @@ import { InputDialogue, ConfirmDialog } from './Dialog';
 /**
  * 
  * @props {list} data -- The role data to populate the table
- * @returns Component for table of role
+ * @returns Component for table of roles
  */
 export default function RoleTable() {
     const [state, dispatch] = useGlobal();

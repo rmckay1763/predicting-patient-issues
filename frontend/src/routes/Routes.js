@@ -51,7 +51,7 @@ const GenericRoute = ({ children }) => {
 };
 
 /**
- * @returns Component for login route
+ * @returns Component for login route.
  */
 export const LoginRoute = () => (
   <GenericRoute>
@@ -60,7 +60,7 @@ export const LoginRoute = () => (
 )
 
 /**
- * @returns Component for patient table route
+ * @returns Component for patient table route.
  */
 export const UserTableRoute = () => (
   <AdminAuthRoute>
@@ -71,7 +71,7 @@ export const UserTableRoute = () => (
   )
 
  /**
- * @returns Component for new user route
+ * @returns Component for new user route.
  */
 export const AddUserRoute = () => (
   <AdminAuthRoute>
@@ -82,7 +82,29 @@ export const AddUserRoute = () => (
 )
 
 /**
- * @returns Component for role table route
+ * @returns Component a edit user route.
+ */
+ export const EditUserRoute = () =>(
+  <AdminAuthRoute>
+    <BaseRoute>
+      <EditUserForm />
+    </BaseRoute>
+  </AdminAuthRoute>
+)
+
+/**
+ * @returns Component for a reset user password route.
+ */
+export const ResetPasswordRoute = () => (
+  <AdminAuthRoute>
+    <BaseRoute>
+      <AdminResetPassword />
+    </BaseRoute>
+  </AdminAuthRoute>
+)
+
+/**
+ * @returns Component for role table route.
  */
  export const RoleTableRoute = () => (
   <AdminAuthRoute>
@@ -93,7 +115,7 @@ export const AddUserRoute = () => (
   )
 
 /**
- * @returns Component for patient table route
+ * @returns Component for patient table route.
  */
 export const PatientTableRoute = () => (
   <AuthRoute>
@@ -104,7 +126,7 @@ export const PatientTableRoute = () => (
 )
 
 /**
- * @returns Component for edit profile route
+ * @returns Component for edit profile route.
  */
 export const EditProfileRoute = () => (
   <AuthRoute>
@@ -115,7 +137,7 @@ export const EditProfileRoute = () => (
 )
 
 /**
- * @returns Component for patient profile route
+ * @returns Component for patient profile route.
  */
 export const PatientProfileRoute = () => (
   <AuthRoute>
@@ -126,7 +148,7 @@ export const PatientProfileRoute = () => (
 )
 
 /**
- * @returns Component for add patient route
+ * @returns Component for add patient route.
  */
 export const AddPatientRoute = () => (
   <AuthRoute>
@@ -137,7 +159,7 @@ export const AddPatientRoute = () => (
 )
 
 /**
- * @returns Component to enter vitals
+ * @returns Component to enter vitals.
  */
 export const EnterVitalsRoute = () =>(
   <AuthRoute>
@@ -148,7 +170,7 @@ export const EnterVitalsRoute = () =>(
 )
 
 /**
- * @returns Component to edit patient records
+ * @returns Component to edit patient records.
  */
 export const EditPatientRoute = () =>(
   <AuthRoute>
@@ -158,26 +180,13 @@ export const EditPatientRoute = () =>(
   </AuthRoute>
 )
 
+/**
+ * @returns Component for notifications route.
+ */
 export const NotificationRoute = () =>(
   <AuthRoute>
     <BaseRoute>
       <NotificationPage />
-    </BaseRoute>
-  </AuthRoute>
-)
-
-export const EditUserRoute = () =>(
-  <AuthRoute>
-    <BaseRoute>
-      <EditUserForm />
-    </BaseRoute>
-  </AuthRoute>
-)
-
-export const ResetPasswordRoute = () => (
-  <AuthRoute>
-    <BaseRoute>
-      <AdminResetPassword />
     </BaseRoute>
   </AuthRoute>
 )

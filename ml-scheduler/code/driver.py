@@ -46,12 +46,18 @@ async def task() -> None:
             continue
 
 def awaitTask() -> None:
+    '''
+    Wraps above function (task) with async loop to enable threading.
+    '''
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(task())
     loop.close()
 
 def runTask() -> None:
+    '''
+    Runs the task function in an isolated thread.
+    '''
     thread = Thread(target=awaitTask)
     thread.start()
 

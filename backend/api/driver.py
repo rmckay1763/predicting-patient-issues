@@ -63,6 +63,10 @@ class APIDriver:
         api.addRouter(archiveRouter.router)
         return api.app
 
+    '''
+    NOTE:  No need for the following methods if using docker.
+    '''
+
     @staticmethod
     def start() -> None:
         '''
@@ -81,6 +85,6 @@ class APIDriver:
     @staticmethod
     def startDevMode() -> None:
         '''
-        Start the service in development mode (reload mode)
+        Start the service in development mode (hot reloading)
         '''
         uvicorn.run("main:app", host='0.0.0.0', port=8000, reload=True)

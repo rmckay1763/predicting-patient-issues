@@ -7,8 +7,11 @@ import { Colors } from '../resources/Colors';
 import { StyledIconButton } from '../resources/StyledComponents';
 import UserTableToolbar from './UserTableToolbar';
 
+/**
+ * @returns Component to render table of registered user's
+ */
 export default function UserTable() {
-    const [state, dispatch] = useGlobal();
+    const [state,] = useGlobal();
     const [data, setData] = useState([]);
     const [query, setQuery] = useState([]);
     const navigate = useNavigate();

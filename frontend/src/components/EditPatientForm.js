@@ -21,7 +21,7 @@ import { Colors } from "../resources/Colors";
 import { Icons } from "../resources/Icons";
 
 /**
- * @returns Component to add a patient.
+ * @returns Component to edit a patient's information.
  */
 export default function EditPatientForm() {
     const navigate = useNavigate();

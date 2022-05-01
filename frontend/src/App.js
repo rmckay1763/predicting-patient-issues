@@ -19,6 +19,9 @@ import { GlobalProvider } from "./contexts/GlobalContext";
 let token = localStorage.getItem("uid");
 let user = JSON.parse(localStorage.getItem("user"));
 
+/**
+ * @returns Application
+ */
 export default function App() {
 
   return (

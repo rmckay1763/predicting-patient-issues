@@ -19,7 +19,10 @@ import { useGlobal, Actions } from "../contexts/GlobalContext"
 import DrawerComponent from "./Drawer";
 import { StyledMenu } from "../resources/StyledComponents";
 
-function Navbar() {
+/**
+ * @returns Component to render the application's main toolbar.
+ */
+export default function Navbar() {
   const navigate = useNavigate();
   const [state, dispatch] = useGlobal();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -128,5 +131,3 @@ function Navbar() {
     </AppBar>
   );
 }
-
-export default Navbar;

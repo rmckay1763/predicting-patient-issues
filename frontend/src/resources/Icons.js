@@ -1,5 +1,5 @@
 /**
- * Resource file for material icons.
+ * Resource file for material ui icons.
  */
 
 import Search from "@mui/icons-material/Search";

@@ -20,6 +20,9 @@ import BaseToolbar from './BaseToolbar';
 import { AlertError, AlertSuccess} from './AlertMessage';
 import { Icons } from '../resources/Icons';
 
+/**
+ * @returns Component to add a new user to the application.
+ */
 export default function AddUserForm() {
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();

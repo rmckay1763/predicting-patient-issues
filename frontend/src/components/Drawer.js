@@ -13,6 +13,9 @@ import { Icons, IconsLarge } from "../resources/Icons";
 import { useGlobal } from "../contexts/GlobalContext";
 import { useViewport } from "../contexts/Dimensions"
 
+/**
+ * @returns Component to render the navigation drawer.
+ */
 export default function DrawerComponent() {
     
     const [openDrawer, setOpenDrawer] = useState(false);

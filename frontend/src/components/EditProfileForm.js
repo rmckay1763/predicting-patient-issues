@@ -11,6 +11,9 @@ import { useGlobal } from '../contexts/GlobalContext';
 import { useState } from 'react';
 import { AlertSuccess, AlertError } from "./AlertMessage";
 
+/**
+ * @returns Component to for a user to edit their profile.
+ */
 export default function EditProfileForm() {
   const [state, dispatch] = useGlobal();
   const [user, setUser] = useState(state.user);

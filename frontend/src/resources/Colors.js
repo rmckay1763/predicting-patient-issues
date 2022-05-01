@@ -4,7 +4,7 @@
 
 import { red, grey, orange } from '@mui/material/colors';
 
-/*primary is a dark blue, and secondary in a light blue*/
+/*primary is a dark blue, and secondary is a light blue*/
 
 export const Colors = {
     primary: '#31708E',

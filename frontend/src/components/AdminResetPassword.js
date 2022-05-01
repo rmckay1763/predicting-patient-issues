@@ -15,12 +15,15 @@ import { ConfirmDialog } from "./Dialog";
 
 import { Icons } from '../resources/Icons';
 
+/**
+ * @returns Component for an admin to reset a user's password.
+ */
 export default function AdminResetPassword () {
 
     const navigate = useNavigate();
     const [state, dispatch] = useGlobal();
     const location = useLocation();
-    const [user, setUser] = useState(location.state.user);
+    const [user,] = useState(location.state.user);
     const [title, setTitle] = useState("");
     const [confirmMessage, setConfirmMessage] = useState("");
     const [openConfirm, setOpenConfirm] = useState(false);

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Custom hook to track the width of the window.
+ * @returns Width of the browser window.
+ */
 export const useViewport = () => {
     const [width, setWidth] = useState(window.innerWidth);
   

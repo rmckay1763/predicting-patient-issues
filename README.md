@@ -1,97 +1,187 @@
 # Predicting Patient Issues
 
-#### Contents
+Top level README for project
 
-- [Backend](#backend)
-- [Frontend](#frontend)
-- [Docker](#dockerized-development-environment)
+### **Contents**
+
+- [Synopsis](#synopsis)
+- [Overview](#overview)
+- [User Interface](#user-interface)
+- [Application Backend](#application-backend)
+- [ML Sever](#ml-server)
+- [ML Scheduler](#ml-scheduler)
+- [Docker](#docker)
+- [Development](#development)
+- [Deployment](#deployment)
 
 ---
 
-#### Backend
+### **Synopsis**
 
-##### Requirements for Python development
-
-- Python3
-- pip3
-
-For dependency installation, use the pipreqs module to generate a requirements.txt
-
-Use this command to install pipreqs:
-`pip3 install pipreqs`
-
-Once the pipreqs module is installed, move the current working directory to `/backend` and generate the requirements.txt by:
-`python3 -m pipreqs.pipreqs .`
-
-To install modules from requirements.txt, run this command:
-`pip3 install -r requirements.txt`
-
-This will install all necessary Python modules to run the backend service. Make sure to do this process with each fetch/pull.
-
-##### FastAPI for userinfo database
-
-The api provides routes to interact with tables in the backend database. The backend implements the api with the following architecture:
-- Each table has a class that implements basic CRUD operations.
-- Service classes use the CRUD classes to implement functions needed by the api router classes.
-- Router classes expose HTTP routes and call the functions in the service classes to handle requests.
-- The class for the main api includes the Router classes and provides login and validation routes.
-
-Functions to support new routes should be defined in a service class in order to keep the CRUD classes decoupled from the rest of the api. `UserService` Provides functions for user related operations, `PatientService` provides functions for patient related operations, and `ArchiveService` provides functions for archive related operations. Each service class has a corresponding router class that provides HTTP routes to access functions.
-
-Refer to the router classes located at `backend/api/userinfo/router/` for available routes.
-
-Operation:
-- Change working directory to `/backend`
-- Uncomment lines in `main.py` to start in desired mode
-- Run `python3 main.py` to start the service
-- Stop the service with `ctrl + c`
+The project integrates machine learning models with a web application to provide the user with an interface that monitors patients and issues alerts for predicted critical events.
 
 [back to contents](#contents)
 
 ---
 
-#### Frontend
+### **Overview**
 
-##### Requirements for ReactJS development:
+The application consists of six docker containers that handle a single concern:
+- `postgres` - maintains a database to store application data.
+- `migration` - applies SQL scripts to the `postgres` service.
+- `backend` - RESTful API endpoints to interact with the `postgres` server.
+- `ml-server` - Decoupled API to access ML models.
+- `ml-scheduler` - Schedules calls to predict status for each patient in database.
+- `frontend` - User interface to experience the application.
 
-- NodeJS runtime
-- npm (NodeJS package manager)
-
-NodeJS/npm documentation & installation: [https://nodejs.org/en/](https://nodejs.org/en/)
-
-ReactJS documentation: [https://reactjs.org/](https://reactjs.org/)
-
-##### Running ReactJS frontend
-
-After installing the requirements listed above, move the current working directory to /frontend.
-
-If it is the first time running this project (after initially pulling code), you will not have the _node_modules_ folder. Install the npm requirements found in the _package.json_ file: `npm install`. If you already have the _node_modules_ folder, you can skip the previous step.
-
-Start the development server: `npm start`
-
-The development server should be accessible at [http://localhost:3000](http://localhost:3000).
+The `/postgres` directory contains the source for the `migration` service. The source for all other services resides in the directory with the same name as the service. The directory for each service contains a `README` documenting specific concerns. The remainder of this `README` provides a high level documentation of the project as whole.
 
 [back to contents](#contents)
 
 ---
 
-#### Dockerized Development Environment
+### **User Interface**
 
-*This is the recommend method for application development*
+The core of the UI consists of a split pane layout with the left pane rendering a list of notifications including patient name and status and the right pane displaying a table of patients. A status column in the table shows the predicted status of each patient. Table rows expand to show recent vital recordings for the selected patient. A navigation drawer in the application toolbar expands to provide the user with destinations. Navigating to a new destination renders the selected page in the right pane while the left pane always shows the list of notifications for a quick overview of patients.
+- Selecting a patient (via the table or the notifications panel) navigates to a patient profile page that displays the patient's information and recent vital recordings. The patient profile page supports:
+    - Entering new vital records.
+    - Editing patient information.
+    - Deleting patient from database.
+- The add patient option in the navigation drawer allows the user to enter a new patient into the database.
+- The user profile icon in the application toolbar expands to present the user with a short dropdown menu:
+    - View Profile - displays the current user's information and supports changing the user's password.
+    - Logout - ends the current session and returns to the login page.
 
-**Synopsis**
+Users with admin status have additional options in the navigation drawer to access privileged distinations.
+- The manage users page displays a table of registered users and allows an admin to create new users. Selecting a user from the table navigates to the edit user page which supports:
+    - Editing user information.
+    - Granting/revoking admin status.
+    - Deleting user from application.
+- The manage roles page displays a table of user roles (medical roles, e.g. nurse). The page supports:
+    - Adding a new role
+    - Deleting an existing role
 
-The dockerized application provides a completely containerized and isolated environment to develop and test code.
+The `/frontend` directory implements the user interface with [React](https://reactjs.org/docs/getting-started.html) and JavaScript. The UI runs in a docker container defined as the `frontend` service in the `docker-compose.override.yml` and `docker-compose.prod.yml` files.
 
-**Prerequisites**
+[back to contents](#contents)
 
+---
+
+### **Application Backend**
+
+The backend of the application provides a RESTful API that allows the user interface to interact with the application database. The database contains tables to maintain patient data and registered users. Archive tables automatically store patients and vital records when a user deletes a patient from the database. The project uses database migrations to initialize the database and update the schema if necessary. The backend database provides a single source of truth for application data displayed in the frontend.
+
+The API implements authentication with bearer tokens. All endpoints except for the `login` route require a valid token. When a user logs in, the API returns a token encoded with the primary key (uid) of the user. The token expires after twenty-four hours. The API provides a `validate` endpoint to check the token passed in through the HTTP request. This enables the frontend to validate the current user before navigating to a page and return the user to the login page when the token expires. The backend will return a 401 unauthorized status code if it receives a request without a valid token.  
+
+The database table for registered users includes a Boolean column for admin status. The API provides a `validateAdmin` route to check if the current user has admin privileges. The route decodes the token passed in through the request to retrieve the uid of the current user. The route then checks the admin column of the user associate with uid to determine admin status. This enables the frontend to include privileged destinations for admin users.  
+
+The `docker-compose.yml` file defines a `postgres` service that runs a PostgreSQL container to store application data.
+
+The `/postgres` directory contains a migration script to initialize the schema. The `docker-compose.yml` file defines a `migration` service that runs a [dbmate](https://hub.docker.com/r/amacneil/dbmate) container at application start-up and executes any unapplied scripts in `/postgres/db/migrations`  
+
+The `/backend` directory implements a [FastAPI](https://fastapi.tiangolo.com/) application with endpoints to interact with the `postgres` service. The API runs in a container defined as `backend` service in the `docker-compose.override.yml` and `docker-compose.prod.yml` files.
+
+[back to contents](#contents)
+
+---
+
+### **ML Server**
+
+The ML Server provides a decoupled API to access the machine learning aspect of the project. The project currently incorporates five vital signs into the application:
+- heart rate
+- soa2 level
+- respiration rate
+- systolic blood pressure
+- diastolic blood pressure
+
+The ML server contains a LSTM time series forecasting model for each vital sign. The models expect to receive a sequence of five vitals with five minute time steps. The models predict the next vital from the previous five. Thus, the forecasters predict a patient's vitals five minutes into the future. The ML server provides a `/predict` post route adhering to the HTTP protocal. The endpoint expects a JSON body with a time series of five sets of vital signs. The server calls the forecasters to get a predicted set of future vital signs and then checks if any of the future vitals exceed the specified safe range. Depending on the result, the server returns a `normal` status or a `alert` status along with the predicted future vitals. The `predict` route does not require any authentication, providing a resource to any application that follows the HTTP protocol.
+
+The `/ml-server` directory contains the models and implements a [FastAPI](https://fastapi.tiangolo.com/) application with a `predict` route. The `docker-compose.override.yml` and `docker-compose.prod.yml` files define the `ml-server` service that runs the API in a Python based container.
+
+[back to contents](#contents)
+
+---
+
+### **ML Scheduler**
+
+The project uses a dedicated scheduling service to make recuring calls to the ML server. The scheduler serves as a bridge between the backend API and the ML API. A main task makes a call to the `backend` API endpoint to fetch a list of all patients in the database. For each patient, the task fetches the five most recent vitals for that patient from the `backend` and sends the response to the `predict` route of the ML server. The ML server returns a predicted status and the task then updates the patient's status with the new prediction. The scheduler makes recurring asynchronous calls to the main task to frequently update the status of each patient.
+
+The scheduler requires a token to access the endpoints in the `backend` API that provide access to patient data. Thus, an environment file stores the token, initially set to null. The task sends a request to the `backend/validate` route to check the token, and if it fails, sends a request to `backend/login` to get a fresh token. The scheduler uses predefined admin credentials to login to the API.
+
+The `/ml-scheduler` directory implements the scheduler in Python using the [schedule](https://schedule.readthedocs.io/en/stable/) and [requests](https://docs.python-requests.org/en/latest/) modules. The scheduler runs in a container defined as the `ml-scheduler` service in the `docker-compose.override.yml` and `docker-compose.prod.yml` files
+
+[back to contents](#contents)
+
+---
+
+### **Docker**
+
+#### **Overview**  
+
+The project uses Docker and docker-compose for both application development and deployment. If you are familiar with Docker and have docker-compose installed, Skip to [services](#services). Yes. Setting up Docker seems intimidating the first time and most installations entail resolving a few minor issues. Yet, the benefits vastly outweigh any intial hassle and Docker eliminates the need for any other requirements:
+- Platform Independence - Docker enables all contributors to develop/run/test code in the same environment.
+- Containerized Project - Containers prevent contributors from having to install 57,849 dependencies on their local machine when developing. Furthermore, isolated containers prevent dependency conflicts.
+- Separation of Concerns - Multiple containers divide the project into components based on functionality and facilitate optimizing each concern.
+- Available Resources - Official images at [dockerhub](https://hub.docker.com) allow developers to quickly build optimized containers. e.g. the official [postgres](https://hub.docker.com/_/postgres) image saves tremendous time and effort compared to configuring a database on a Linux server. 
+- Deployment - Docker registeries provide a convenient system for deploying and updating the production build. 
+- Well Documented - See the official [documentation](https://docs.docker.com/) for an abundance of information and guides on the infinite possibilites.
+
+#### **Prerequisites**
+Windows users only:
+- Enable WSL [https://docs.microsoft.com/en-us/windows/wsl/install](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+#### **Installation**
+
+The project requires two installations:
 - Docker Engine [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 - Docker Compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
+Those that prefer buttons over the command line may also consider installing Docker Desktop:
+- Windows [https://docs.docker.com/desktop/windows/install/](https://docs.docker.com/desktop/windows/install/)
+- Apple [https://docs.docker.com/desktop/mac/install/](https://docs.docker.com/desktop/mac/install/)
+
+#### **Guides**
+The official [documentation](https://docs.docker.com/) provides an abundance of guides ranging over all skill levels. Useful links:  
+
+*Quick Start*
+- [Getting started with Docker](https://docs.docker.com/get-started/)
+- [Getting started with Docker Compose](https://docs.docker.com/compose/gettingstarted/)
+
+*Relevant Specific Topics*
+- [Dockerfile reference](https://docs.docker.com/engine/reference/builder/)
+- [Dockerfile multistage build](https://docs.docker.com/develop/develop-images/multistage-build/)
+- [Environment variables in Compose](https://docs.docker.com/compose/environment-variables/)
+- [Multiple docker-compose files](https://docs.docker.com/compose/extends/)
+- [Compose file build reference](https://docs.docker.com/compose/compose-file/build/)
+
+[back to contents](#contents)
+
+#### **Services**
+The three compose files define six services for running the application.  
+
+- `docker-compose.yml` - these services use the same configuration for both development and production:
+    - `postgres` - Runs the database maintaining application data. 
+    - `migration` - Runs migration scripts on the `postgres` service. Includes the initialization script.  
+- `docker-compose.override.yml` - defines configurations for development build:
+- `docker-compose.prod.yml` - defines configurations for the production build:
+    - `backend` - Runs the API to interact with the `postgres` service.
+    - `ml-server` - Runs the API to access the machine learning models.
+    - `ml-scheduler` - Sends recurring requests to the `backend` and the `ml-server` to get predictions for patients stored in the database.
+    - `frontend` - Runs the UI to interact with the data in the `backend` service.
+
+Each service, except the `postgres` service, builds an image from the specified context. The default `Dockerfile` in the service's context defines the image for the development environment. The `migration` and `ml-scheduler` services also use the default `Dockerfile` for the production build. The other services use `Dockerfile.prod` to build the production images.
+
+The `docker-compose` files tags the images with a mirror repository owned by the original team to enable pushing/pulling the images to a registry when deploying. Replace this path, `registry.gitlab.com/g5003/predicting-patient-issues-mirror`, with a container repository owned by the current team.
+
+[back to contents](#contents)
+
+---
+
+### **Development**
+
 **Configuration**
 
-Use the following configuration files for development:
-(all paths relative to project root directory)
+Use the following environment files for the development build.
 
 - `.env`
     ```
@@ -108,13 +198,19 @@ Use the following configuration files for development:
     Password = password
     Database = userinfo
 
-    [SSHTunnelSettings]
-    UseTunnel = False 
-
     [AuthSettings]
     Secret = SECRET
     ```
-- `frontend/.env` *Note: use port 80 for production build*
+    *disambiguation - `Endpoint=postgres` refers to the `postgres` service in `docker-compose.yml` and `User=postgres` refers to the username to log in to the database.
+- `/ml-scheduler/code/.env`
+    ```
+    PATIENT_SERVER=http://backend:8000
+    ML_SERVER=http://ml-server:8000
+    TOKEN=null
+    USERNAME=admin
+    PASSWORD=pass123
+    ```
+- `frontend/.env`
     ```
     PORT=5000
     REACT_APP_API_BASE_URL=http://localhost:8000
@@ -124,30 +220,103 @@ Use the following configuration files for development:
     ```
     DATABASE_URL="postgres://postgres:password@postgres:5432/userinfo?sslmode=disable"
     ```
-- `backend/requirements.txt`
+
+Note that several variables reference the database password and must use the same value or the application will break.  
+
+- Variables referencing the password for the postgres database:
+    - `.env.POSTGRES_PASSWORD`
+    - `backend/settings.ini.Password`
+    - `/postgres/.env.DATABASE_URL`
+
+
+**Usage**
+
+Useful commands. Set working directory to project root.
+- Build all images with development configuration:
     ```
-    fastapi==0.72.0
-    passlib==1.7.4
-    psycopg2==2.9.3
-    pydantic==1.9.0
-    PyJWT==2.3.0
-    sshtunnel==0.4.0
-    uvicorn==0.17.0
+    docker-compose build
     ```
-
-**Database Migrations**
-
-- The `migration` container will run `.sql` scripts on `docker-compose up`
-- Place `.sql` scripts in `postgres/db/migrations`
-- Refer to dbmate [documentation](https://github.com/amacneil/dbmate#creating-migrations) for script format
-
-**Operation**
-
-- Navigate to project root directory
-- Run: `docker-compose up` to start the app in development mode
+- Build a single image with development configuration:
+    ```
+    docker-compose build [SERVICE]
+    ```
+- Start all containers in development mode:
+    ```
+    docker-compose up
+    ```
+- Start a single container in development mode:
+    ```
+    docker-compose up [SERVICE]
+    ```
+- Stop all running containers:
+    ```
+    docker-compose down
+    ```
+- Stop a single container:
+    ```
+    docker-compose down [SERVICE]
+    ```
 - Navigate browser to [http://localhost:5000](http://localhost:5000) to access development build
-- RUN: `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up` for production mode
-- Navigate browser to [http://localhost](http://localhost) to access production build
-- Run: `docker-compose down` in a new terminal to stop the app
+
+**Developing Code**
+
+`docker-compose.override.yml` mounts an external volume for each service that maps the source code on the local machine to the source code inside the container. When ever the code changes locally, the contents inside the container update automatically. Containers that support hot-reloading (`backend`, `frontend`, `ml-server`) will apply changes while the application is running. `ml-scheduler` requires a restart to apply changes. `migration` requires rebuilding the image and then a restart to apply changes.
+
+`docker-compose.yml` mounts an internal volume to persist data in the `postgres` service between application shutdown/startup. Removing the volume will wipe the database.  
+```
+docker-compose down -v
+```
+After removing the volume, the migration container will apply all scripts next time the service starts.
 
 [back to contents](#contents)
+
+---
+
+### **Deployment**
+
+**Configuration**
+
+Some environment files require modification for the production build.
+
+- `frontend/.env`
+    ```
+    PORT=5000
+    REACT_APP_API_BASE_URL=http://04.csc.tntech.edu
+    ```
+    At the time this documentation was written, `04.csc.tntech.edu` hosted the application. Update the url as needed. Note that using `localhost` worked when tested locally but resulted in CORS errors when running the application on the TTU server.
+
+- `/ml-scheduler/code/.env`
+    ```
+    PATIENT_SERVER=http://frontend
+    ML_SERVER=http://frontend
+    TOKEN=null
+    USERNAME=admin
+    PASSWORD=pass123
+    ```
+    The production build routes all requests through the `frontend` where the `nginx` server fowards requests to the other containers.
+
+**Production Build**
+
+Simply specify the production build file and docker will handle the rest.
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+```
+If testing the production build locally, open a browser and access the application at `http://localhost`
+
+**Requirements**
+- Server Configuration - The host should have both docker and docker-compose installed. Team members should have the ability to ssh into the server and execute docker commands from a terminal
+- Image Repository - The team should own a docker image repository to push/pull the images required to run the application. The orginal team set up a Gitlab mirror with a personal account and used the container registry in the mirror repository due to complications with TTU Gitlab account. Suggestion: use a personal repository from the beginning to avoid repeating issues the original team encountered. Gitlab offers students personal accounts with private repositories and container registries.
+
+**Deploy**
+
+Deployment involves these high-level steps:
+- Build the production images
+- Push the images to a repository
+- Pull the images onto the server
+- Start the services
+
+The first two points are covered above. The simplest method for the second two steps consists of creating a `docker-compose.yml` file on the server and specifying the registry and tag for each service. Then a simple `docker-compose up` will pull the images from the repository and start them. Refer to `docker-compose.iteration-6.yml` for the file used by the original team to deploy the final iteration release. As mentioned in the [docker](#docker) section, the current team needs to update the path to the image repository in the `docker-compose` files.
+
+**Troubleshooting**
+
+100% of deployment issues experienced by the orginal team related to variables in the environment files.

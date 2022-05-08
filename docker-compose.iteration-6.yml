@@ -1,0 +1,65 @@
+# docker compose file use by original team to deploy final release
+# pulls images from a mirror repository owned by the original team
+# update the path to use the registry where the current team pushes production images
+
+version: "3.9"
+services:
+  
+  # userinfo database container
+  postgres:
+    image: postgres:14
+    container_name: database
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=userinfo
+    expose:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  # database migration container
+  migration:
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/migration:iteration-6
+    container_name: dbmate
+    depends_on:
+      - postgres
+
+  # backend fastapi container
+  backend:
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-prod:iteration-6
+    container_name: app-backend
+    restart: always
+    depends_on:
+      - postgres
+
+  # ml server container
+  ml-server:
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-server-prod:iteration-6
+    container_name: ml-server-prod
+    restart: always
+
+  # ml scheduler container
+  ml-scheduler:
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/ml-scheduler-prod:iteration-6
+    container_name: ml-scheduler-prod
+    restart: always
+    depends_on:
+      - postgres
+      - backend
+      - ml-server
+
+  # frontend node js container
+  frontend:
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/frontend-prod:iteration-6
+    container_name: app-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+# internal volumes
+volumes:
+  postgres-data:

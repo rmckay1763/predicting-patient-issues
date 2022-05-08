@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# Frontend Container
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**IMPORTANT! Please read the top level README first**
 
-## Available Scripts
+### **Contents**
 
-In the project directory, you can run:
+- [Synopsis](#synopsis)
+- [Architecture](#architecture)
+- [File Structure](#file-structure)
+- [Development](#development)
+- [Deployment](#deployment)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### **Synopsis**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+A [React](https://reactjs.org/docs/getting-started.html) web application that follows [Material UI](https://mui.com/material-ui/getting-started/installation/) design. The application provides an interface for users to monitor a list of patients. All users can manage patients, while users with admin status have additional privilegs including managing other users. The frontend makes frequent API calls to the backend to keep application data fresh.
 
-### `npm test`
+[back to contents](#contents)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+### **Architecture**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The application separates concerns to promote modularity and also provides several layers for rendering components.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Config**  
+`api.js` configures an [axios](https://axios-http.com/docs/intro) instance to make HTTP requests to the backend container.
+- **Controllers**  
+The functions in `APIController.js` use the axios instance to make async calls to interact with the HTTP routes available in the backend container. Note that all functions return a `response` object, forcing the caller to use async calls. 
+- **Global State**  
+The application maintains a global state, `GlobalContext.js`, to provide a single source of truth for data shared between components. See this [article](https://www.thisdot.co/blog/creating-a-global-state-with-react-hooks) for a guide.
+- **Styled Components**  
+The application strictly uses [MUI](https://mui.com/material-ui/getting-started) components to provide a consistent user experience. `StyledComponents.js` provides convience functions for commonly used base components with the application theme applied. These components comprise the building blocks for larger components.
+- **Components**  
+At the least, each page of the application has a `[ComponentName].js` file to render the page. More complex pages may have sub components of the page extracted into separate files, e.g. most pages have a separate file for the toolbar that renders at the top of the component. These files should use components from `StyledComponents.js` whenever possible to promote consistency, e.g. use `StyledTextField` instead of `TextField`.
+- **Routes**  
+Each page of the application has a function to return the page as a component. These functional components, in `Routes.js`, are called by the top level `App.js` file to handle navigation. All routes should be wrapped with at least one of the following:
+    - `BaseRoute` makes API calls to load data and updates the global state. The route returns a split pane view with a list of notifications on the left and the child component as the right pane. `BaseRoute` should wrap all other routes except for the login page.
+    - `GenericRoute` allows the user to access a page without a bearer authentication token. Only the login route should use this.
+    - `AuthRoute` requires a valid bearer token and defaults to the login page if the token fails authentication. All routes intended for regular users should be wrapped with this route.
+    - `AdminAuthRoute` requires a valid bearer token associated with an user with admin status. All routes for admin only features should be wrapped with this route.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+[back to contents](#contents)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### **File Structure**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`/frontend`
+- `package.json` - dependencies file
+- `Dockerfile` - default build file
+- `Dockerfile.prod` - production build file
+- `.env` - environment variables
+- `/public` - react auto generated directory
+- `/nginx` - directory
+    - `server.conf` - configuration file for server (only used in production)
+- `/src` - directory for application source files.
+    - `App.js` - top level component
+    - `/components` - directory for application components
+    - `/config` - directory for configuration functions
+    - `/contexts` - directory for application contexts
+    - `/controllers` - directory for controller functions
+    - `/resources` - directory for application resources
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+[back to contents](#contents)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **Development**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The default build file `Dockerfile` will build a [Node.js](https://hub.docker.com/_/node) based image and start the React application in development mode. The docker-compose setup uses a volume so that any changes on the local machine update the code inside the running docker container. The development mode for React uses hot reloading, so simply modify the code locally and watch the changes get applied inside the container! The application runs on `localhost:5000`.
 
-### Code Splitting
+[back to contents](#contents)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+### **Deployment**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The production build file `Dockerfile.prod` will produce an optimized production build. The docker file uses a multi-stage build to add a [nginx](https://hub.docker.com/_/nginx) server in front of the application. Unlike development mode, where the containers communicated directly, all requests initially go the frontend and the server then fowards requests as needed to other containers. The server listens for the following locations:
+- `/api` - url's matching this path get fowarded to the `FastAPI` running on the backend container
+- `/predict` - url's matching this path get fowarded to the `FastAPI` running on the ml-server container
+- `/` - all other url's get sent to the React app.  
 
-### Making a Progressive Web App
+The application runs on `localhost`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+*Note - The URL for the backend api in the `.env` file needs to be updated before building the frontend. Specifying `localhost` as the URL resulted in CORS errors when deploying the application to a TTU server. To resolve, specifiy the explicit address that will host the application, e.g. `htttp://wwww.somedomain.com`. Also note that the production build runs on port 80 instead of 8000.
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[back to contents](#contents)

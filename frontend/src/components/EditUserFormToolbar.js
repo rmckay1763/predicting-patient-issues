@@ -64,7 +64,7 @@ export default function EditUserFormToolbar(props) {
                 startIcon={Icons.delete}
                 onClick={onDelete}
             >
-                Delete Patient
+                Delete User
             </StyledButtonSecondary>
             <StyledButtonSecondary 
                 startIcon={Icons.close}

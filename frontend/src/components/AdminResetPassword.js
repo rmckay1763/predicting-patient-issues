@@ -34,7 +34,7 @@ export default function AdminResetPassword () {
         document.title = ("PPCD - Reset User Password");
         let message = "Reset User Password: " + user.username;
         setTitle(message);
-        message = "This action will permanently reset the password" +
+        message = "This action will permanently reset the password. " +
             "Please record updateded password and inform " + user.username;
         setConfirmMessage(message)
     }, [user]);

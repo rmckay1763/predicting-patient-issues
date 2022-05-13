@@ -1,0 +1,41 @@
+# compose file for testing backend
+
+version: "3.9"
+services:
+  
+  # userinfo database container
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    expose:
+      - "5432"
+    volumes:
+      - postgres-test:/var/lib/postgresql/data
+
+  # database migration container
+  migration:
+    build: ./postgres
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/migration
+    container_name: migration
+    depends_on:
+      - "postgres"
+
+  # backend fastapi container
+  backend-test:
+    build: ./backend
+    image: registry.gitlab.com/g5003/predicting-patient-issues-mirror/backend-test
+    command: python3 tests.py
+    container_name: backend-test
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./backend:/app"
+
+# internal volumes
+volumes:
+  postgres-test:

@@ -260,6 +260,10 @@ docker-compose down -v
 ```
 After removing the volume, the migration container will apply all scripts next time the service starts.
 
+**Testing**
+
+The backend contains a `tests.py` that performs a few integrated tests on the API routes. Build and run the application with the `docker-compose.test.yml` file to execute the tests. 
+
 [back to contents](#contents)
 
 ---

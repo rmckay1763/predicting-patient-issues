@@ -173,7 +173,7 @@ The `docker-compose` files tags the images with a mirror repository owned by the
 
 **Configuration**
 
-Use the following environment files for the development build.
+Use the following environment file templates for the development build. Substitute security variables with appropriate values.
 
 - `.env`
     ```
@@ -202,6 +202,7 @@ Use the following environment files for the development build.
     USERNAME=admin
     PASSWORD=pass123
     ```
+    Update the insert statement in the `init` script in `postgres/db/migrations` folder to match the values for the USERNAME and PASSWORD that the `ml-scheduler` uses to log in with.
 - `frontend/.env`
     ```
     PORT=5000

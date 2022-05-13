@@ -114,17 +114,9 @@ The `/ml-scheduler` directory implements the scheduler in Python using the [sche
 
 ---
 
-### **Docker**
+### **Docker** 
 
-#### **Overview**  
-
-The project uses Docker and docker-compose for both application development and deployment. If you are familiar with Docker and have docker-compose installed, Skip to [services](#services). Yes. Setting up Docker seems intimidating the first time and most installations entail resolving a few minor issues. Yet, the benefits vastly outweigh any intial hassle and Docker eliminates the need for any other requirements:
-- Platform Independence - Docker enables all contributors to develop/run/test code in the same environment.
-- Containerized Project - Containers prevent contributors from having to install 57,849 dependencies on their local machine when developing. Furthermore, isolated containers prevent dependency conflicts.
-- Separation of Concerns - Multiple containers divide the project into components based on functionality and facilitate optimizing each concern.
-- Available Resources - Official images at [dockerhub](https://hub.docker.com) allow developers to quickly build optimized containers. e.g. the official [postgres](https://hub.docker.com/_/postgres) image saves tremendous time and effort compared to configuring a database on a Linux server. 
-- Deployment - Docker registeries provide a convenient system for deploying and updating the production build. 
-- Well Documented - See the official [documentation](https://docs.docker.com/) for an abundance of information and guides on the infinite possibilites.
+The project uses Docker and docker-compose for both application development and deployment.
 
 #### **Prerequisites**
 Windows users only:
